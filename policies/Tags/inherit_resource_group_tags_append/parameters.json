@@ -1,0 +1,21 @@
+{
+    "tagName": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Tag Name",
+            "description": "Name of the tag, such as 'environment'"
+        }
+    },
+    "effect": {
+        "type": "String",
+        "defaultValue": "Append",
+        "allowedValues": [
+            "Append",
+            "Disabled"
+        ],
+        "metadata": {
+            "displayName": "Effect",
+            "description": "The effect determines what happens when the policy rule is evaluated to match"
+        }
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "effect": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Effect",
+            "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+            "AuditIfNotExists",
+            "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+    },
+    "workspaceRetentionDays": {
+        "type": "Integer",
+        "metadata": {
+            "description": "Log Analytics Workspace should be retained for the specified amount of days. Defaults to 15 months",
+            "displayName": "Log Analytics Workspace Retention Days"
+        },
+        "defaultValue": 456
+    }
+}

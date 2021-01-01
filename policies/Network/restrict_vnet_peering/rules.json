@@ -1,0 +1,25 @@
+{
+    "if": {
+        "anyOf": [
+            {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings"
+                    },
+                    {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings/remoteVirtualNetwork.id",
+                                "notin": "[parameters('trustedVnetIds')]"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "then": {
+        "effect": "[parameters('effect')]"
+    }
+}

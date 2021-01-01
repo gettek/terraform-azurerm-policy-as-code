@@ -1,0 +1,57 @@
+{
+    "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "contains": "Microsoft.Network/routeTables"
+            },
+            {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Network/routeTables/routes",
+                                "exists": "true"
+                            },
+                            {
+                                "field": "Microsoft.Network/routeTables/routes[*].nextHopType",
+                                "notEquals": "[parameters('allowedHopType1')]"
+                            },
+                            {
+                                "field": "Microsoft.Network/routeTables/routes[*].nextHopType",
+                                "notEquals": "[parameters('allowedHopType2')]"
+                            },
+                            {
+                                "field": "Microsoft.Network/routeTables/routes[*].nextHopType",
+                                "notEquals": "[parameters('allowedHopType3')]"
+                            }
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Network/routeTables/routes/nextHopType",
+                                "exists": "true"
+                            },
+                            {
+                                "field": "Microsoft.Network/routeTables/routes/nextHopType",
+                                "notEquals": "[parameters('allowedHopType1')]"
+                            },
+                            {
+                                "field": "Microsoft.Network/routeTables/routes/nextHopType",
+                                "notEquals": "[parameters('allowedHopType2')]"
+                            },
+                            {
+                                "field": "Microsoft.Network/routeTables/routes/nextHopType",
+                                "notEquals": "[parameters('allowedHopType3')]"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "then": {
+        "effect": "[parameters('effect')]"
+    }
+}

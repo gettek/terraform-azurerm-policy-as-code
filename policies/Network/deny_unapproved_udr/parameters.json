@@ -1,0 +1,22 @@
+{
+    "allowedHops": {
+        "type": "Array",
+        "metadata": {
+            "displayName": "Allowed next hops",
+            "description": "A list of the permitted 'next hops' for a UDR"
+        }
+    },
+    "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+            "Audit",
+            "Deny",
+            "Disabled"
+        ],
+        "metadata": {
+            "displayName": "Effect",
+            "description": "The effect determines what happens when the policy rule is evaluated to match"
+        }
+    }
+}

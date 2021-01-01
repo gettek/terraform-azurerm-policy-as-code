@@ -1,0 +1,29 @@
+{
+    "if": {
+        "anyOf": [
+            {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Network/networkSecurityGroups/securityRules"
+                    },
+                    {
+                        "anyOf": [
+                            {
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                                "notin": "[parameters('allowedRanges')]"
+                            },
+                            {
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationAddressPrefix",
+                                "notin": "[parameters('allowedRanges')]"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "then": {
+        "effect": "[parameters('effect')]"
+    }
+}

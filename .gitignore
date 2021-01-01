@@ -1,0 +1,30 @@
+###Terraform 
+# Local .terraform directories
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.auto.tfvars
+lock.json
+.terraform.lock.hcl
+*.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.DS_Store
+.tst
+.tmp
+.temp

@@ -1,0 +1,19 @@
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "equals": "Microsoft.Network/azureFirewalls"
+      },
+      {
+        "not": {
+          "field": "Microsoft.Network/azureFirewalls/natRuleCollections[*].name",
+          "notLike": "*"
+        }
+      }
+    ]
+  },
+  "then": {
+    "effect": "[parameters('effect')]"
+  }
+}

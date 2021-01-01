@@ -1,0 +1,29 @@
+{
+    "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "contains": "Microsoft.Network/routeTables"
+            },
+            {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Network/routeTables/routes/nextHopIpAddress",
+                                "exists": "true"
+                            },
+                            {
+                                "field": "Microsoft.Network/routeTables/routes/nextHopIpAddress",
+                                "notIn": "[parameters('allowedHops')]"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "then": {
+        "effect": "[parameters('effect')]"
+    }
+}

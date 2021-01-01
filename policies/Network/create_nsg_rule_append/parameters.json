@@ -1,0 +1,55 @@
+{
+  "name": {
+    "type": "String"
+  },
+  "protocol": {
+    "type": "String",
+    "allowedValues": [
+      "TCP",
+      "UDP",
+      "ICMP",
+      "*"
+    ]
+  },
+  "access": {
+    "type": "String",
+    "allowedValues": [
+      "Allow",
+      "Deny"
+    ]
+  },
+  "priority": {
+    "type": "String"
+  },
+  "direction": {
+    "type": "String",
+    "allowedValues": [
+      "Inbound",
+      "Outbound"
+    ]
+  },
+  "sourcePortRanges": {
+    "type": "Array"
+  },
+  "destinationPortRanges": {
+    "type": "Array"
+  },
+  "sourceAddressPrefixes": {
+    "type": "Array"
+  },
+  "destinationAddressPrefixes": {
+    "type": "Array"
+  },
+  "effect": {
+    "type": "String",
+    "defaultValue": "Append",
+    "allowedValues": [
+      "Append",
+      "Disabled"
+    ],
+    "metadata": {
+      "displayName": "Effect",
+      "description": "The effect determines what happens when the policy rule is evaluated to match"
+    }
+  }
+}

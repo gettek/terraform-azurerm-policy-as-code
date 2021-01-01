@@ -1,0 +1,27 @@
+{
+    "listOfRegionsAllowed": {
+        "type": "Array",
+        "metadata": {
+            "description": "The list of regions where resources can be deployed.",
+            "displayName": "Allowed regions",
+            "strongType": "location"
+        },
+        "defaultValue": [
+            "UK South",
+            "UK West"
+        ]
+    },
+    "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+            "Audit",
+            "Deny",
+            "Disabled"
+        ],
+        "metadata": {
+            "displayName": "Effect",
+            "description": "The effect determines what happens when the policy rule is evaluated to match"
+        }
+    }
+}

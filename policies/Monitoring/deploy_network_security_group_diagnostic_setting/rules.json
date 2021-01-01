@@ -1,0 +1,114 @@
+{
+    "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "equals": "Microsoft.Network/networkSecurityGroups"
+            }
+        ]
+    },
+    "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+            "type": "Microsoft.Insights/diagnosticSettings",
+            "name": "[parameters('profileName')]",
+            "existenceCondition": {
+                "allOf": [
+                    {
+                        "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                        "equals": "[parameters('logsEnabled')]"
+                    },
+                    {
+                        "field": "Microsoft.Insights/diagnosticSettings/eventHubName",
+                        "matchInsensitively": "[parameters('eventHubName')]"
+                    }
+                ]
+            },
+            "roleDefinitionIds": [
+                "/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+                "/providers/microsoft.authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"
+            ],
+            "deployment": {
+                "properties": {
+                    "mode": "incremental",
+                    "template": {
+                        "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "parameters": {
+                            "resourceName": {
+                                "type": "String"
+                            },
+                            "workspaceId": {
+                                "type": "String"
+                            },
+                            "storageAccountId": {
+                                "type": "String"
+                            },
+                            "eventHubAuthorizationRuleId": {
+                                "type": "String"
+                            },
+                            "eventHubName": {
+                                "type": "String"
+                            },
+                            "logsEnabled": {
+                                "type": "String"
+                            },
+                            "profileName": {
+                                "type": "String"
+                            }
+                        },
+                        "variables": {},
+                        "resources": [
+                            {
+                                "type": "Microsoft.Network/networkSecurityGroups/providers/diagnosticSettings",
+                                "name": "[concat(parameters('resourceName'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
+                                "apiVersion": "2017-05-01-preview",
+                                "location": "uksouth",
+                                "dependsOn": [],
+                                "properties": {
+                                    "workspaceId": "[parameters('workspaceId')]",
+                                    "storageAccountId": "[parameters('storageAccountId')]",
+                                    "eventHubAuthorizationRuleId": "[parameters('eventHubAuthorizationRuleId')]",
+                                    "eventHubName": "[parameters('eventHubName')]",
+                                    "logs": [
+                                        {
+                                            "category": "NetworkSecurityGroupEvent",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        },
+                                        {
+                                            "category": "NetworkSecurityGroupRuleCounter",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "parameters": {
+                        "resourceName": {
+                            "value": "[field('name')]"
+                        },
+                        "workspaceId": {
+                            "value": "[parameters('workspaceId')]"
+                        },
+                        "storageAccountId": {
+                            "Value": "[parameters('storageAccountId')]"
+                        },
+                        "eventHubAuthorizationRuleId": {
+                            "Value": "[parameters('eventHubAuthorizationRuleId')]"
+                        },
+                        "eventHubName": {
+                            "Value": "[parameters('eventHubName')]"
+                        },
+                        "profileName": {
+                            "value": "[parameters('profileName')]"
+                        },
+                        "logsEnabled": {
+                            "value": "[parameters('logsEnabled')]"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
