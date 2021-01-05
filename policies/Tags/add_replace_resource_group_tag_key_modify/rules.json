@@ -6,10 +6,6 @@
                 "equals": "Microsoft.Resources/subscriptions/resourceGroups"
             },
             {
-                "field": "tags['HSN']",
-                "exists": "false"
-            },
-            {
                 "field": "tags['Owner']",
                 "exists": "false"
             },
@@ -22,7 +18,7 @@
                 "exists": "false"
             },
             {
-                "value": "[less(length(field('tags')), 4)]",
+                "value": "[less(length(field('tags')), 3)]",
                 "equals": "true"
             }
         ]
@@ -34,11 +30,6 @@
                 "/providers/microsoft.authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f"
             ],
             "operations": [
-                {
-                    "operation": "addOrReplace",
-                    "field": "tags['HSN']",
-                    "value": "<>"
-                },
                 {
                     "operation": "addOrReplace",
                     "field": "tags['Owner']",
