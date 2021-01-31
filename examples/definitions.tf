@@ -1,7 +1,6 @@
 ##################
 # General
 ##################
-
 module whitelist_resources {
   source                = "..//modules/definition"
   policy_name           = "whitelist_resources"
@@ -18,11 +17,9 @@ module whitelist_regions {
   management_group_name = azurerm_management_group.org.name
 }
 
-
 ##################
 # Monitoring
 ##################
-
 module deploy_subscription_diagnostic_setting {
   source                = "..//modules/definition"
   policy_name           = "deploy_subscription_diagnostic_setting"
@@ -67,11 +64,9 @@ module audit_log_analytics_workspace_retention {
   management_group_name = azurerm_management_group.org.name
 }
 
-
 ##################
 # Network
 ##################
-
 module deny_nic_public_ip_on_specific_subnets {
   source                = "..//modules/definition"
   policy_name           = "deny_nic_public_ip_on_specific_subnets"
@@ -120,11 +115,9 @@ module create_nsg_rule_append {
   management_group_name = azurerm_management_group.org.name
 }
 
-
 ##################
 # Security Center
 ##################
-
 locals {
   security_center_policies = {
     auto_enroll_subscriptions                              = "Enable Azure Security Center on Subcriptions"
@@ -148,7 +141,6 @@ module configure_asc {
 ##################
 # Storage
 ##################
-
 module storage_enforce_https {
   source                = "..//modules/definition"
   policy_name           = "storage_enforce_https"
@@ -167,11 +159,9 @@ module storage_enforce_minimum_tls1_2 {
   management_group_name = azurerm_management_group.org.name
 }
 
-
 ##################
 # Tags
 ##################
-
 module require_resource_group_tags {
   source                = "..//modules/definition"
   policy_name           = "require_resource_group_tags"

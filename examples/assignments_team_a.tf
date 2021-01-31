@@ -1,7 +1,6 @@
 ##################
 # General
 ##################
-
 module customer_mg_whitelist_resources {
   source                = "..//modules/def_assignment"
   definition            = module.whitelist_resources.definition
@@ -10,11 +9,9 @@ module customer_mg_whitelist_resources {
   assignment_parameters = local.customer_mg_whitelist_resource_types # see below
 }
 
-
 ##################
 # Network
 ##################
-
 module customer_mg_deny_nic_public_ip {
   source            = "..//modules/def_assignment"
   definition        = module.deny_nic_public_ip.definition
@@ -29,11 +26,9 @@ module customer_mg_deny_nsg_outbound_allow_all {
   assignment_effect = "Deny"
 }
 
-
 ##################
 # Tags
 ##################
-
 module customer_mg_add_replace_resource_group_tag_key_modify {
   source            = "..//modules/def_assignment"
   definition        = module.add_replace_resource_group_tag_key_modify.definition
@@ -57,11 +52,9 @@ module customer_mg_inherit_resource_group_tags_modify {
   skip_remediation  = var.skip_remediation
 }
 
-
 ##################
 # Resource Types to Whitelist
 ##################
-
 locals {
   customer_mg_whitelist_resource_types = {
     listOfResourceTypesAllowed = [

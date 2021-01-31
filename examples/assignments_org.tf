@@ -83,6 +83,7 @@ module org_mg_storage_enforce_minimum_tls1_2 {
   assignment_effect = "Deny"
 }
 
+
 ##################
 # Network
 ##################
@@ -92,6 +93,7 @@ module org_mg_network_deny_nat_rules_firewall {
   assignment_scope  = azurerm_management_group.org.id
   assignment_effect = "Deny"
 }
+
 
 ##################
 # Monitoring

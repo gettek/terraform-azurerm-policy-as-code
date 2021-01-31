@@ -12,6 +12,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 * azurerm_policy_remediation.rem
 * random_uuid.org_mg_remediate_platform_diagnostics_initiative
 * random_uuid.org_mg_add_replace_resource_group_tag_key_modify
+* data.azurerm_role_definition.security_admin
+* azurerm_role_assignment.org_mg_configure_asc_initiative
 * azurerm_role_definition.org_mg_remediate_platform_diagnostics_initiative
 * azurerm_role_assignment.org_mg_add_replace_resource_group_tag_key_modify
-
