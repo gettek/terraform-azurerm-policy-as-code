@@ -13,6 +13,13 @@ resource azurerm_policy_assignment set {
   identity {
     type = local.identity_type
   }
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [
+      metadata
+    ]
+  }
 }
 
 resource azurerm_policy_remediation rem {

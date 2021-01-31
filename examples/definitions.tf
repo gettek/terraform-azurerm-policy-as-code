@@ -125,14 +125,25 @@ module create_nsg_rule_append {
 # Security Center
 ##################
 
-module export_asc_alerts_and_recommendations_to_eventhub_deploy {
+locals {
+  security_center_policies = {
+    auto_enroll_subscriptions                              = "Enable Azure Security Center on Subcriptions"
+    auto_provision_log_analytics_agent_custom_workspace    = "Enable Security Center's auto provisioning of the Log Analytics agent on your subscriptions with custom workspace"
+    auto_set_contact_details                               = "Automatically set the security contact email address and phone number should they be blank on the subscription"
+    export_asc_alerts_and_recommendations_to_eventhub      = "Export to Event Hub for Azure Security Center alerts and recommendations"
+    export_asc_alerts_and_recommendations_to_log_analytics = "Export to Log Analytics Workspace for Azure Security Center alerts and recommendations"
+  }
+}
+
+module configure_asc {
   source                = "..//modules/definition"
-  policy_name           = "export_asc_alerts_and_recommendations_to_eventhub_deploy"
-  display_name          = "Export Azure Security Center Alerts and Recommendations to EventHub"
+  for_each              = local.security_center_policies
+  policy_name           = each.key
+  display_name          = title(replace(each.key, "_", " "))
+  policy_description    = each.value
   policy_category       = "Security Center"
   management_group_name = azurerm_management_group.org.name
 }
-
 
 ##################
 # Storage

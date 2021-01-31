@@ -46,7 +46,7 @@ resource azurerm_role_assignment customer_mg_add_replace_resource_group_tag_key_
   count              = var.skip_remediation ? 0 : 1
   scope              = azurerm_management_group.team_a.id
   role_definition_id = azurerm_role_definition.org_mg_add_replace_resource_group_tag_key_modify.role_definition_resource_id
-  principal_id       = module.customer_mg_add_replace_resource_group_tag_key_modify.identity.*.principal_id[0]
+  principal_id       = module.customer_mg_add_replace_resource_group_tag_key_modify.identity_id
 }
 
 module customer_mg_inherit_resource_group_tags_modify {

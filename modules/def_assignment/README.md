@@ -1,5 +1,7 @@
 # POLICY DEFINITION ASSIGNMENT MODULE
 
+
+
 ## Requirements
 
 No requirements.
@@ -30,6 +32,6 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | id | The Policy Assignment Id |
-| identity | The Managed Identity block containing Principal Id & Tenant Id of this Policy Assignment if type is SystemAssigned, referenced with \*.principal\_id[0] or \*.tenant\_id[0] |
+| identity\_id | The Managed Identity block containing Principal Id & Tenant Id of this Policy Assignment if type is SystemAssigned |
 | remediation\_id | The Id of the Policy Remediation |
 

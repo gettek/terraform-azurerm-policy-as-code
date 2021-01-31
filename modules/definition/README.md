@@ -4,6 +4,8 @@ This reusable module depends on populating `var.policy_category` and `var.policy
 
 > :bulb: **Note:** More information on Policy Defenition Structure [can be found here](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
 
+
+
 ## Requirements
 
 No requirements.

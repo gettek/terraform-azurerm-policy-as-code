@@ -20,7 +20,7 @@ variable description {
 
 variable benchmark_version {
   type        = string
-  description = "Usually the git tag version for this benchmark, will be suffixed to display_name and description"
+  description = "Usually the git tag version for this benchmark"
   default     = "1.0.0"
 }
 

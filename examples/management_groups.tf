@@ -1,7 +1,7 @@
 # Org Management Group
 resource azurerm_management_group org {
-  name                       = "policy_dev"
-  display_name               = "Policy Dev"
+  name         = "policy_dev"
+  display_name = "Policy Dev"
 }
 
 # Child Management Group

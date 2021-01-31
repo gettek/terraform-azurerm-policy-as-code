@@ -25,9 +25,9 @@ module org_mg_cis_custom_benchmark {
 ##################
 
 module org_mg_whitelist_regions {
-  source           = "..//modules/def_assignment"
-  definition       = module.whitelist_regions.definition
-  assignment_scope = azurerm_management_group.org.id
+  source            = "..//modules/def_assignment"
+  definition        = module.whitelist_regions.definition
+  assignment_scope  = azurerm_management_group.org.id
   assignment_effect = "Deny"
   assignment_parameters = {
     "listOfRegionsAllowed" = [
@@ -36,6 +36,32 @@ module org_mg_whitelist_regions {
       "Global"
     ]
   }
+}
+
+
+##################
+# Security Center
+##################
+
+module org_mg_configure_asc_initiative {
+  source            = "..//modules/set_assignment"
+  initiative        = module.configure_asc_initiative.initiative
+  assignment_scope  = azurerm_management_group.org.id
+  assignment_effect = "DeployIfNotExists"
+  skip_remediation  = var.skip_remediation
+  assignment_parameters = {
+    workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
+    eventHubDetails       = local.dummy_resource_ids.azurerm_eventhub_namespace_authorization_rule
+    securityContactsEmail = "cisocloud@aviva.com"
+    securityContactsPhone = "07700000770"
+  }
+}
+
+resource azurerm_role_assignment org_mg_configure_asc_initiative {
+  count              = var.skip_remediation ? 0 : 1
+  scope              = azurerm_management_group.org.id
+  role_definition_id = data.azurerm_role_definition.security_admin.id
+  principal_id       = module.org_mg_configure_asc_initiative.identity_id
 }
 
 
@@ -130,13 +156,13 @@ resource azurerm_role_assignment org_mg_remediate_platform_diagnostic_settings {
   count              = var.skip_remediation ? 0 : 1
   scope              = azurerm_management_group.org.id
   role_definition_id = azurerm_role_definition.org_mg_remediate_platform_diagnostic_settings.role_definition_resource_id
-  principal_id       = module.org_mg_platform_diagnostics_initiative.identity.*.principal_id[0]
+  principal_id       = module.org_mg_platform_diagnostics_initiative.identity_id
 }
 
 
-# ##################
-# # Tags
-# ##################
+##################
+# Tags
+##################
 
 resource random_uuid org_mg_add_replace_resource_group_tag_key_modify {}
 
