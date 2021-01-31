@@ -9,10 +9,7 @@
 </p>
 <!-- markdownlint-enable MD033 -->
 
-[![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/)
-
-
-add build badge: https://travis-ci.org/github/Azure/terraform-azurerm-compute
+[![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![MIT License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/)
 
 - [Repo Folder Structure](#repo-folder-structure)
 - [Policy Definitions Module](#policy-definitions-module)
@@ -106,7 +103,7 @@ module platform_baseline_initiative {
 }
 ```
 
-> :warning: **Warning:** If any two `member_definition_ids` contain the same parameters then they will be `merged()` by this module, in which case best practice may be to set unique keys such as `[parameters('effectWhitelistResources')]` instead of `[parameters('effect')]` in cases that require different set values.
+> :warning: **Warning:** If any two `member_definition_ids` contain the same parameters then they will be `merged()` by this module, in most cases this is beneficial but if unique values are required it may be best practice to set unique keys such as `[parameters('whitelist_resources_effect')]` instead of `[parameters('effect')]`.
 
 > :information_source: **Note:** It appears the current `azurerm` provider can only define the initiative at a management group level (or possibly at the default subscription level) - [See GitHub Issue](https://github.com/terraform-providers/terraform-provider-azurerm/issues/5042)
 

@@ -52,8 +52,8 @@ module org_mg_configure_asc_initiative {
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
     eventHubDetails       = local.dummy_resource_ids.azurerm_eventhub_namespace_authorization_rule
-    securityContactsEmail = "cisocloud@aviva.com"
-    securityContactsPhone = "07700000770"
+    securityContactsEmail = "admin@cloud.com"
+    securityContactsPhone = "44897654987"
   }
 }
 
