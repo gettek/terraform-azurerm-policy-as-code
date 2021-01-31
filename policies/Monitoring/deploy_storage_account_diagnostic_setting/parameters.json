@@ -62,17 +62,5 @@
             "displayName": "Enable metrics",
             "description": "Whether to enable metrics stream to the Log Analytics workspace - True or False"
         }
-    },
-    "logsEnabled": {
-        "type": "String",
-        "defaultValue": "True",
-        "allowedValues": [
-            "True",
-            "False"
-        ],
-        "metadata": {
-            "displayName": "Enable logs",
-            "description": "Whether to enable logs stream to the Log Analytics workspace - True or False"
-        }
     }
 }

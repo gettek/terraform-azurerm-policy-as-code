@@ -11,25 +11,12 @@
             "description": "Enable or disable the execution of the policy"
         }
     },
-    "location": {
-        "type": "String",
-        "defaultValue": "uksouth",
-        "allowedValues": [
-            "uksouth",
-            "ukwest"
-        ],
-        "metadata": {
-            "displayName": "Deployment Location",
-            "description": "The system assigned managed identity will use this location to perform resource deployments",
-            "strongType": "location"
-        }
-    },
     "workspaceId": {
         "type": "String",
+        "defaultValue": "",
         "metadata": {
             "displayName": "Log Analytics workspace",
-            "description": "Specify the Log Analytics workspace the agent should be connected to. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID.",
-            "assignPermissions": true
+            "description": "Specify the Log Analytics workspace the agent should be connected to. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID."
         }
     },
     "listOfImageIdToInclude_windows": {

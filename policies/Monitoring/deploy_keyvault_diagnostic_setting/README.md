@@ -83,6 +83,6 @@ resource azurerm_role_definition remediate_diagnostic_settings {
 resource azurerm_role_assignment logging_policy_remediates_diagnostic_settings {
   scope              = data.azurerm_management_group.logging.id
   role_definition_id = azurerm_role_definition.remediate_diagnostic_settings.role_definition_resource_id
-  principal_id       = module.logging_mg_deploy_diagnostic_setting.identity.*.principal_id[0]
+  principal_id       = module.logging_mg_deploy_diagnostic_setting.identity_id
 }
 ```

@@ -11,15 +11,25 @@
             "description": "Enable or disable the execution of the policy"
         }
     },
-    "workspaceId": {
+    "diagnosticsStorageAccountName": {
         "type": "String",
         "defaultValue": "",
         "metadata": {
-            "displayName": "Log Analytics workspace",
-            "description": "Specify the Log Analytics workspace the agent should be connected to. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID."
+            "displayName": "Diagnostics Storage Account Name",
+            "description": "The Storage Account Id to send diagnostic logs",
+            "assignPermissions": true
         }
     },
-    "listOfImageIdToInclude_windows": {
+    "diagnosticsStorageAccountSas": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+            "displayName": "Storage Account SAS Token",
+            "description": "The Storage Account SAS Token to send diagnostic logs",
+            "assignPermissions": true
+        }
+    },
+    "listOfImageIdToInclude_linux": {
         "type": "Array",
         "defaultValue": [],
         "metadata": {

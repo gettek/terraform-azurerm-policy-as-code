@@ -1,0 +1,22 @@
+{
+    "effect": {
+        "type": "String",
+        "defaultValue": "DeployIfNotExists",
+        "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+        ],
+        "metadata": {
+            "displayName": "Effect",
+            "description": "Enable or disable the execution of the policy"
+        }
+    },
+    "pricingTier": {
+        "type": "String",
+        "defaultValue": "standard",
+        "metadata": {
+            "displayName": "Pricing Tier",
+            "description": "ASC Pricing Tier"
+        }
+    }
+}

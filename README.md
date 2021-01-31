@@ -9,6 +9,11 @@
 </p>
 <!-- markdownlint-enable MD033 -->
 
+[![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/)
+
+
+add build badge: https://travis-ci.org/github/Azure/terraform-azurerm-compute
+
 - [Repo Folder Structure](#repo-folder-structure)
 - [Policy Definitions Module](#policy-definitions-module)
 - [Policy Initiative (Set Definitions) Module](#policy-initiative-set-definitions-module)
@@ -20,7 +25,6 @@
   - [Sourcing Versions of Custom Policies](#sourcing-versions-of-custom-policies)
 - [Definition and Assignment Scopes](#definition-and-assignment-scopes)
 - [Limitations](#limitations)
-- [Known Provider Issues](#known-provider-issues)
 - [Useful Resources](#useful-resources)
 
 ## Repo Folder Structure
@@ -65,7 +69,7 @@
 ```hcl
 module whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/definition"
-  version               = "1.0.0"
+  version               = "1.1.0"
   policy_name           = "whitelist_regions"
   display_name          = "Allow resources only in whitelisted regions"
   policy_category       = "General"
@@ -88,7 +92,7 @@ Policy Initiatives are used to combine sets of definitions in order to simplify 
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "1.0.0"
+  version                 = "1.1.0"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -111,7 +115,7 @@ module platform_baseline_initiative {
 ```hcl
 module org_mg_whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version               = "1.0.0"
+  version               = "1.1.0"
   definition            = module.whitelist_regions.definition
   assignment_scope      = local.default_assignment_scope
   assignment_effect     = "Deny"
@@ -173,29 +177,26 @@ resource azurerm_policy_definition allowed_resource_types {
 
 ### Sourcing Versions of Builtin Policies
 
-Currently there is no obvious way of targeting specific [versions of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies) as this is stored as metadata in the form of a single object such as the output below and not a collection of historical tags.
+Currently there is no obvious way of targeting specific [versions of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies) as this is stored as `metadata` in the form of a single object such as the output below and not a collection of historical tags.
 
 ```hcl
 output builtin_policy_metadata {
   value = data.azurerm_policy_definition.builtin_policy.metadata
 }
-
------------------------------------------------------------------
-Outputs:
-
-builtin_policy_metadata = {"category":"Tags","version":"1.0.0"}
 ```
+
+Output: `builtin_policy_metadata = {"category":"Tags","version":"2.0.0"}`
 
 ### Sourcing Versions of Custom Policies
 
 To source a policy module (or any module in fact) that lives in a directory of the same repo use the format below
 
 ```hcl
-module from_mono_repo
+module from_mono_repo {
   source = "git::ssh://.../<org>/<repo>.git//<my_module_dir>"
   ...
 }
-module from_mono_repo_with_tags
+module from_mono_repo_with_tags {
    source = "git::ssh://..../<org>/<repo>.git//<my_module_dir>?ref=1.2.3"
    ...
 }
@@ -233,10 +234,6 @@ module from_mono_repo_with_tags
 | Remediation task                 | Resources                          | 500           |
 
 
-## Known Provider Issues
-
-- In some cases [Resource Targetting](https://www.terraform.io/docs/commands/apply.html#target-resource) may be required before calling **def_assignment** and **set_assignment** modules in the same deployment. This can be overcome by introducing datasources within the resource graph that reference Policy definitions instead of direct module outputs.
-
 ## Useful Resources
 
 - [Microsoft Docs: Azure Policy Home](https://docs.microsoft.com/en-us/azure/governance/policy/)
@@ -253,4 +250,3 @@ module from_mono_repo_with_tags
 - [Terraform Provider: azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
 - [Terraform Provider: azurerm_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_assignment)
 - [Terraform Provider: azurerm_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation)
-- [Terraform Registry Module: policy-as-code](https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/latest)

@@ -1,7 +1,7 @@
 {
     "if": {
         "field": "type",
-        "like": "Microsoft.Storage/storageAccounts*"
+        "equals": "Microsoft.Storage/storageAccounts"
     },
     "then": {
         "effect": "[parameters('effect')]",
@@ -48,9 +48,6 @@
                             "metricsEnabled": {
                                 "type": "String"
                             },
-                            "logsEnabled": {
-                                "type": "String"
-                            },
                             "profileName": {
                                 "type": "String"
                             }
@@ -70,7 +67,7 @@
                                     "eventHubName": "[parameters('eventHubName')]",
                                     "metrics": [
                                         {
-                                            "category": "Transaction",
+                                            "category": "AllMetrics",
                                             "enabled": "[parameters('metricsEnabled')]",
                                             "timeGrain": null
                                         }
@@ -98,9 +95,6 @@
                         },
                         "metricsEnabled": {
                             "value": "[parameters('metricsEnabled')]"
-                        },
-                        "logsEnabled": {
-                            "value": "[parameters('logsEnabled')]"
                         },
                         "profileName": {
                             "value": "[parameters('profileName')]"

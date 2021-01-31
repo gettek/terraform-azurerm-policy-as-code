@@ -1,0 +1,69 @@
+{
+    "if": {
+        "field": "type",
+        "equals": "Microsoft.Resources/subscriptions"
+    },
+    "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+            "type": "Microsoft.Security/securityContacts",
+            "deploymentScope": "subscription",
+            "existenceScope": "subscription",
+            "roleDefinitionIds": [
+                "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ],
+            "existenceCondition": {
+                "anyOf": [
+                    {
+                        "field": "Microsoft.Security/securityContacts/email",
+                        "equals": "[parameters('securityContactsEmail')]"
+                    },
+                    {
+                        "field": "Microsoft.Security/securityContacts/phone",
+                        "equals": "[parameters('securityContactsPhone')]"
+                    }
+                ]
+            },
+            "deployment": {
+                "location": "uksouth",
+                "properties": {
+                    "mode": "incremental",
+                    "parameters": {
+                        "securityContactsEmail": {
+                            "value": "[parameters('securityContactsEmail')]"
+                        },
+                        "securityContactsPhone": {
+                            "value": "[parameters('securityContactsPhone')]"
+                        }
+                    },
+                    "template": {
+                        "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "parameters": {
+                            "securityContactsEmail": {
+                                "type": "String"
+                            },
+                            "securityContactsPhone": {
+                                "type": "String"
+                            }
+                        },
+                        "variables": {},
+                        "resources": [
+                            {
+                                "type": "Microsoft.Security/securityContacts",
+                                "name": "default",
+                                "apiVersion": "2017-08-01-preview",
+                                "properties": {
+                                    "email": "[parameters('securityContactsEmail')]",
+                                    "phone": "[parameters('securityContactsPhone')]",
+                                    "alertNotifications": "On",
+                                    "alertsToAdmins": "On"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
