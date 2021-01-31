@@ -1,0 +1,56 @@
+{
+    "effect": {
+        "type": "String",
+        "defaultValue": "DeployIfNotExists",
+        "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+        ],
+        "metadata": {
+            "displayName": "Effect",
+            "description": "Enable or disable the execution of the policy"
+        }
+    },
+    "diagnosticsStorageAccountName": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+            "displayName": "Diagnostics Storage Account Name",
+            "description": "The Storage Account Id to send diagnostic logs",
+            "assignPermissions": true
+        }
+    },
+    "diagnosticsStorageAccountSas": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+            "displayName": "Storage Account SAS Token",
+            "description": "The Storage Account SAS Token to send diagnostic logs",
+            "assignPermissions": true
+        }
+    },
+    "eventHubUrl": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+            "displayName": "EventHub Url",
+            "description": "The EventHub Url to stream diagnostic logs to. e.g. https://myeventhub-ns.servicebus.windows.net/diageventhub"
+        }
+    },
+    "eventHubSASToken": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+            "displayName": "Event Hub Base64 Encoded Shared Access Token",
+            "description": "The Event Hub Shared Access Token"
+        }
+    },
+    "listOfImageIdToInclude_linux": {
+        "type": "Array",
+        "defaultValue": [],
+        "metadata": {
+            "displayName": "Optional: List of VM images that have supported Windows OS to add to scope",
+            "description": "Example value: '/subscriptions/<subscriptionId>/resourceGroups/YourResourceGroup/providers/Microsoft.Compute/images/ContosoStdImage'"
+        }
+    }
+}

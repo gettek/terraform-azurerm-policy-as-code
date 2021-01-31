@@ -6,6 +6,13 @@ resource azurerm_policy_set_definition cis_benchmark {
 
   management_group_name = var.management_group_name
 
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [
+      metadata
+    ]
+  }
+
   parameters = local.parameters
   metadata   = local.metadata
 

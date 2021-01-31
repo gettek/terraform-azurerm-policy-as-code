@@ -1,7 +1,6 @@
 ##################
 # General
 ##################
-
 module whitelist_resources {
   source                = "..//modules/definition"
   policy_name           = "whitelist_resources"
@@ -18,11 +17,9 @@ module whitelist_regions {
   management_group_name = azurerm_management_group.org.name
 }
 
-
 ##################
 # Monitoring
 ##################
-
 module deploy_subscription_diagnostic_setting {
   source                = "..//modules/definition"
   policy_name           = "deploy_subscription_diagnostic_setting"
@@ -67,11 +64,9 @@ module audit_log_analytics_workspace_retention {
   management_group_name = azurerm_management_group.org.name
 }
 
-
 ##################
 # Network
 ##################
-
 module deny_nic_public_ip_on_specific_subnets {
   source                = "..//modules/definition"
   policy_name           = "deny_nic_public_ip_on_specific_subnets"
@@ -120,24 +115,32 @@ module create_nsg_rule_append {
   management_group_name = azurerm_management_group.org.name
 }
 
-
 ##################
 # Security Center
 ##################
+locals {
+  security_center_policies = {
+    auto_enroll_subscriptions                              = "Enable Azure Security Center on Subcriptions"
+    auto_provision_log_analytics_agent_custom_workspace    = "Enable Security Center's auto provisioning of the Log Analytics agent on your subscriptions with custom workspace"
+    auto_set_contact_details                               = "Automatically set the security contact email address and phone number should they be blank on the subscription"
+    export_asc_alerts_and_recommendations_to_eventhub      = "Export to Event Hub for Azure Security Center alerts and recommendations"
+    export_asc_alerts_and_recommendations_to_log_analytics = "Export to Log Analytics Workspace for Azure Security Center alerts and recommendations"
+  }
+}
 
-module export_asc_alerts_and_recommendations_to_eventhub_deploy {
+module configure_asc {
   source                = "..//modules/definition"
-  policy_name           = "export_asc_alerts_and_recommendations_to_eventhub_deploy"
-  display_name          = "Export Azure Security Center Alerts and Recommendations to EventHub"
+  for_each              = local.security_center_policies
+  policy_name           = each.key
+  display_name          = title(replace(each.key, "_", " "))
+  policy_description    = each.value
   policy_category       = "Security Center"
   management_group_name = azurerm_management_group.org.name
 }
 
-
 ##################
 # Storage
 ##################
-
 module storage_enforce_https {
   source                = "..//modules/definition"
   policy_name           = "storage_enforce_https"
@@ -156,11 +159,9 @@ module storage_enforce_minimum_tls1_2 {
   management_group_name = azurerm_management_group.org.name
 }
 
-
 ##################
 # Tags
 ##################
-
 module require_resource_group_tags {
   source                = "..//modules/definition"
   policy_name           = "require_resource_group_tags"

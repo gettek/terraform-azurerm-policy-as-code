@@ -1,0 +1,285 @@
+{
+    "if": {
+        "field": "type",
+        "equals": "Microsoft.Resources/subscriptions"
+    },
+    "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+            "type": "Microsoft.Security/automations",
+            "name": "exportToEventHub",
+            "existenceScope": "resourcegroup",
+            "ResourceGroupName": "[parameters('resourceGroupName')]",
+            "deploymentScope": "subscription",
+            "roleDefinitionIds": [
+                "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ],
+            "existenceCondition": {
+                "field": "Microsoft.Security/automations/actions[*].actionType",
+                "equals": "EventHub"
+            },
+            "deployment": {
+                "location": "uksouth",
+                "properties": {
+                    "mode": "incremental",
+                    "template": {
+                        "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "parameters": {
+                            "resourceGroupName": {
+                                "type": "string"
+                            },
+                            "resourceGroupLocation": {
+                                "type": "string"
+                            },
+                            "exportedDataTypes": {
+                                "type": "array"
+                            },
+                            "isSecurityFindingsEnabled": {
+                                "type": "bool"
+                            },
+                            "recommendationNames": {
+                                "type": "array"
+                            },
+                            "secureScoreControlsNames": {
+                                "type": "array"
+                            },
+                            "recommendationSeverities": {
+                                "type": "array"
+                            },
+                            "alertSeverities": {
+                                "type": "array"
+                            },
+                            "eventHubDetails": {
+                                "type": "string"
+                            },
+                            "guidValue": {
+                                "type": "string",
+                                "defaultValue": "[newGuid()]"
+                            }
+                        },
+                        "variables": {
+                            "scopeDescription": "scope for subscription {0}",
+                            "subAssessmentRuleExpectedValue": "/assessments/{0}/",
+                            "recommendationNamesLength": "[length(parameters('recommendationNames'))]",
+                            "secureScoreControlsNamesLength": "[length(parameters('secureScoreControlsNames'))]",
+                            "secureScoreControlsLengthIfEmpty": "[if(equals(variables('secureScoreControlsNamesLength'), 0), 1, variables('secureScoreControlsNamesLength'))]",
+                            "recommendationSeveritiesLength": "[length(parameters('recommendationSeverities'))]",
+                            "alertSeveritiesLength": "[length(parameters('alertSeverities'))]",
+                            "recommendationNamesLengthIfEmpty": "[if(equals(variables('recommendationNamesLength'), 0), 1, variables('recommendationNamesLength'))]",
+                            "recommendationSeveritiesLengthIfEmpty": "[if(equals(variables('recommendationSeveritiesLength'), 0), 1, variables('recommendationSeveritiesLength'))]",
+                            "alertSeveritiesLengthIfEmpty": "[if(equals(variables('alertSeveritiesLength'), 0), 1, variables('alertSeveritiesLength'))]",
+                            "totalRuleCombinationsForOneRecommendationName": "[variables('recommendationSeveritiesLengthIfEmpty')]",
+                            "totalRuleCombinationsForOneRecommendationSeverity": 1,
+                            "exportedDataTypesLength": "[length(parameters('exportedDataTypes'))]",
+                            "exportedDataTypesLengthIfEmpty": "[if(equals(variables('exportedDataTypesLength'), 0), 1, variables('exportedDataTypesLength'))]",
+                            "SeperatedEventHubDetails": "[split(parameters('eventHubDetails'),'/')]",
+                            "dataTypeMap": {
+                                "Security recommendations": "Assessments",
+                                "Security alerts": "Alerts",
+                                "Overall secure score": "SecureScores",
+                                "Secure score controls": "SecureScoreControls"
+                            },
+                            "alertSeverityMap": {
+                                "High": "high",
+                                "Medium": "medium",
+                                "Low": "low"
+                            },
+                            "ruleSetsForAssessmentsObj": {
+                                "copy": [
+                                    {
+                                        "name": "ruleSetsForAssessmentsArr",
+                                        "count": "[mul(variables('recommendationNamesLengthIfEmpty'),variables('recommendationSeveritiesLengthIfEmpty'))]",
+                                        "input": {
+                                            "rules": [
+                                                {
+                                                    "propertyJPath": "[if(equals(variables('recommendationNamesLength'),0),'type','name')]",
+                                                    "propertyType": "string",
+                                                    "expectedValue": "[if(equals(variables('recommendationNamesLength'),0),'Microsoft.Security/assessments',parameters('recommendationNames')[mod(div(copyIndex('ruleSetsForAssessmentsArr'),variables('totalRuleCombinationsForOneRecommendationName')),variables('recommendationNamesLength'))])]",
+                                                    "operator": "Contains"
+                                                },
+                                                {
+                                                    "propertyJPath": "properties.metadata.severity",
+                                                    "propertyType": "string",
+                                                    "expectedValue": "[parameters('recommendationSeverities')[mod(div(copyIndex('ruleSetsForAssessmentsArr'),variables('totalRuleCombinationsForOneRecommendationSeverity')),variables('recommendationSeveritiesLength'))]]",
+                                                    "operator": "Equals"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "customRuleSetsForSubAssessmentsObj": {
+                                "copy": [
+                                    {
+                                        "name": "ruleSetsForSubAssessmentsArr",
+                                        "count": "[variables('recommendationNamesLengthIfEmpty')]",
+                                        "input": {
+                                            "rules": [
+                                                {
+                                                    "propertyJPath": "id",
+                                                    "propertyType": "string",
+                                                    "expectedValue": "[if(equals(variables('recommendationNamesLength'), 0), json('null'), replace(variables('subAssessmentRuleExpectedValue'),'{0}', parameters('recommendationNames')[copyIndex('ruleSetsForSubAssessmentsArr')]))]",
+                                                    "operator": "Contains"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "ruleSetsForAlertsObj": {
+                                "copy": [
+                                    {
+                                        "name": "ruleSetsForAlertsArr",
+                                        "count": "[variables('alertSeveritiesLengthIfEmpty')]",
+                                        "input": {
+                                            "rules": [
+                                                {
+                                                    "propertyJPath": "Severity",
+                                                    "propertyType": "string",
+                                                    "expectedValue": "[variables('alertSeverityMap')[parameters('alertSeverities')[mod(copyIndex('ruleSetsForAlertsArr'),variables('alertSeveritiesLengthIfEmpty'))]]]",
+                                                    "operator": "Equals"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "customRuleSetsForSecureScoreControlsObj": {
+                                "copy": [
+                                    {
+                                        "name": "ruleSetsForSecureScoreControlsArr",
+                                        "count": "[variables('secureScoreControlsLengthIfEmpty')]",
+                                        "input": {
+                                            "rules": [
+                                                {
+                                                    "propertyJPath": "name",
+                                                    "propertyType": "string",
+                                                    "expectedValue": "[if(equals(variables('secureScoreControlsNamesLength'), 0), json('null'), parameters('secureScoreControlsNames')[copyIndex('ruleSetsForSecureScoreControlsArr')])]",
+                                                    "operator": "Equals"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "ruleSetsForSecureScoreControlsObj": "[if(equals(variables('secureScoreControlsNamesLength'), 0), json('null'), variables('customRuleSetsForSecureScoreControlsObj').ruleSetsForSecureScoreControlsArr)]",
+                            "ruleSetsForSubAssessmentsObj": "[if(equals(variables('recommendationNamesLength'), 0), json('null'), variables('customRuleSetsForSubAssessmentsObj').ruleSetsForSubAssessmentsArr)]",
+                            "subAssessmentSource": [
+                                {
+                                    "eventSource": "SubAssessments",
+                                    "ruleSets": "[variables('ruleSetsForSubAssessmentsObj')]"
+                                }
+                            ],
+                            "ruleSetsMap": {
+                                "Security recommendations": "[variables('ruleSetsForAssessmentsObj').ruleSetsForAssessmentsArr]",
+                                "Security alerts": "[variables('ruleSetsForAlertsObj').ruleSetsForAlertsArr]",
+                                "Overall secure score": null,
+                                "Secure score controls": "[variables('ruleSetsForSecureScoreControlsObj')]"
+                            },
+                            "sourcesWithoutSubAssessments": {
+                                "copy": [
+                                    {
+                                        "name": "sources",
+                                        "count": "[variables('exportedDataTypesLengthIfEmpty')]",
+                                        "input": {
+                                            "eventSource": "[variables('dataTypeMap')[parameters('exportedDataTypes')[copyIndex('sources')]]]",
+                                            "ruleSets": "[variables('ruleSetsMap')[parameters('exportedDataTypes')[copyIndex('sources')]]]"
+                                        }
+                                    }
+                                ]
+                            },
+                            "sourcesWithSubAssessments": "[concat(variables('subAssessmentSource'),variables('sourcesWithoutSubAssessments').sources)]",
+                            "sources": "[if(equals(parameters('isSecurityFindingsEnabled'),bool('true')),variables('sourcesWithSubAssessments'),variables('sourcesWithoutSubAssessments').sources)]"
+                        },
+                        "resources": [
+                            {
+                                "name": "[parameters('resourceGroupName')]",
+                                "type": "Microsoft.Resources/resourceGroups",
+                                "apiVersion": "2019-10-01",
+                                "location": "[parameters('resourceGroupLocation')]",
+                                "tags": {},
+                                "properties": {}
+                            },
+                            {
+                                "type": "Microsoft.Resources/deployments",
+                                "apiVersion": "2019-10-01",
+                                "name": "[concat('exportToEventHub_', parameters('guidValue'))]",
+                                "resourceGroup": "[parameters('resourceGroupName')]",
+                                "dependsOn": [
+                                    "[resourceId('Microsoft.Resources/resourceGroups/', parameters('resourceGroupName'))]"
+                                ],
+                                "properties": {
+                                    "mode": "Incremental",
+                                    "template": {
+                                        "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                                        "contentVersion": "1.0.0.0",
+                                        "parameters": {},
+                                        "variables": {},
+                                        "resources": [
+                                            {
+                                                "tags": {},
+                                                "apiVersion": "2019-01-01-preview",
+                                                "location": "[parameters('resourceGroupLocation')]",
+                                                "name": "exportToEventHub",
+                                                "type": "Microsoft.Security/automations",
+                                                "dependsOn": [],
+                                                "properties": {
+                                                    "description": "Export Azure Security Center data to Event Hub via policy",
+                                                    "isEnabled": true,
+                                                    "scopes": [
+                                                        {
+                                                            "description": "[replace(variables('scopeDescription'),'{0}', subscription().subscriptionId)]",
+                                                            "scopePath": "[subscription().id]"
+                                                        }
+                                                    ],
+                                                    "sources": "[variables('sources')]",
+                                                    "actions": [
+                                                        {
+                                                            "actionType": "EventHub",
+                                                            "eventHubResourceId": "[concat('/', variables('SeperatedEventHubDetails')[1], '/', variables('SeperatedEventHubDetails')[2], '/', variables('SeperatedEventHubDetails')[3], '/', variables('SeperatedEventHubDetails')[4], '/', variables('SeperatedEventHubDetails')[5], '/', variables('SeperatedEventHubDetails')[6], '/', variables('SeperatedEventHubDetails')[7], '/', variables('SeperatedEventHubDetails')[8], '/', variables('SeperatedEventHubDetails')[9], '/', variables('SeperatedEventHubDetails')[10])]",
+                                                            "connectionString": "[listkeys(parameters('eventHubDetails'),'2017-04-01').primaryConnectionString]"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "parameters": {
+                        "resourceGroupName": {
+                            "value": "[parameters('resourceGroupName')]"
+                        },
+                        "resourceGroupLocation": {
+                            "value": "[parameters('resourceGroupLocation')]"
+                        },
+                        "exportedDataTypes": {
+                            "value": "[parameters('exportedDataTypes')]"
+                        },
+                        "recommendationNames": {
+                            "value": "[parameters('recommendationNames')]"
+                        },
+                        "isSecurityFindingsEnabled": {
+                            "value": "[parameters('isSecurityFindingsEnabled')]"
+                        },
+                        "secureScoreControlsNames": {
+                            "value": "[parameters('secureScoreControlsNames')]"
+                        },
+                        "recommendationSeverities": {
+                            "value": "[parameters('recommendationSeverities')]"
+                        },
+                        "alertSeverities": {
+                            "value": "[parameters('alertSeverities')]"
+                        },
+                        "eventHubDetails": {
+                            "value": "[parameters('eventHubDetails')]"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

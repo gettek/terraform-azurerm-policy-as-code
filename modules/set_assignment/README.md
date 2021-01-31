@@ -1,5 +1,7 @@
 # POLICY INITIATIVE ASSIGNMENT MODULE
 
+
+
 ## Requirements
 
 No requirements.
@@ -23,11 +25,12 @@ No requirements.
 | assignment\_parameters | The policy assignment parameters. Changing this forces a new resource to be created | `any` | `null` | no |
 | assignment\_scope | The scope at which the policy initiative will be assigned. Must be full resource IDs. Changing this forces a new resource to be created | `string` | n/a | yes |
 | initiative | Policy Initiative resource node | `any` | n/a | yes |
-| skip\_remediation | Should the module skip creation of a remediation task for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
+| skip\_remediation | Should the module skip creation of a remediation task for policies that Append, DeployIfNotExists and Modify | `bool` | `false` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
 | id | The Policy Assignment Id |
-| identity | The Managed Identity block containing Principal Id & Tenant Id of this Policy Assignment if type is SystemAssigned, referenced with \*.principal\_id[0] or \*.tenant\_id[0] |
+| identity\_id | The Managed Identity block containing Principal Id & Tenant Id of this Policy Assignment if type is SystemAssigned |
+

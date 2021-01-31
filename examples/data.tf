@@ -7,3 +7,8 @@ locals {
     azurerm_eventhub_namespace_authorization_rule = "/uri/event-hub-namespace-diagnostics/RootManageSharedAccessKey"
   }
 }
+
+# Security Admin Built-In Role Definition
+data azurerm_role_definition security_admin {
+  name = "Security Admin"
+}

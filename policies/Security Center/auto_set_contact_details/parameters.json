@@ -1,0 +1,30 @@
+{
+    "effect": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Effect",
+            "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+    },
+    "securityContactsEmail": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+            "displayName": "The email of the Security Center Contact.",
+            "description": "The email of the Security Center Contact."
+        }
+    },
+    "securityContactsPhone": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+            "displayName": "The phone number of the Security Center Contact.",
+            "description": "The phone number of the Security Center Contact."
+        }
+    }
+}

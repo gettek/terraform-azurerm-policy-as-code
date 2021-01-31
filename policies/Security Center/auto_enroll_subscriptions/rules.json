@@ -1,0 +1,186 @@
+{
+  "if": {
+    "field": "type",
+    "equals": "Microsoft.Resources/subscriptions"
+  },
+  "then": {
+    "effect": "[parameters('effect')]",
+    "details": {
+      "type": "Microsoft.Security/pricings",
+      "name": "VirtualMachines",
+      "deploymentScope": "subscription",
+      "existenceScope": "subscription",
+      "roleDefinitionIds": [
+        "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+      ],
+      "existenceCondition": {
+        "anyof": [
+          {
+              "field": "microsoft.security/pricings/pricingTier",
+              "equals": "[parameters('pricingTier')]"
+          }
+        ]
+      },
+      "deployment": {
+        "location": "uksouth",
+        "properties": {
+          "mode": "Incremental",
+          "parameters": {
+            "pricingTier": {
+                "value": "[parameters('pricingTier')]"
+            }
+          },
+          "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+              "pricingTier": {
+                  "type": "String"
+              }
+            },
+            "variables": {},
+            "resources": [
+              {
+                "type": "Microsoft.Security/policies",
+                "apiVersion": "2015-06-01-preview",
+                "name": "default",
+                "properties": {
+                  "policyLevel": "Subscription",
+                  "name": "default",
+                  "unique": "Off",
+                  "logCollection": "Off",
+                  "recommendations": {
+                    "patch": "On",
+                    "baseline": "On",
+                    "antimalware": "On",
+                    "diskEncryption": "On",
+                    "acls": "On",
+                    "nsgs": "On",
+                    "waf": "On",
+                    "sqlAuditing": "On",
+                    "sqlTde": "On",
+                    "ngfw": "On",
+                    "vulnerabilityAssessment": "On",
+                    "storageEncryption": "On",
+                    "jitNetworkAccess": "On"
+                  },
+                  "pricingConfiguration": {
+                    "selectedPricingTier": "[parameters('pricingTier')]"
+                  }
+                }
+              },
+              {
+                "type": "Microsoft.Security/pricings",
+                "apiVersion": "2018-06-01",
+                "name": "VirtualMachines",
+                "properties": {
+                  "pricingTier": "[parameters('pricingTier')]"
+                }
+              },
+              {
+                "type": "Microsoft.Security/pricings",
+                "apiVersion": "2018-06-01",
+                "name": "StorageAccounts",
+                "dependsOn": [
+                  "[concat('Microsoft.Security/pricings/VirtualMachines')]"
+                ],
+                "properties": {
+                  "pricingTier": "[parameters('pricingTier')]"
+                }
+              },
+              {
+                "type": "Microsoft.Security/pricings",
+                "apiVersion": "2018-06-01",
+                "name": "AppServices",
+                "dependsOn": [
+                  "[concat('Microsoft.Security/pricings/StorageAccounts')]"
+                ],
+                "properties": {
+                  "pricingTier": "[parameters('pricingTier')]"
+                }
+              },
+              {
+                "type": "Microsoft.Security/pricings",
+                "apiVersion": "2018-06-01",
+                "name": "SqlServers",
+                "dependsOn": [
+                  "[concat('Microsoft.Security/pricings/AppServices')]"
+                ],
+                "properties": {
+                  "pricingTier": "[parameters('pricingTier')]"
+                }
+              },
+              {
+                "type": "Microsoft.Security/pricings",
+                "apiVersion": "2018-06-01",
+                "name": "SqlServerVirtualMachines",
+                "dependsOn": [
+                  "[concat('Microsoft.Security/pricings/SqlServers')]"
+                ],
+                "properties": {
+                  "pricingTier": "[parameters('pricingTier')]"
+                }
+              },
+              {
+                "type": "Microsoft.Security/pricings",
+                "apiVersion": "2018-06-01",
+                "name": "KeyVaults",
+                "dependsOn": [
+                  "[concat('Microsoft.Security/pricings/SqlServerVirtualMachines')]"
+                ],
+                "properties": {
+                  "pricingTier": "[parameters('pricingTier')]"
+                }
+              },
+              {
+                "type": "Microsoft.Security/pricings",
+                "apiVersion": "2018-06-01",
+                "name": "KubernetesService",
+                "dependsOn": [
+                  "[concat('Microsoft.Security/pricings/KeyVaults')]"
+                ],
+                "properties": {
+                  "pricingTier": "[parameters('pricingTier')]"
+                }
+              },
+              {
+                "type": "Microsoft.Security/pricings",
+                "apiVersion": "2018-06-01",
+                "name": "ContainerRegistry",
+                "dependsOn": [
+                  "[concat('Microsoft.Security/pricings/KubernetesService')]"
+                ],
+                "properties": {
+                  "pricingTier": "[parameters('pricingTier')]"
+                }
+              },
+              {
+                "type": "Microsoft.Security/pricings",
+                "apiVersion": "2018-06-01",
+                "name": "Dns",
+                "dependsOn": [
+                  "[concat('Microsoft.Security/pricings/ContainerRegistry')]"
+                ],
+                "properties": {
+                  "pricingTier": "[parameters('pricingTier')]"
+                }
+              },
+              {
+                "type": "Microsoft.Security/pricings",
+                "apiVersion": "2018-06-01",
+                "name": "Arm",
+                "dependsOn": [
+                  "[concat('Microsoft.Security/pricings/Dns')]"
+                ],
+                "properties": {
+                  "pricingTier": "[parameters('pricingTier')]"
+                }
+              }
+            ],
+            "outputs": {}
+          }
+        }
+      }
+    }
+  }
+}

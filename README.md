@@ -1,11 +1,15 @@
 <!-- markdownlint-configure-file { "MD004": { "style": "consistent" } } -->
 <!-- markdownlint-disable MD033 -->
 <p align="center">
-    <a href="https://docs.microsoft.com/en-us/azure/governance/policy/">
-        <img src="img/logo.svg" width="600" alt="Terraform-Azure-Policy-as-Code">
-    </a>
-    <br>
-    <h1 align="center">Azure Policy as Code with Terraform</h1>
+  <a href="https://docs.microsoft.com/en-us/azure/governance/policy/">
+      <img src="img/logo.svg" width="600" alt="Terraform-Azure-Policy-as-Code">
+  </a>
+  <br>
+  <h1 align="center">Azure Policy as Code with Terraform</h1>
+  <p align="center">
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-orange.svg" alt="MIT License"></a>
+    <a href="https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/"><img src="https://img.shields.io/badge/terraform-registry-blue.svg" alt="TF Registry"></a>
+  </p>
 </p>
 <!-- markdownlint-enable MD033 -->
 
@@ -20,7 +24,6 @@
   - [Sourcing Versions of Custom Policies](#sourcing-versions-of-custom-policies)
 - [Definition and Assignment Scopes](#definition-and-assignment-scopes)
 - [Limitations](#limitations)
-- [Known Provider Issues](#known-provider-issues)
 - [Useful Resources](#useful-resources)
 
 ## Repo Folder Structure
@@ -65,7 +68,7 @@
 ```hcl
 module whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/definition"
-  version               = "1.0.0"
+  version               = "1.1.0"
   policy_name           = "whitelist_regions"
   display_name          = "Allow resources only in whitelisted regions"
   policy_category       = "General"
@@ -75,7 +78,7 @@ module whitelist_regions {
 
 > :bulb: **Note:** `policy_name` should match the subfolder name containing the **rules** and **parameters** JSON files. The module assumes that `policy_category` is also the category folder name which is a child of the **policies** folder. Template files can also be parsed in at runtime, see the [definition module readme](modules/definition/README.md) for more information on acceptable inputs.
 
-> :bulb: **Note:** Specify the `policy_mode` variable if you wish to [change the mode](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#mode) of a definition from the default `All` to `Indexed`.
+> :bulb: **Note:** Specify the `policy_mode` variable if you wish to [change the mode](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#mode) of a definition from the module default `All` to `Indexed`.
 
 > :information_source: [Microsoft Docs: Azure Policy definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
 > 
@@ -88,7 +91,7 @@ Policy Initiatives are used to combine sets of definitions in order to simplify 
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "1.0.0"
+  version                 = "1.1.0"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -102,7 +105,7 @@ module platform_baseline_initiative {
 }
 ```
 
-> :warning: **Warning:** If any two `member_definition_ids` contain the same parameters then they will be `merged()` by this module, in which case best practice may be to set unique keys such as `[parameters('effectWhitelistResources')]` instead of `[parameters('effect')]` in cases that require different set values.
+> :warning: **Warning:** If any two `member_definition_ids` contain the same parameters then they will be `merged()` by this module, in most cases this is beneficial but if unique values are required it may be best practice to set unique keys such as `[parameters('whitelist_resources_effect')]` instead of `[parameters('effect')]`.
 
 > :information_source: **Note:** It appears the current `azurerm` provider can only define the initiative at a management group level (or possibly at the default subscription level) - [See GitHub Issue](https://github.com/terraform-providers/terraform-provider-azurerm/issues/5042)
 
@@ -111,7 +114,7 @@ module platform_baseline_initiative {
 ```hcl
 module org_mg_whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version               = "1.0.0"
+  version               = "1.1.0"
   definition            = module.whitelist_regions.definition
   assignment_scope      = local.default_assignment_scope
   assignment_effect     = "Deny"
@@ -173,29 +176,27 @@ resource azurerm_policy_definition allowed_resource_types {
 
 ### Sourcing Versions of Builtin Policies
 
-Currently there is no obvious way of targeting specific [versions of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies) as this is stored as metadata in the form of a single object such as the output below and not a collection of historical tags.
+Currently there is no obvious way of targeting specific [versions of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies) as this is stored as `metadata` in the form of a single object such as the output below and not a collection of historical tags.
 
 ```hcl
 output builtin_policy_metadata {
   value = data.azurerm_policy_definition.builtin_policy.metadata
 }
-
------------------------------------------------------------------
-Outputs:
-
-builtin_policy_metadata = {"category":"Tags","version":"1.0.0"}
 ```
+`Output: builtin_policy_metadata = {"category":"Tags","version":"2.0.0"}`
+
 
 ### Sourcing Versions of Custom Policies
 
 To source a policy module (or any module in fact) that lives in a directory of the same repo use the format below
 
 ```hcl
-module from_mono_repo
+module from_mono_repo {
   source = "git::ssh://.../<org>/<repo>.git//<my_module_dir>"
   ...
 }
-module from_mono_repo_with_tags
+
+module from_mono_repo_with_tags {
    source = "git::ssh://..../<org>/<repo>.git//<my_module_dir>?ref=1.2.3"
    ...
 }
@@ -233,24 +234,21 @@ module from_mono_repo_with_tags
 | Remediation task                 | Resources                          | 500           |
 
 
-## Known Provider Issues
-
-- In some cases [Resource Targetting](https://www.terraform.io/docs/commands/apply.html#target-resource) may be required before calling **def_assignment** and **set_assignment** modules in the same deployment. This can be overcome by introducing datasources within the resource graph that reference Policy definitions instead of direct module outputs.
-
 ## Useful Resources
 
-- [Microsoft Docs: Azure Policy Home](https://docs.microsoft.com/en-us/azure/governance/policy/)
-- [Microsoft Docs: Index of Azure Policy Samples](https://docs.microsoft.com/en-us/azure/governance/policy/samples/)
-- [Microsoft Docs: Azure Policy Regulatory Compliance (Benchmarks)](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
-- [Microsoft Docs: List of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
-- [Azure Policy Exemption (preview)](https://docs.microsoft.com/en-gb/azure/governance/policy/concepts/exemption-structure)
 - [GitHub Repo: Azure Built-In Policies and Samples](https://github.com/Azure/azure-policy)
 - [GitHub Repo: Contribute to Community Policies](https://github.com/Azure/Community-Policy)
-- [VSCode Marketplace: Azure Policy Extension](https://marketplace.visualstudio.com/items?itemName=AzurePolicy.azurepolicyextension)
+- [Microsoft Docs: Azure Policy Home](https://docs.microsoft.com/en-us/azure/governance/policy/)
+- [Microsoft Docs: List of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
+- [Microsoft Docs: Index of Azure Policy Samples](https://docs.microsoft.com/en-us/azure/governance/policy/samples/)
+- [Microsoft Docs: Design Azure Policy as Code workflows](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code)
+- [Microsoft Docs: Evaluate the impact of a new Azure Policy definition](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/evaluate-impact)
+- [Microsoft Docs: Azure Policy Regulatory Compliance (Benchmarks)](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
+- [Microsoft Docs: Azure Policy Exemption (preview)](https://docs.microsoft.com/en-gb/azure/governance/policy/concepts/exemption-structure)
 - [Microsoft Tutorial: Build policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
 - [Microsoft Tutorial: Security Center - Working with security policies](https://docs.microsoft.com/en-us/azure/security-center/tutorial-security-policy)
+- [VSCode Marketplace: Azure Policy Extension](https://marketplace.visualstudio.com/items?itemName=AzurePolicy.azurepolicyextension)
 - [Terraform Provider: azurerm_policy_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_definition)
 - [Terraform Provider: azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
 - [Terraform Provider: azurerm_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_assignment)
 - [Terraform Provider: azurerm_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation)
-- [Terraform Registry Module: policy-as-code](https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/latest)
