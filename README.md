@@ -1,15 +1,17 @@
 <!-- markdownlint-configure-file { "MD004": { "style": "consistent" } } -->
 <!-- markdownlint-disable MD033 -->
 <p align="center">
-    <a href="https://docs.microsoft.com/en-us/azure/governance/policy/">
-        <img src="img/logo.svg" width="600" alt="Terraform-Azure-Policy-as-Code">
-    </a>
-    <br>
-    <h1 align="center">Azure Policy as Code with Terraform</h1>
+  <a href="https://docs.microsoft.com/en-us/azure/governance/policy/">
+      <img src="img/logo.svg" width="600" alt="Terraform-Azure-Policy-as-Code">
+  </a>
+  <br>
+  <h1 align="center">Azure Policy as Code with Terraform</h1>
+  <p align="center">
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-orange.svg" alt="MIT License"></a>
+    <a href="https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/"><img src="https://img.shields.io/badge/terraform-registry-blue.svg" alt="TF Registry"></a>
+  </p>
 </p>
 <!-- markdownlint-enable MD033 -->
-
-[![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![MIT License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/)
 
 - [Repo Folder Structure](#repo-folder-structure)
 - [Policy Definitions Module](#policy-definitions-module)
@@ -76,7 +78,7 @@ module whitelist_regions {
 
 > :bulb: **Note:** `policy_name` should match the subfolder name containing the **rules** and **parameters** JSON files. The module assumes that `policy_category` is also the category folder name which is a child of the **policies** folder. Template files can also be parsed in at runtime, see the [definition module readme](modules/definition/README.md) for more information on acceptable inputs.
 
-> :bulb: **Note:** Specify the `policy_mode` variable if you wish to [change the mode](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#mode) of a definition from the default `All` to `Indexed`.
+> :bulb: **Note:** Specify the `policy_mode` variable if you wish to [change the mode](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#mode) of a definition from the module default `All` to `Indexed`.
 
 > :information_source: [Microsoft Docs: Azure Policy definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
 > 
@@ -181,8 +183,8 @@ output builtin_policy_metadata {
   value = data.azurerm_policy_definition.builtin_policy.metadata
 }
 ```
+`Output: builtin_policy_metadata = {"category":"Tags","version":"2.0.0"}`
 
-Output: `builtin_policy_metadata = {"category":"Tags","version":"2.0.0"}`
 
 ### Sourcing Versions of Custom Policies
 
@@ -193,6 +195,7 @@ module from_mono_repo {
   source = "git::ssh://.../<org>/<repo>.git//<my_module_dir>"
   ...
 }
+
 module from_mono_repo_with_tags {
    source = "git::ssh://..../<org>/<repo>.git//<my_module_dir>?ref=1.2.3"
    ...
@@ -233,16 +236,18 @@ module from_mono_repo_with_tags {
 
 ## Useful Resources
 
-- [Microsoft Docs: Azure Policy Home](https://docs.microsoft.com/en-us/azure/governance/policy/)
-- [Microsoft Docs: Index of Azure Policy Samples](https://docs.microsoft.com/en-us/azure/governance/policy/samples/)
-- [Microsoft Docs: Azure Policy Regulatory Compliance (Benchmarks)](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
-- [Microsoft Docs: List of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
-- [Azure Policy Exemption (preview)](https://docs.microsoft.com/en-gb/azure/governance/policy/concepts/exemption-structure)
 - [GitHub Repo: Azure Built-In Policies and Samples](https://github.com/Azure/azure-policy)
 - [GitHub Repo: Contribute to Community Policies](https://github.com/Azure/Community-Policy)
-- [VSCode Marketplace: Azure Policy Extension](https://marketplace.visualstudio.com/items?itemName=AzurePolicy.azurepolicyextension)
+- [Microsoft Docs: Azure Policy Home](https://docs.microsoft.com/en-us/azure/governance/policy/)
+- [Microsoft Docs: List of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
+- [Microsoft Docs: Index of Azure Policy Samples](https://docs.microsoft.com/en-us/azure/governance/policy/samples/)
+- [Microsoft Docs: Design Azure Policy as Code workflows](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code)
+- [Microsoft Docs: Evaluate the impact of a new Azure Policy definition](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/evaluate-impact)
+- [Microsoft Docs: Azure Policy Regulatory Compliance (Benchmarks)](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
+- [Microsoft Docs: Azure Policy Exemption (preview)](https://docs.microsoft.com/en-gb/azure/governance/policy/concepts/exemption-structure)
 - [Microsoft Tutorial: Build policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
 - [Microsoft Tutorial: Security Center - Working with security policies](https://docs.microsoft.com/en-us/azure/security-center/tutorial-security-policy)
+- [VSCode Marketplace: Azure Policy Extension](https://marketplace.visualstudio.com/items?itemName=AzurePolicy.azurepolicyextension)
 - [Terraform Provider: azurerm_policy_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_definition)
 - [Terraform Provider: azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
 - [Terraform Provider: azurerm_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_assignment)
