@@ -23,7 +23,7 @@ And this [ARM Template](https://docs.microsoft.com/en-us/azure/azure-monitor/sam
 ## Assignment
 ```hcl
 module logging_mg_deploy_subscription_diagnostic_setting {
-  source                = "github.com/gettek/azurerm-terraform-policy-as-code.git//modules/def_assignment?ref=1.0.0"
+  source                = "github.com/gettek/azurerm-terraform-policy-as-code.git//modules/def_assignment?ref=1.2.0"
   definition_name       = "deploy_subscription_diagnostic_setting"
   definition_version    = "1.0.0"
   definition_scope      = data.azurerm_management_group.org.id

@@ -16,7 +16,7 @@ variable display_name {
 variable policy_description {
   type        = string
   description = "Policy definition description"
-  default     = null
+  default     = ""
 }
 
 variable policy_mode {
@@ -32,7 +32,7 @@ variable policy_category {
 
 variable policy_version {
   type        = string
-  description = "The git tag or version for this policy, defaults to 1.0.0"
+  description = "The version for this policy, defaults to 1.0.0"
   default     = "1.0.0"
 }
 
@@ -66,8 +66,8 @@ locals {
     { createdBy = data.azurerm_client_config.current.client_id },
     { category = var.policy_category },
     { createdOn = timestamp() },
-    { updatedBy = null },
-    { updatedOn = null },
+    { updatedBy = "" },
+    { updatedOn = "" },
     { version = var.policy_version },
   )) : var.policy_metadata
 }

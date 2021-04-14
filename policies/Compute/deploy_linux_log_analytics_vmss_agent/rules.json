@@ -3,7 +3,7 @@
         "allOf": [
             {
                 "field": "type",
-                "equals": "Microsoft.Compute/virtualMachines"
+                "equals": "Microsoft.Compute/virtualMachineScaleSets"
             },
             {
                 "anyOf": [
@@ -265,43 +265,23 @@
     "then": {
         "effect": "[parameters('effect')]",
         "details": {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
             "roleDefinitionIds": [
                 "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
             ],
             "existenceCondition": {
-                "anyOf": [
+                "allOf": [
                     {
-                        "allOf": [
-                            {
-                                "field": "Microsoft.Compute/virtualMachines/extensions/type",
-                                "equals": "OmsAgentForLinux"
-                            },
-                            {
-                                "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
-                                "equals": "Microsoft.EnterpriseCloud.Monitoring"
-                            },
-                            {
-                                "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
-                                "equals": "Succeeded"
-                            }
-                        ]
+                        "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/type",
+                        "equals": "OmsAgentForLinux"
                     },
                     {
-                        "allOf": [
-                            {
-                                "field": "Microsoft.Compute/virtualMachines/extensions/type",
-                                "equals": "DependencyAgentLinux"
-                            },
-                            {
-                                "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
-                                "equals": "Microsoft.Azure.Monitoring.DependencyAgent"
-                            },
-                            {
-                                "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
-                                "equals": "Succeeded"
-                            }
-                        ]
+                        "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/publisher",
+                        "equals": "Microsoft.EnterpriseCloud.Monitoring"
+                    },
+                    {
+                        "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/provisioningState",
+                        "equals": "Succeeded"
                     }
                 ]
             },
@@ -325,7 +305,7 @@
                         "resources": [
                             {
                                 "name": "[concat(parameters('vmName'), '/', 'OMSAgentForLinux')]",
-                                "type": "Microsoft.Compute/virtualMachines/extensions",
+                                "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
                                 "location": "[parameters('vmLocation')]",
                                 "apiVersion": "2020-12-01",
                                 "properties": {
@@ -334,24 +314,12 @@
                                     "typeHandlerVersion": "1.13",
                                     "autoUpgradeMinorVersion": true,
                                     "settings": {
-                                        "workspaceId": "[parameters('workspaceId')]",
+                                        "workspaceId": "[reference(parameters('workspaceId'), '2015-03-20').customerId]",
                                         "stopOnMultipleConnections": "true"
                                     },
                                     "protectedSettings": {
                                         "workspaceKey": "[listKeys(parameters('workspaceId'), '2015-03-20').primarySharedKey]"
                                     }
-                                }
-                            },
-                            {
-                                "type": "Microsoft.Compute/virtualMachines/extensions",
-                                "name": "[concat(parameters('vmName'), '/', 'DependencyAgentLinux')]",
-                                "apiVersion": "2020-12-01",
-                                "location": "[parameters('vmLocation')]",
-                                "properties": {
-                                    "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
-                                    "type": "DependencyAgentLinux",
-                                    "typeHandlerVersion": "9.10",
-                                    "autoUpgradeMinorVersion": true
                                 }
                             }
                         ]

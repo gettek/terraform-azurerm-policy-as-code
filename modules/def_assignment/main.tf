@@ -13,7 +13,7 @@ resource azurerm_policy_assignment def {
   identity {
     type = local.identity_type
   }
-  
+
   lifecycle {
     create_before_destroy = true
     ignore_changes = [
@@ -27,4 +27,6 @@ resource azurerm_policy_remediation rem {
   name                 = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   scope                = var.assignment_scope
   policy_assignment_id = azurerm_policy_assignment.def.id
+
+  depends_on = [ azurerm_policy_assignment.def ]
 }

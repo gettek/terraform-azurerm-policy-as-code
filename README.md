@@ -68,7 +68,7 @@
 ```hcl
 module whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/definition"
-  version               = "1.1.0"
+  version               = "1.2.0"
   policy_name           = "whitelist_regions"
   display_name          = "Allow resources only in whitelisted regions"
   policy_category       = "General"
@@ -91,7 +91,7 @@ Policy Initiatives are used to combine sets of definitions in order to simplify 
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "1.1.0"
+  version                 = "1.2.0"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -114,7 +114,7 @@ module platform_baseline_initiative {
 ```hcl
 module org_mg_whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version               = "1.1.0"
+  version               = "1.2.0"
   definition            = module.whitelist_regions.definition
   assignment_scope      = local.default_assignment_scope
   assignment_effect     = "Deny"

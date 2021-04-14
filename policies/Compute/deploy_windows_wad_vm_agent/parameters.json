@@ -29,12 +29,12 @@
             "assignPermissions": true
         }
     },
-    "eventHubSharedAccessKey": {
+    "eventHubSharedAccessKeyId": {
         "type": "String",
         "defaultValue": "",
         "metadata": {
-            "displayName": "Event Hub Base64 Encoded Shared Access Key",
-            "description": "The Event Hub Shared Access Key. Should be base64 encoded"
+            "displayName": "Event Hub Shared Access Key Resource Id",
+            "description": "The Event Hub Shared Access Key Key Resource Id."
         }
     },
     "eventHubSharedAccessKeyName": {

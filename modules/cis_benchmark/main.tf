@@ -32,21 +32,6 @@ resource azurerm_policy_set_definition cis_benchmark {
   }
 
   policy_definition_reference {
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/5f76cf89-fbf2-47fd-a3f4-b891fa780b60"
-    reference_id         = "CISv110x1x3"
-  }
-
-  policy_definition_reference {
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/5c607a2e-c700-4744-8254-d77e7c9eb5e4"
-    reference_id         = "CISv110x1x3m"
-  }
-
-  policy_definition_reference {
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/f8456c1c-aa66-4dfb-861a-25d127b775c9"
-    reference_id         = "CISv110x1x3mm"
-  }
-
-  policy_definition_reference {
     policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/10ee2ea2-fb4d-45b8-a7e9-a2e770044cd9"
     reference_id         = "CISv110x1x23"
   }
@@ -231,16 +216,6 @@ resource azurerm_policy_set_definition cis_benchmark {
   }
 
   policy_definition_reference {
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/1a4e592a-6a6e-44a5-9814-e36264ca96e7"
-    reference_id         = "CISv110x5x1x3"
-  }
-
-  policy_definition_reference {
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/41388f1c-2db0-4c25-95b2-35d7f5ccbfa9"
-    reference_id         = "CISv110x5x1x4"
-  }
-
-  policy_definition_reference {
     policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/fbb99e8e-e444-4da0-9ff1-75c92f5a85b2"
     reference_id         = "CISv110x5x1x6"
   }
@@ -249,92 +224,7 @@ resource azurerm_policy_set_definition cis_benchmark {
     policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/cf820ca0-f99e-4f3e-84fb-66e913812d21"
     reference_id         = "CISv110x5x1x7"
   }
-
-  policy_definition_reference {
-    parameter_values = jsonencode({
-      operationName = { value = "Microsoft.Authorization/policyAssignments/write" }
-    })
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/c5447c04-a4d7-4ba8-a263-c9ee321a6858"
-    reference_id         = "CISv110x5x2x1"
-  }
-
-  policy_definition_reference {
-    parameter_values = jsonencode({
-      operationName = { value = "Microsoft.Network/networkSecurityGroups/write" }
-    })
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/b954148f-4c11-4c38-8221-be76711e194a"
-    reference_id         = "CISv110x5x2x2"
-  }
-
-  policy_definition_reference {
-    parameter_values = jsonencode({
-      operationName = { value = "Microsoft.Network/networkSecurityGroups/delete" }
-    })
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/b954148f-4c11-4c38-8221-be76711e194a"
-    reference_id         = "CISv110x5x2x3"
-  }
-
-  policy_definition_reference {
-    parameter_values = jsonencode({
-      operationName = { value = "Microsoft.Network/networkSecurityGroups/securityRules/write" }
-    })
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/b954148f-4c11-4c38-8221-be76711e194a"
-    reference_id         = "CISv110x5x2x4"
-  }
-
-  policy_definition_reference {
-    parameter_values = jsonencode({
-      operationName = { value = "Microsoft.Network/networkSecurityGroups/securityRules/delete" }
-    })
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/b954148f-4c11-4c38-8221-be76711e194a"
-    reference_id         = "CISv110x5x2x5"
-  }
-
-  policy_definition_reference {
-    parameter_values = jsonencode({
-      operationName = { value = "Microsoft.Security/securitySolutions/write" }
-    })
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/3b980d31-7904-4bb7-8575-5665739a8052"
-    reference_id         = "CISv110x5x2x6"
-  }
-
-  policy_definition_reference {
-    parameter_values = jsonencode({
-      operationName = { value = "Microsoft.Security/securitySolutions/delete" }
-    })
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/3b980d31-7904-4bb7-8575-5665739a8052"
-    reference_id         = "CISv110x5x2x7"
-  }
-
-  policy_definition_reference {
-    parameter_values = jsonencode({
-      operationName = { value = "Microsoft.Sql/servers/firewallRules/write" }
-    })
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/b954148f-4c11-4c38-8221-be76711e194a"
-    reference_id         = "CISv110x5x2x8"
-  }
-
-  policy_definition_reference {
-    parameter_values = jsonencode({
-      operationName = { value = "Microsoft.Sql/servers/firewallRules/delete" }
-    })
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/b954148f-4c11-4c38-8221-be76711e194a"
-    reference_id         = "CISv110x5x2x8m"
-  }
-
-  policy_definition_reference {
-    parameter_values = jsonencode({
-      operationName = { value = "Microsoft.Security/policies/write" }
-    })
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/3b980d31-7904-4bb7-8575-5665739a8052"
-    reference_id         = "CISv110x5x2x9"
-  }
-
-  policy_definition_reference {
-    policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/e372f825-a257-4fb8-9175-797a8a8627d6"
-    reference_id         = "CISv110x6x1"
-  }
-
+  
   policy_definition_reference {
     policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/2c89a2e5-7285-40fe-afe0-ae8654b92fab"
     reference_id         = "CISv110x6x2"

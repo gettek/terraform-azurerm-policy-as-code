@@ -17,13 +17,13 @@ variable assignment_not_scopes {
 variable assignment_display_name {
   type        = string
   description = "The policy assignment display name, if blank the definition display_name will be used. Changing this forces a new resource to be created"
-  default     = null
+  default     = ""
 }
 
 variable assignment_description {
   type        = string
   description = "A description to use for the Policy Assignment. Changing this forces a new resource to be created"
-  default     = null
+  default     = ""
 }
 
 variable assignment_effect {
@@ -61,10 +61,10 @@ locals {
   assignment_name = lower(substr(var.initiative.name, 0, 24))
 
   # initiative display_name will be used if omitted
-  display_name = var.assignment_display_name != null ? var.assignment_display_name : var.initiative.display_name
+  display_name = var.assignment_display_name != "" ? var.assignment_display_name : var.initiative.display_name
 
   # initiative discription will be used if omitted
-  description = var.assignment_description != null ? var.assignment_description : var.initiative.description
+  description = var.assignment_description != "" ? var.assignment_description : var.initiative.description
 
   # convert assignment parameters to the required assignment structure
   parameter_values = var.assignment_parameters != null ? {

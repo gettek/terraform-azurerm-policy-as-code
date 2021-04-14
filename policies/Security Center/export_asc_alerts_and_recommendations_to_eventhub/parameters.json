@@ -120,6 +120,7 @@
             "displayName": "Event Hub details (Authorization Rule ID)",
             "description": "The Event Hub details of where the data should be exported to: Subscription, Event Hub Namespace, Event Hub, and Authorizations rules with 'Send' claim. If you do not already have an event hub, visit Event Hubs to create one (https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.EventHub%2Fnamespaces).",
             "assignPermissions": true
-        }
+        },
+        "defaultValue": ""
     }
 }

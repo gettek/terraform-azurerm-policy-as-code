@@ -21,7 +21,7 @@ Modified from: [Built-In: KeyVault_DeployDiagnosticLog_Deploy_LogAnalytics](http
 ## Assignment
 ```hcl
 module logging_mg_deploy_loadbalancer_diagnostic_setting {
-  source                = "github.com/gettek/azurerm-terraform-policy-as-code.git//modules/def_assignment?ref=1.0.0"
+  source                = "github.com/gettek/azurerm-terraform-policy-as-code.git//modules/def_assignment?ref=1.2.0"
   definition_name       = "deploy_loadbalancer_diagnostic_setting"
   definition_version    = "1.0.0"
   definition_scope      = data.azurerm_management_group.org.id
