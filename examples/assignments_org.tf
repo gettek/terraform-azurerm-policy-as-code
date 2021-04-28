@@ -60,7 +60,7 @@ module org_mg_configure_asc_initiative {
 resource azurerm_role_assignment org_mg_configure_asc_initiative {
   count              = var.skip_remediation ? 0 : 1
   scope              = azurerm_management_group.org.id
-  role_definition_id = data.azurerm_role_definition.security_admin.id
+  role_definition_id = data.azurerm_role_definition.contributor.id
   principal_id       = module.org_mg_configure_asc_initiative.identity_id
 }
 
@@ -98,41 +98,6 @@ module org_mg_network_deny_nat_rules_firewall {
 ##################
 # Monitoring
 ##################
-resource random_uuid org_mg_remediate_platform_diagnostics_initiative {}
-
-resource azurerm_role_definition org_mg_remediate_platform_diagnostic_settings {
-  name               = "policy_remediates_platform_diagnostic_settings"
-  role_definition_id = random_uuid.org_mg_remediate_platform_diagnostics_initiative.result
-  scope              = azurerm_management_group.org.id
-  description        = "Enables the managed identity created by policy assignment permissions to remediate non compliant resources"
-
-  permissions {
-    actions = [
-      "Microsoft.Authorization/*/read",
-      "Microsoft.Automation/automationAccounts/*",
-      "Microsoft.Compute/virtualMachines/extensions/write",
-      "Microsoft.Compute/virtualMachines/extensions/read",
-      "Microsoft.EventHub/namespaces/authorizationrules/listkeys/action",
-      "Microsoft.Insights/alertRules/*",
-      "Microsoft.Insights/components/*/read",
-      "Microsoft.Insights/alertRules/*",
-      "Microsoft.Insights/diagnosticSettings/*",
-      "Microsoft.OperationalInsights/*",
-      "Microsoft.OperationsManagement/*",
-      "Microsoft.Resources/deployments/*",
-      "Microsoft.Resources/subscriptions/resourceGroups/read",
-      "Microsoft.Resources/subscriptions/resourcegroups/deployments/*",
-      "Microsoft.Support/*",
-      "Microsoft.Storage/storageAccounts/listKeys/action",
-      "Microsoft.Storage/storageAccounts/read",
-    ]
-  }
-
-  assignable_scopes = [
-    azurerm_management_group.org.id
-  ]
-}
-
 module org_mg_platform_diagnostics_initiative {
   source            = "..//modules/set_assignment"
   initiative        = module.platform_diagnostics_initiative.initiative
@@ -157,35 +122,6 @@ module org_mg_platform_diagnostics_initiative {
 resource azurerm_role_assignment org_mg_remediate_platform_diagnostic_settings {
   count              = var.skip_remediation ? 0 : 1
   scope              = azurerm_management_group.org.id
-  role_definition_id = azurerm_role_definition.org_mg_remediate_platform_diagnostic_settings.role_definition_resource_id
+  role_definition_id = data.azurerm_role_definition.contributor.id
   principal_id       = module.org_mg_platform_diagnostics_initiative.identity_id
-}
-
-
-##################
-# Tags
-##################
-
-resource random_uuid org_mg_add_replace_resource_group_tag_key_modify {}
-
-resource azurerm_role_definition org_mg_add_replace_resource_group_tag_key_modify {
-  name               = "policy_remediates_add_replace_resource_group_tags"
-  role_definition_id = random_uuid.org_mg_add_replace_resource_group_tag_key_modify.result
-  scope              = azurerm_management_group.org.id
-  description        = "Enables the managed identity created by policy assignment permissions to remediate non resource group tags"
-  permissions {
-    actions = [
-      "Microsoft.Authorization/*/read",
-      "Microsoft.Automation/automationAccounts/*",
-      "Microsoft.Resources/deployments/*",
-      "Microsoft.Resources/subscriptions/resourceGroups/read",
-      "Microsoft.Resources/subscriptions/resourcegroups/deployments/*",
-      "Microsoft.Resources/tags/read",
-      "Microsoft.Resources/tags/write",
-      "Microsoft.Support/*"
-    ]
-  }
-  assignable_scopes = [
-    azurerm_management_group.org.id
-  ]
 }

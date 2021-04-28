@@ -25,6 +25,8 @@
 - [Definition and Assignment Scopes](#definition-and-assignment-scopes)
 - [Limitations](#limitations)
 - [Useful Resources](#useful-resources)
+- [Known Issues](#known-issues)
+  - [Error: Invalid for_each argument](#error-invalid-for_each-argument)
 
 ## Repo Folder Structure
 
@@ -140,9 +142,9 @@ Azure Policy supports the following types of effect:
 
 ### Automate Remediation Tasks
 
-The `def_assignment` and `set_assignment` modules will automatically create [remediation tasks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation) for policies with effects of `DeployIfNotExists` and `Modify`. The task name is suffixed with a timestamp to ensure a new task gets created on each `terraform apply`. This can be prevented with `-TF_VAR_skip_remediation=true`.
+The `def_assignment` and `set_assignment` modules will automatically create [remediation tasks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation) for policies with effects of `DeployIfNotExists` and `Modify`. The task name is suffixed with a timestamp to ensure a new task gets created on each `terraform apply`. This can be prevented with `-var "skip_remediation=true"`.
 
-> :bulb: **Note:** To fully automate remediation tasks without manual intervention via the portal, it may be necessary in some instances to create custom role defenitions. This is a disadvantage by design as identified [in this GitHub issue](https://github.com/Azure/azure-powershell/issues/10196). However an example custom role definition [as seen here](policies/Monitoring/deploy_subscription_diagnostic_setting/README.md#cross-subscription-role-assignment) can be used by the system assigned managed identity, created by the policy assignment, to remediate cross-subscription activity log forwarders.
+> :bulb: **Note:** To fully automate remediation tasks without manual intervention via the portal, it may be necessary in some instances to create custom role definitions. This is a disadvantage by design as identified [in this GitHub issue](https://github.com/Azure/azure-powershell/issues/10196). However a Custom or [Built-In](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) Role definition reference can be assigned to the managed identity created by the policy assignment [as seen here](examples/assignments_org.tf#L60).
 
 ## Creating Custom Versions of Built-In Policies
 
@@ -252,3 +254,9 @@ module from_mono_repo_with_tags {
 - [Terraform Provider: azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
 - [Terraform Provider: azurerm_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_assignment)
 - [Terraform Provider: azurerm_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation)
+
+## Known Issues
+
+### Error: Invalid for_each argument
+
+You may sometimes experience plan/apply issues when running an initial deployment of the `set_assignment` module. To prevent this, set the flag `-var "skip_remediation=true"` and omit for consecutive builds.

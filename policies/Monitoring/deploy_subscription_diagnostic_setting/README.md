@@ -44,45 +44,16 @@ module logging_mg_deploy_subscription_diagnostic_setting {
 
 ## Cross Subscription Role Assignment
 
-In order to successfully remediation cross-subscription diagnostic settings, a custom role definition is required such as below.
+In order to successfully remediation cross-subscription diagnostic settings, a custom or built-in role definition reference is required such as below.
 
 ```hcl
-resource random_uuid remediate_diagnostic_settings {}
-
-resource azurerm_role_definition remediate_diagnostic_settings {
-  name               = "policy_remediates_subscription_diagnostic_settings"
-  role_definition_id = random_uuid.remediate_diagnostic_settings.result
-  scope              = data.azurerm_management_group.org.id
-  description        = "Enables the managed identity created by policy assignment permissions to remediate non compliant resources"
-
-  permissions {
-    actions = [
-      "Microsoft.Authorization/*/read",
-      "Microsoft.Insights/alertRules/*",
-      "Microsoft.Insights/components/*/read",
-      "Microsoft.Automation/automationAccounts/*",
-      "Microsoft.EventHub/namespaces/authorizationrules/listkeys/action",
-      "Microsoft.Insights/alertRules/*",
-      "Microsoft.Insights/diagnosticSettings/*",
-      "Microsoft.OperationalInsights/*",
-      "Microsoft.OperationsManagement/*",
-      "Microsoft.Resources/deployments/*",
-      "Microsoft.Resources/subscriptions/resourceGroups/read",
-      "Microsoft.Resources/subscriptions/resourcegroups/deployments/*",
-      "Microsoft.Support/*",
-      "Microsoft.Storage/storageAccounts/listKeys/action",
-      "Microsoft.Storage/storageAccounts/read"
-    ]
-  }
-
-  assignable_scopes = [
-    data.azurerm_management_group.org.id
-  ]
+data "azurerm_role_definition" "contributor" {
+  name = "Contributor"
 }
 
 resource azurerm_role_assignment logging_policy_remediates_diagnostic_settings {
   scope              = data.azurerm_management_group.logging.id
-  role_definition_id = azurerm_role_definition.remediate_diagnostic_settings.role_definition_resource_id
+  role_definition_id = data.azurerm_role_definition.contributor.id
   principal_id       = module.logging_mg_deploy_subscription_diagnostic_setting.identity_id
 }
 ```
