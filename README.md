@@ -26,6 +26,7 @@
 - [Limitations](#limitations)
 - [Useful Resources](#useful-resources)
 - [Known Issues](#known-issues)
+  - [Parameter Values are nulled with TF >= 14](#parameter-values-are-nulled-with-tf--14)
   - [Error: Invalid for_each argument](#error-invalid-for_each-argument)
 
 ## Repo Folder Structure
@@ -256,6 +257,10 @@ module from_mono_repo_with_tags {
 - [Terraform Provider: azurerm_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation)
 
 ## Known Issues
+
+### Parameter Values are nulled with TF >= 14
+
+When using Terraform 14 and above it appears all `parameter_values` within a policy set definition are nulled, these are then recreated and removed on each consecutive plan/apply. **[Issue 11327 raised here](https://github.com/terraform-providers/terraform-provider-azurerm/issues/11327)**
 
 ### Error: Invalid for_each argument
 
