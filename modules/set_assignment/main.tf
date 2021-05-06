@@ -28,4 +28,6 @@ resource azurerm_policy_remediation rem {
   scope                          = var.assignment_scope
   policy_assignment_id           = azurerm_policy_assignment.set.id
   policy_definition_reference_id = each.value.reference_id
+
+  depends_on = [ azurerm_policy_assignment.set ]
 }

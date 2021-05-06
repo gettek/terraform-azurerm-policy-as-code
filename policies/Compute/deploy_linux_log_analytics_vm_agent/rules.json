@@ -273,11 +273,11 @@
                 "allOf": [
                     {
                         "field": "Microsoft.Compute/virtualMachines/extensions/type",
-                        "equals": "LinuxDiagnostic"
+                        "equals": "OmsAgentForLinux"
                     },
                     {
                         "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
-                        "equals": "Microsoft.Azure.Diagnostics"
+                        "equals": "Microsoft.EnterpriseCloud.Monitoring"
                     },
                     {
                         "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
@@ -298,61 +298,27 @@
                             "vmLocation": {
                                 "type": "string"
                             },
-                            "diagnosticsStorageAccountName": {
-                                "type": "String"
-                            },
-                            "diagnosticsStorageAccountSas": {
-                                "type": "String"
+                            "workspaceId": {
+                                "type": "string"
                             }
                         },
                         "resources": [
                             {
-                                "name": "[concat(parameters('vmName'), '/', 'LinuxDiagnostic')]",
+                                "name": "[concat(parameters('vmName'), '/', 'OMSAgentForLinux')]",
                                 "type": "Microsoft.Compute/virtualMachines/extensions",
                                 "location": "[parameters('vmLocation')]",
                                 "apiVersion": "2020-12-01",
                                 "properties": {
-                                    "publisher": "Microsoft.Azure.Diagnostics",
-                                    "type": "LinuxDiagnostic",
-                                    "typeHandlerVersion": "3.0",
+                                    "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+                                    "type": "OmsAgentForLinux",
+                                    "typeHandlerVersion": "1.13",
                                     "autoUpgradeMinorVersion": true,
                                     "settings": {
-                                        "storageAccount": "[parameters('diagnosticsStorageAccountName')]",
-                                        "ladCfg": {
-                                            "sampleRateInSeconds": 15,
-                                            "diagnosticMonitorConfiguration": {
-                                                "eventVolume": "Medium",
-                                                "syslogEvents": {
-                                                    "sinks": "",
-                                                    "syslogEventConfiguration": {
-                                                        "LOG_AUTH": "LOG_DEBUG",
-                                                        "LOG_AUTHPRIV": "LOG_DEBUG",
-                                                        "LOG_CRON": "LOG_DEBUG",
-                                                        "LOG_DAEMON": "LOG_DEBUG",
-                                                        "LOG_FTP": "LOG_DEBUG",
-                                                        "LOG_KERN": "LOG_DEBUG",
-                                                        "LOG_LOCAL0": "LOG_DEBUG",
-                                                        "LOG_LOCAL1": "LOG_DEBUG",
-                                                        "LOG_LOCAL2": "LOG_DEBUG",
-                                                        "LOG_LOCAL3": "LOG_DEBUG",
-                                                        "LOG_LOCAL4": "LOG_DEBUG",
-                                                        "LOG_LOCAL5": "LOG_DEBUG",
-                                                        "LOG_LOCAL6": "LOG_DEBUG",
-                                                        "LOG_LOCAL7": "LOG_DEBUG",
-                                                        "LOG_LPR": "LOG_DEBUG",
-                                                        "LOG_MAIL": "LOG_DEBUG",
-                                                        "LOG_NEWS": "LOG_DEBUG",
-                                                        "LOG_SYSLOG": "LOG_DEBUG",
-                                                        "LOG_USER": "LOG_DEBUG",
-                                                        "LOG_UUCP": "LOG_DEBUG"
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        "workspaceId": "[reference(parameters('workspaceId'), '2015-03-20').customerId]",
+                                        "stopOnMultipleConnections": "true"
                                     },
                                     "protectedSettings": {
-                                        "storageAccountName": "[parameters('diagnosticsStorageAccountName')]",
-                                        "storageAccountSasToken": "[parameters('diagnosticsStorageAccountSas')]"
+                                        "workspaceKey": "[listKeys(parameters('workspaceId'), '2015-03-20').primarySharedKey]"
                                     }
                                 }
                             }
@@ -365,11 +331,8 @@
                         "vmLocation": {
                             "value": "[field('location')]"
                         },
-                        "diagnosticsStorageAccountName": {
-                            "value": "[parameters('diagnosticsStorageAccountName')]"
-                        },
-                        "diagnosticsStorageAccountSas": {
-                            "value": "[parameters('diagnosticsStorageAccountSas')]"
+                        "workspaceId": {
+                            "value": "[parameters('workspaceId')]"
                         }
                     }
                 }

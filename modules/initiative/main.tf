@@ -6,6 +6,9 @@ resource azurerm_policy_set_definition set {
 
   management_group_name = var.management_group_name
 
+  metadata   = local.metadata
+  parameters = local.all_parameters
+
   dynamic "policy_definition_reference" {
     for_each = [for d in var.member_definitions : {
       id         = d.id
@@ -15,16 +18,13 @@ resource azurerm_policy_set_definition set {
 
     content {
       policy_definition_id = policy_definition_reference.value.id
-      reference_id = policy_definition_reference.value.ref_id
+      reference_id         = policy_definition_reference.value.ref_id
       parameter_values = jsonencode({
         for k in keys(policy_definition_reference.value.parameters) :
         k => { value = "[parameters('${k}')]" }
       })
     }
   }
-
-  parameters = local.all_parameters
-  metadata   = local.metadata
 
   lifecycle {
     create_before_destroy = true

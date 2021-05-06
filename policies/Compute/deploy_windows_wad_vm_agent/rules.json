@@ -229,7 +229,7 @@
                             "eventHubUrl": {
                                 "type": "String"
                             },
-                            "eventHubSharedAccessKey": {
+                            "eventHubSharedAccessKeyId": {
                                 "type": "String"
                             },
                             "eventHubSharedAccessKeyName": {
@@ -237,7 +237,8 @@
                             }
                         },
                         "variables": {
-                            "wadlogs": "<WadCfg> <DiagnosticMonitorConfiguration overallQuotaInMB=\"4096\" xmlns=\"http://schemas.microsoft.com/ServiceHosting/2010/10/DiagnosticsConfiguration\"> <DiagnosticInfrastructureLogs scheduledTransferLogLevelFilter=\"Error\"/> <WindowsEventLog scheduledTransferPeriod=\"PT1M\" > <DataSource name=\"Application!*[System[(Level = 1 or Level = 2)]]\" /> <DataSource name=\"Security!*[System[(Level = 1 or Level = 2)]]\" /> <DataSource name=\"System!*[System[(Level = 1 or Level = 2)]]\" /> <DataSource name=\"DNS-Server-Service!*[DNS Server[(Level = 1 or Level = 2 or Level = 5)]]\" /></WindowsEventLog>",
+                            "sinks": "[concat('<SinksConfig><Sink name=\"AzureMonitorSink\"><AzureMonitor></AzureMonitor></Sink><Sink name=\"EventHub\"><EventHub Url=\"', parameters('eventHubUrl'), '\" SharedAccessKeyName=\"', parameters('eventHubSharedAccessKeyName'), '\"  usePublisherId=\"false\" /></Sink></SinksConfig>')]",
+                            "wadlogs": "[concat('<WadCfg>', variables('sinks'), '<DiagnosticMonitorConfiguration overallQuotaInMB=\"4096\" xmlns=\"http://schemas.microsoft.com/ServiceHosting/2010/10/DiagnosticsConfiguration\"> <DiagnosticInfrastructureLogs scheduledTransferLogLevelFilter=\"Error\"/> <WindowsEventLog scheduledTransferPeriod=\"PT1M\" sinks=\"EventHub\" > <DataSource name=\"Application!*[System[(Level &lt;= 5)]]\" /> <DataSource name=\"Security!*[System[(Level &lt;= 5)]]\" /> <DataSource name=\"System!*[System[(Level &lt;= 5)]]\" /> <DataSource name=\"DNS-Server-Service!*[DNS Server[(Level = 1 or Level = 2 or Level = 5)]]\" /></WindowsEventLog>')]",
                             "wadcfgxstart": "[concat(variables('wadlogs'), '<Metrics resourceId=\"')]",
                             "wadmetricsresourceid": "[concat(resourceGroup().id, '/providers/Microsoft.Compute/virtualMachines/')]",
                             "wadcfgxend": "\"><MetricAggregation scheduledTransferPeriod=\"PT1H\"/><MetricAggregation scheduledTransferPeriod=\"PT1M\"/></Metrics></DiagnosticMonitorConfiguration></WadCfg>"
@@ -251,7 +252,7 @@
                                 "properties": {
                                     "publisher": "Microsoft.Azure.Diagnostics",
                                     "type": "IaaSDiagnostics",
-                                    "typeHandlerVersion": "1.5",
+                                    "typeHandlerVersion": "1.18",
                                     "autoUpgradeMinorVersion": true,
                                     "settings": {
                                         "xmlCfg": "[base64(concat(variables('wadcfgxstart'), variables('wadmetricsresourceid'), parameters('vmName'), variables('wadcfgxend')))]",
@@ -263,7 +264,7 @@
                                         "storageAccountEndPoint": "[concat('https://', environment().suffixes.storage)]",
                                         "EventHub": {
                                             "Url": "[parameters('eventHubUrl')]",
-                                            "SharedAccessKey": "[parameters('eventHubSharedAccessKey')]",
+                                            "SharedAccessKey": "[listkeys(parameters('eventHubSharedAccessKeyId'), '2015-08-01').primaryKey]",
                                             "SharedAccessKeyName": "[parameters('eventHubSharedAccessKeyName')]"
                                         }
                                     }
@@ -287,8 +288,8 @@
                         "eventHubUrl": {
                             "Value": "[parameters('eventHubUrl')]"
                         },
-                        "eventHubSharedAccessKey": {
-                            "Value": "[parameters('eventHubSharedAccessKey')]"
+                        "eventHubSharedAccessKeyId": {
+                            "Value": "[parameters('eventHubSharedAccessKeyId')]"
                         },
                         "eventHubSharedAccessKeyName": {
                             "Value": "[parameters('eventHubSharedAccessKeyName')]"

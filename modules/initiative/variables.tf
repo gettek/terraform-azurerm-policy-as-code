@@ -1,6 +1,7 @@
 variable management_group_name {
   type        = string
   description = "The scope at which the initiative will be defined. Currently this must be the group_id of a management group. Changing this forces a new resource to be created"
+  default     = null
 }
 
 variable initiative_name {
@@ -27,7 +28,7 @@ variable initiative_category {
 
 variable initiative_version {
   type        = string
-  description = "The git tag version for this policy, will be suffixed to initiative_display_name and initiative_description"
+  description = "The version for this initiative, defaults to 1.0.0"
   default     = "1.0.0"
 }
 
@@ -44,12 +45,13 @@ locals {
   }
 
   all_parameters = jsonencode(merge(values(local.parameters)...))
+  
   metadata = jsonencode(merge(
     { createdBy = data.azurerm_client_config.current.client_id },
     { category = var.initiative_category },
     { createdOn = timestamp() },
-    { updatedBy = null },
-    { updatedOn = null },
+    { updatedBy = "" },
+    { updatedOn = "" },
     { version = var.initiative_version },
   ))
 }

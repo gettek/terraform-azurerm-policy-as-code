@@ -3,7 +3,7 @@
         "allOf": [
             {
                 "field": "type",
-                "equals": "Microsoft.Compute/virtualMachineScaleSets"
+                "equals": "Microsoft.Compute/virtualMachines"
             },
             {
                 "anyOf": [
@@ -265,22 +265,22 @@
     "then": {
         "effect": "[parameters('effect')]",
         "details": {
-            "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
             "roleDefinitionIds": [
                 "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
             ],
             "existenceCondition": {
                 "allOf": [
                     {
-                        "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/type",
+                        "field": "Microsoft.Compute/virtualMachines/extensions/type",
                         "equals": "LinuxDiagnostic"
                     },
                     {
-                        "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/publisher",
+                        "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
                         "equals": "Microsoft.Azure.Diagnostics"
                     },
                     {
-                        "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/provisioningState",
+                        "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
                         "equals": "Succeeded"
                     }
                 ]
@@ -303,18 +303,12 @@
                             },
                             "diagnosticsStorageAccountSas": {
                                 "type": "String"
-                            },
-                            "eventHubUrl": {
-                                "type": "String"
-                            },
-                            "eventHubSASToken": {
-                                "type": "String"
                             }
                         },
                         "resources": [
                             {
                                 "name": "[concat(parameters('vmName'), '/', 'LinuxDiagnostic')]",
-                                "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+                                "type": "Microsoft.Compute/virtualMachines/extensions",
                                 "location": "[parameters('vmLocation')]",
                                 "apiVersion": "2020-12-01",
                                 "properties": {
@@ -329,7 +323,7 @@
                                             "diagnosticMonitorConfiguration": {
                                                 "eventVolume": "Medium",
                                                 "syslogEvents": {
-                                                    "sinks": "SyslogJsonBlob",
+                                                    "sinks": "",
                                                     "syslogEventConfiguration": {
                                                         "LOG_AUTH": "LOG_DEBUG",
                                                         "LOG_AUTHPRIV": "LOG_DEBUG",
@@ -358,71 +352,29 @@
                                         "fileLogs": [
                                             {
                                                 "file": "/var/log/audit/audit.log",
-                                                "table": "AuditLog",
-                                                "sinks": "AuditLogJsonBlob"
-                                            },
-                                            {
-                                                "file": "/var/log/cron",
-                                                "table": "CronLog",
-                                                "sinks": "CronLogJsonBlob"
-                                            },
-                                            {
-                                                "file": "/var/log/maillog",
-                                                "table": "MailLog",
-                                                "sinks": "MailLogJsonBlob"
+                                                "table": "AuditLogs",
+                                                "sinks": ""
                                             },
                                             {
                                                 "file": "/var/log/messages",
-                                                "table": "MessagesLog",
-                                                "sinks": "MessagesLogJsonBlob"
+                                                "table": "MessagesLogs",
+                                                "sinks": ""
                                             },
                                             {
                                                 "file": "/var/log/secure",
-                                                "table": "SecureLog",
-                                                "sinks": "SecureLogJsonBlob"
+                                                "table": "SecureLogs",
+                                                "sinks": ""
                                             },
                                             {
                                                 "file": "/var/log/yum.log",
-                                                "table": "YumLog",
-                                                "sinks": "YumLogJsonBlob"
+                                                "table": "YumLogs",
+                                                "sinks": ""
                                             }
                                         ]
                                     },
                                     "protectedSettings": {
                                         "storageAccountName": "[parameters('diagnosticsStorageAccountName')]",
-                                        "storageAccountSasToken": "[parameters('diagnosticsStorageAccountSas')]",
-                                        "sinksConfig": {
-                                            "sink": [
-                                                {
-                                                    "name": "SyslogJsonBlob",
-                                                    "type": "JsonBlob"
-                                                },
-                                                {
-                                                    "name": "AuditLogJsonBlob",
-                                                    "type": "JsonBlob"
-                                                },
-                                                {
-                                                    "name": "CronLogJsonBlob",
-                                                    "type": "JsonBlob"
-                                                },
-                                                {
-                                                    "name": "MailLogJsonBlob",
-                                                    "type": "JsonBlob"
-                                                },
-                                                {
-                                                    "name": "MessagesLogJsonBlob",
-                                                    "type": "JsonBlob"
-                                                },
-                                                {
-                                                    "name": "SecureLogJsonBlob",
-                                                    "type": "JsonBlob"
-                                                },
-                                                {
-                                                    "name": "YumLogJsonBlob",
-                                                    "type": "JsonBlob"
-                                                }
-                                            ]
-                                        }
+                                        "storageAccountSasToken": "[parameters('diagnosticsStorageAccountSas')]"
                                     }
                                 }
                             }
@@ -440,12 +392,6 @@
                         },
                         "diagnosticsStorageAccountSas": {
                             "value": "[parameters('diagnosticsStorageAccountSas')]"
-                        },
-                        "eventHubUrl": {
-                            "Value": "[parameters('eventHubUrl')]"
-                        },
-                        "eventHubSASToken": {
-                            "Value": "[parameters('eventHubSASToken')]"
                         }
                     }
                 }

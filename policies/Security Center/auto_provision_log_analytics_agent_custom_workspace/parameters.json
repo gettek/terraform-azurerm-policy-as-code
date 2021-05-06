@@ -17,6 +17,7 @@
             "displayName": "Log Analytics workspace",
             "description": "Auto provision the Log Analytics agent on your subscriptions to monitor and collect security data using a custom workspace.",
             "assignPermissions": true
-        }
+        },
+        "defaultValue": ""
     }
 }
