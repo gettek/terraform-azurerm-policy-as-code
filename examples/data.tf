@@ -8,11 +8,6 @@ locals {
   }
 }
 
-# Built-in Roles
 data "azurerm_role_definition" "contributor" {
   name = "Contributor"
-}
-
-data "azurerm_role_definition" "tag_contributor" {
-  name = "Tag Contributor"
 }

@@ -7,15 +7,12 @@ resource azurerm_policy_definition def {
 
   management_group_name = var.management_group_name
 
-  policy_rule = local.policy_rule
-  parameters  = local.parameters
+  policy_rule = jsonencode(local.policy_rule)
+  parameters  = jsonencode(local.parameters)
   metadata    = local.metadata
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes = [
-      metadata
-    ]
   }
 
   timeouts {

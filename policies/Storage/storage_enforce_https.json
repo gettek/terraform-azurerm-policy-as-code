@@ -1,0 +1,57 @@
+{
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "storage_enforce_https",
+  "properties": {
+    "metadata": {
+      "category": "Storage"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "The effect determines what happens when the policy rule is evaluated to match"
+        }
+      }
+    },
+    "rules": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "anyOf": [
+              {
+                "allOf": [
+                  {
+                    "value": "[requestContext().apiVersion]",
+                    "less": "2019-04-01"
+                  },
+                  {
+                    "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+                    "exists": "false"
+                  }
+                ]
+              },
+              {
+                "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+                "equals": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

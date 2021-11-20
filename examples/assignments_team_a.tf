@@ -1,10 +1,10 @@
 ##################
 # General
 ##################
-module customer_mg_whitelist_resources {
+module "customer_mg_whitelist_resources" {
   source                = "..//modules/def_assignment"
   definition            = module.whitelist_resources.definition
-  assignment_scope      = azurerm_management_group.team_a.id
+  assignment_scope      = data.azurerm_management_group.team_a.id
   assignment_effect     = "Audit"
   assignment_parameters = local.customer_mg_whitelist_resource_types # see below
 }
@@ -12,42 +12,35 @@ module customer_mg_whitelist_resources {
 ##################
 # Network
 ##################
-module customer_mg_deny_nic_public_ip {
+module "customer_mg_deny_nic_public_ip" {
   source            = "..//modules/def_assignment"
   definition        = module.deny_nic_public_ip.definition
-  assignment_scope  = azurerm_management_group.team_a.id
+  assignment_scope  = data.azurerm_management_group.team_a.id
   assignment_effect = "Deny"
 }
 
-module customer_mg_deny_nsg_outbound_allow_all {
+module "customer_mg_deny_nsg_outbound_allow_all" {
   source            = "..//modules/def_assignment"
   definition        = module.deny_nsg_outbound_allow_all.definition
-  assignment_scope  = azurerm_management_group.team_a.id
+  assignment_scope  = data.azurerm_management_group.team_a.id
   assignment_effect = "Deny"
 }
 
 ##################
 # Tags
 ##################
-module customer_mg_add_replace_resource_group_tag_key_modify {
+module "customer_mg_add_replace_resource_group_tag_key_modify" {
   source            = "..//modules/def_assignment"
   definition        = module.add_replace_resource_group_tag_key_modify.definition
-  assignment_scope  = azurerm_management_group.team_a.id
+  assignment_scope  = data.azurerm_management_group.team_a.id
   assignment_effect = "Modify"
   skip_remediation  = var.skip_remediation
 }
 
-resource azurerm_role_assignment customer_mg_add_replace_resource_group_tag_key_modify {
-  count              = var.skip_remediation ? 0 : 1
-  scope              = azurerm_management_group.team_a.id
-  role_definition_id = data.azurerm_role_definition.tag_contributor.id
-  principal_id       = module.customer_mg_add_replace_resource_group_tag_key_modify.identity_id
-}
-
-module customer_mg_inherit_resource_group_tags_modify {
+module "customer_mg_inherit_resource_group_tags_modify" {
   source            = "..//modules/def_assignment"
   definition        = module.inherit_resource_group_tags_modify.definition
-  assignment_scope  = azurerm_management_group.team_a.id
+  assignment_scope  = data.azurerm_management_group.team_a.id
   assignment_effect = "Modify"
   skip_remediation  = var.skip_remediation
 }

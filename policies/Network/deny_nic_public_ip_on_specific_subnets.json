@@ -1,0 +1,62 @@
+{
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "deny_nic_public_ip_on_specific_subnets",
+  "properties": {
+    "metadata": {
+      "category": "Network"
+    },
+    "parameters": {
+      "deniedSuffix": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Denied Subnet Suffix",
+          "description": "NICs attached to a subnet containing this suffix will be unable to attach a Public IP"
+        }
+      },
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "The effect determines what happens when the policy rule is evaluated to match"
+        }
+      }
+    },
+    "rules": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkInterfaces"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Network/networkInterfaces/ipconfigurations[*]",
+              "where": {
+                "allOf": [
+                  {
+                    "value": "[substring(last(split(string(field('Microsoft.Network/networkInterfaces/ipconfigurations[*].subnet.id')), 'subnets/')), 0, sub(length(last(split(string(field('Microsoft.Network/networkInterfaces/ipconfigurations[*].subnet.id')), 'subnets/'))), 2))]",
+                    "like": "[concat('*', parameters('deniedSuffix'))]"
+                  },
+                  {
+                    "field": "Microsoft.Network/networkInterfaces/ipConfigurations[*].publicIPAddress",
+                    "exists": true
+                  }
+                ]
+              }
+            },
+            "greater": 0
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

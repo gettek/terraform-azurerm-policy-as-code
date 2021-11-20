@@ -1,0 +1,46 @@
+{
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "whitelist_resources",
+  "properties": {
+    "metadata": {
+      "category": "General"
+    },
+    "parameters": {
+      "listOfResourceTypesAllowed": {
+        "type": "Array",
+        "metadata": {
+          "description": "The list of resource types that can be deployed.",
+          "displayName": "Allowed resources",
+          "strongType": "resourceTypes"
+        },
+        "defaultValue": [
+          ""
+        ]
+      },
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "The effect determines what happens when the policy rule is evaluated to match"
+        }
+      }
+    },
+    "rules": {
+      "if": {
+        "not": {
+          "field": "type",
+          "in": "[parameters('listOfResourceTypesAllowed')]"
+        }
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

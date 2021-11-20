@@ -26,7 +26,6 @@
 - [Limitations](#limitations)
 - [Useful Resources](#useful-resources)
 - [Known Issues](#known-issues)
-  - [Parameter Values are nulled with TF >= 14](#parameter-values-are-nulled-with-tf--14)
   - [Error: Invalid for_each argument](#error-invalid-for_each-argument)
 
 ## Repo Folder Structure
@@ -61,9 +60,7 @@
       └──📜variables.tf
 📦policies
   └──📂policy_category (e.g. General, should correspond to [var.policy_category])
-      └──📂policy_name (e.g. whitelist_regions, should correspond to [var.policy_name])
-          ├──📜parameters.json
-          └──📜rules.json
+      └──📜policy_name.json (e.g. whitelist_regions, should correspond to [var.policy_name])
 ```
 
 ## Policy Definitions Module
@@ -71,7 +68,7 @@
 ```hcl
 module whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/definition"
-  version               = "1.2.0"
+  version               = "2.0.0"
   policy_name           = "whitelist_regions"
   display_name          = "Allow resources only in whitelisted regions"
   policy_category       = "General"
@@ -79,7 +76,7 @@ module whitelist_regions {
 }
 ```
 
-> :bulb: **Note:** `policy_name` should match the subfolder name containing the **rules** and **parameters** JSON files. The module assumes that `policy_category` is also the category folder name which is a child of the **policies** folder. Template files can also be parsed in at runtime, see the [definition module readme](modules/definition/README.md) for more information on acceptable inputs.
+> :bulb: **Note:** `policy_name` should match the JSON filename. The module assumes that `policy_category` is also the category folder name which is a child of the **policies** folder. Template files can also be parsed in at runtime, see the [definition module readme](modules/definition/README.md) for more information on acceptable inputs.
 
 > :bulb: **Note:** Specify the `policy_mode` variable if you wish to [change the mode](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#mode) of a definition from the module default `All` to `Indexed`.
 
@@ -94,7 +91,7 @@ Policy Initiatives are used to combine sets of definitions in order to simplify 
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "1.2.0"
+  version                 = "2.0.0"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -110,14 +107,12 @@ module platform_baseline_initiative {
 
 > :warning: **Warning:** If any two `member_definition_ids` contain the same parameters then they will be `merged()` by this module, in most cases this is beneficial but if unique values are required it may be best practice to set unique keys such as `[parameters('whitelist_resources_effect')]` instead of `[parameters('effect')]`.
 
-> :information_source: **Note:** It appears the current `azurerm` provider can only define the initiative at a management group level (or possibly at the default subscription level) - [See GitHub Issue](https://github.com/terraform-providers/terraform-provider-azurerm/issues/5042)
-
 ## Policy Assignments
 
 ```hcl
 module org_mg_whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version               = "1.2.0"
+  version               = "2.0.0"
   definition            = module.whitelist_regions.definition
   assignment_scope      = local.default_assignment_scope
   assignment_effect     = "Deny"
@@ -257,10 +252,6 @@ module from_mono_repo_with_tags {
 - [Terraform Provider: azurerm_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation)
 
 ## Known Issues
-
-### Parameter Values are nulled with TF >= 14
-
-When using Terraform 14 and above it appears all `parameter_values` within a policy set definition are nulled, these are then recreated and removed on each consecutive plan/apply. **[Issue 11327 raised here](https://github.com/terraform-providers/terraform-provider-azurerm/issues/11327)**
 
 ### Error: Invalid for_each argument
 

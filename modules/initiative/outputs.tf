@@ -22,3 +22,8 @@ output initiative {
   description = "The complete Policy Initiative resource node"
   value       = azurerm_policy_set_definition.set
 }
+
+output role_definition_ids {
+  description = "Role definition IDs for remediation"
+  value = local.all_role_definition_ids
+}

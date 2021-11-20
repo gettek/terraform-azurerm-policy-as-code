@@ -1,0 +1,43 @@
+{
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "deny_nic_public_ip",
+  "properties": {
+    "metadata": {
+      "category": "Network"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "The effect determines what happens when the policy rule is evaluated to match"
+        }
+      }
+    },
+    "rules": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkInterfaces"
+          },
+          {
+            "not": {
+              "field": "Microsoft.Network/networkInterfaces/ipconfigurations[*].publicIpAddress.id",
+              "notLike": "*"
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

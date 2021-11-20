@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		// When enabled, will trim trailing whitespace when you save a file.
+		"files.trimTrailingWhitespace": true,
+		"json.schemas": [
+			{
+				"fileMatch": [
+					"policies/*/*.json"
+				],
+				"url": "https://schema.management.azure.com/schemas/2020-10-01/policyDefinition.json"
+			}
+		]
+	}
+}

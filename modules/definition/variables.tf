@@ -1,6 +1,7 @@
 variable management_group_name {
   type        = string
   description = "The management group scope at which the policy will be defined. Changing this forces a new resource to be created."
+  default     = null
 }
 
 variable policy_name {
@@ -21,7 +22,7 @@ variable policy_description {
 
 variable policy_mode {
   type        = string
-  description = "The mode of the policy, can be All or Indexed"
+  description = "The policy mode that allows you to specify which resource types will be evaluated, defaults to All. Possible values are All, Indexed, Microsoft.ContainerService.Data, Microsoft.CustomerLockbox.Data, Microsoft.DataCatalog.Data, Microsoft.KeyVault.Data, Microsoft.Kubernetes.Data, Microsoft.MachineLearningServices.Data, Microsoft.Network.Data and Microsoft.Synapse.Data"
   default     = "All"
 }
 
@@ -55,19 +56,17 @@ variable policy_metadata {
 }
 
 locals {
-  # use local library rules.json if var.policy_rule omitted
-  policy_rule = var.policy_rule == null ? templatefile("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}/rules.json", {}) : var.policy_rule
+  policy_object = try(templatefile("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}.json", {}), {})
 
-  # use local library parameters.json if var.policy_parameters omitted
-  parameters = var.policy_parameters == null ? templatefile("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}/parameters.json", {}) : var.policy_parameters
+  # use local library rules if var.policy_rule omitted
+  policy_rule = var.policy_rule == null ? jsondecode(local.policy_object).properties.rules : var.policy_rule
 
+  # use local library parameters if var.policy_parameters omitted
+  parameters = var.policy_parameters == null ? jsondecode(local.policy_object).properties.parameters : var.policy_parameters
+  
   # create metadata if var.policy_metadata is omitted
   metadata = var.policy_metadata == null ? jsonencode(merge(
-    { createdBy = data.azurerm_client_config.current.client_id },
     { category = var.policy_category },
-    { createdOn = timestamp() },
-    { updatedBy = "" },
-    { updatedOn = "" },
     { version = var.policy_version },
   )) : var.policy_metadata
 }

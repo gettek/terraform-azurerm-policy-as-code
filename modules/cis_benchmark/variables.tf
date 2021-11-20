@@ -27,11 +27,7 @@ variable benchmark_version {
 locals {
   parameters = file("${path.module}/parameters.json")
   metadata = jsonencode(merge(
-    { createdBy = data.azurerm_client_config.current.client_id },
     { category = "Regulatory Compliance" },
-    { createdOn = timestamp() },
-    { updatedBy = "" },
-    { updatedOn = "" },
     { version = var.benchmark_version },
   ))
 }

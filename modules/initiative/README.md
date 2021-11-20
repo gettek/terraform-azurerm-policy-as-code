@@ -12,7 +12,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 2.84.0 |
 
 ## Modules
 
@@ -46,3 +46,4 @@ No modules.
 | <a name="output_metadata"></a> [metadata](#output\_metadata) | The metadata of the Policy Set Definition |
 | <a name="output_name"></a> [name](#output\_name) | The name of the Policy Set Definition |
 | <a name="output_parameters"></a> [parameters](#output\_parameters) | The combined parameters of the Policy Set Definition |
+| <a name="output_role_definition_ids"></a> [role\_definition\_ids](#output\_role\_definition\_ids) | Role definition IDs for remediation |

@@ -2,10 +2,10 @@
 # CIS Custom Benchmark
 ##################
 
-module org_mg_cis_custom_benchmark {
+module "org_mg_cis_custom_benchmark" {
   source           = "..//modules/set_assignment"
   initiative       = module.cis_custom_benchmark.initiative
-  assignment_scope = azurerm_management_group.org.id
+  assignment_scope = data.azurerm_management_group.org.id
   assignment_parameters = {
     NetworkWatcherResourceGroupName                 = ""
     listOfApprovedVMExtensions                      = [""]
@@ -24,10 +24,10 @@ module org_mg_cis_custom_benchmark {
 # General
 ##################
 
-module org_mg_whitelist_regions {
+module "org_mg_whitelist_regions" {
   source            = "..//modules/def_assignment"
   definition        = module.whitelist_regions.definition
-  assignment_scope  = azurerm_management_group.org.id
+  assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
   assignment_parameters = {
     "listOfRegionsAllowed" = [
@@ -43,12 +43,13 @@ module org_mg_whitelist_regions {
 # Security Center
 ##################
 
-module org_mg_configure_asc_initiative {
-  source            = "..//modules/set_assignment"
-  initiative        = module.configure_asc_initiative.initiative
-  assignment_scope  = azurerm_management_group.org.id
-  assignment_effect = "DeployIfNotExists"
-  skip_remediation  = var.skip_remediation
+module "org_mg_configure_asc_initiative" {
+  source              = "..//modules/set_assignment"
+  initiative          = module.configure_asc_initiative.initiative
+  assignment_scope    = data.azurerm_management_group.org.id
+  assignment_effect   = "DeployIfNotExists"
+  skip_remediation    = var.skip_remediation
+  role_definition_ids = module.configure_asc_initiative.role_definition_ids # using roles found in member_definitions
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
     eventHubDetails       = local.dummy_resource_ids.azurerm_eventhub_namespace_authorization_rule
@@ -57,29 +58,22 @@ module org_mg_configure_asc_initiative {
   }
 }
 
-resource azurerm_role_assignment org_mg_configure_asc_initiative {
-  count              = var.skip_remediation ? 0 : 1
-  scope              = azurerm_management_group.org.id
-  role_definition_id = data.azurerm_role_definition.contributor.id
-  principal_id       = module.org_mg_configure_asc_initiative.identity_id
-}
-
 
 ##################
 # Storage
 ##################
 
-module org_mg_storage_enforce_https {
+module "org_mg_storage_enforce_https" {
   source            = "..//modules/def_assignment"
   definition        = module.storage_enforce_https.definition
-  assignment_scope  = azurerm_management_group.org.id
+  assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
 }
 
-module org_mg_storage_enforce_minimum_tls1_2 {
+module "org_mg_storage_enforce_minimum_tls1_2" {
   source            = "..//modules/def_assignment"
   definition        = module.storage_enforce_minimum_tls1_2.definition
-  assignment_scope  = azurerm_management_group.org.id
+  assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
 }
 
@@ -87,10 +81,10 @@ module org_mg_storage_enforce_minimum_tls1_2 {
 ##################
 # Network
 ##################
-module org_mg_network_deny_nat_rules_firewall {
+module "org_mg_network_deny_nat_rules_firewall" {
   source            = "..//modules/def_assignment"
   definition        = module.deny_nat_rules_firewalls.definition
-  assignment_scope  = azurerm_management_group.org.id
+  assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
 }
 
@@ -98,12 +92,16 @@ module org_mg_network_deny_nat_rules_firewall {
 ##################
 # Monitoring
 ##################
-module org_mg_platform_diagnostics_initiative {
+module "org_mg_platform_diagnostics_initiative" {
   source            = "..//modules/set_assignment"
   initiative        = module.platform_diagnostics_initiative.initiative
-  assignment_scope  = azurerm_management_group.org.id
+  assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "DeployIfNotExists"
   skip_remediation  = var.skip_remediation
+  role_definition_ids = [
+    data.azurerm_role_definition.contributor.id # using explicit roles and scopes
+  ]
+  role_assignment_scope = data.azurerm_management_group.team_a.id
   assignment_parameters = {
     workspaceId                 = local.dummy_resource_ids.azurerm_log_analytics_workspace
     storageAccountId            = local.dummy_resource_ids.azurerm_storage_account
@@ -117,11 +115,4 @@ module org_mg_platform_diagnostics_initiative {
     module.deploy_subscription_diagnostic_setting,
     module.deploy_resource_diagnostic_setting
   ]
-}
-
-resource azurerm_role_assignment org_mg_remediate_platform_diagnostic_settings {
-  count              = var.skip_remediation ? 0 : 1
-  scope              = azurerm_management_group.org.id
-  role_definition_id = data.azurerm_role_definition.contributor.id
-  principal_id       = module.org_mg_platform_diagnostics_initiative.identity_id
 }
