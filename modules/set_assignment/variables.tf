@@ -108,7 +108,7 @@ locals {
   parameters = var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values)
 
   # determine managed identity type from effect
-  identity_type = var.assignment_effect != null ? contains(["DeployIfNotExists", "Modify"], var.assignment_effect) ? "SystemAssigned" : null : null
+  identity_type = var.assignment_effect != null ? contains(["DeployIfNotExists", "Modify"], var.assignment_effect) ? {type = "SystemAssigned"} : {} : {}
 
   # create a remediation task for policies with DeployIfNotExists and Modify effects only if var.skip_remediation != false
   create_remediation = var.skip_remediation == false ? var.assignment_effect != null ? contains(["DeployIfNotExists", "Modify"], var.assignment_effect) ? true : false : false : false
@@ -123,16 +123,16 @@ locals {
   role_assignment_scope = try(coalesce(var.role_assignment_scope, var.assignment_scope), "")
 
   # evaluate assignment outputs
-  assignment_id = try([
+  assignment_id = try(
     azurerm_management_group_policy_assignment.set[0].id,
     azurerm_subscription_policy_assignment.set[0].id,
     azurerm_resource_group_policy_assignment.set[0].id,
     azurerm_resource_policy_assignment.set[0].id,
-  ])
-  principal_id = try([
+    "")
+  principal_id = try(
     azurerm_management_group_policy_assignment.set[0].identity[0].principal_id,
     azurerm_subscription_policy_assignment.set[0].identity[0].principal_id,
     azurerm_resource_group_policy_assignment.set[0].identity[0].principal_id,
     azurerm_resource_policy_assignment.set[0].identity[0].principal_id,
-  ])
+    "")
 }

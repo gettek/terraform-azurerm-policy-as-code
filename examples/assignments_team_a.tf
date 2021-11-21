@@ -43,6 +43,9 @@ module "customer_mg_inherit_resource_group_tags_modify" {
   assignment_scope  = data.azurerm_management_group.team_a.id
   assignment_effect = "Modify"
   skip_remediation  = var.skip_remediation
+  assignment_parameters = {
+    tagName = "environment"
+  }
 }
 
 ##################

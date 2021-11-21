@@ -11,10 +11,13 @@ resource "azurerm_management_group_policy_assignment" "set" {
   parameters           = local.parameters
   location             = var.assignment_location
 
-  identity {
-    type = local.identity_type
+  dynamic "identity" {
+    for_each = local.identity_type
+    content {
+      type = identity.value
+    }
   }
-
+  
   lifecycle {
     create_before_destroy = true
   }
@@ -33,10 +36,13 @@ resource "azurerm_subscription_policy_assignment" "set" {
   parameters           = local.parameters
   location             = var.assignment_location
 
-  identity {
-    type = local.identity_type
+  dynamic "identity" {
+    for_each = local.identity_type
+    content {
+      type = identity.value
+    }
   }
-
+  
   lifecycle {
     create_before_destroy = true
   }
@@ -56,10 +62,13 @@ resource "azurerm_resource_group_policy_assignment" "set" {
   parameters           = local.parameters
   location             = var.assignment_location
 
-  identity {
-    type = local.identity_type
+  dynamic "identity" {
+    for_each = local.identity_type
+    content {
+      type = identity.value
+    }
   }
-
+  
   lifecycle {
     create_before_destroy = true
   }
@@ -78,17 +87,20 @@ resource "azurerm_resource_policy_assignment" "set" {
   parameters           = local.parameters
   location             = var.assignment_location
 
-  identity {
-    type = local.identity_type
+  dynamic "identity" {
+    for_each = local.identity_type
+    content {
+      type = identity.value
+    }
   }
-
+  
   lifecycle {
     create_before_destroy = true
   }
 }
 
 resource "azurerm_role_assignment" "rem_role" {
-  for_each                         = local.role_definition_ids
+  for_each                         = toset(local.role_definition_ids)
   scope                            = local.role_assignment_scope
   role_definition_id               = each.value
   principal_id                     = local.principal_id

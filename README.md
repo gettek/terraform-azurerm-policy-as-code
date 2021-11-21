@@ -21,7 +21,6 @@
   - [Automate Remediation Tasks](#automate-remediation-tasks)
 - [Creating Custom Versions of Built-In Policies](#creating-custom-versions-of-built-in-policies)
   - [Sourcing Versions of Builtin Policies](#sourcing-versions-of-builtin-policies)
-  - [Sourcing Versions of Custom Policies](#sourcing-versions-of-custom-policies)
 - [Definition and Assignment Scopes](#definition-and-assignment-scopes)
 - [Limitations](#limitations)
 - [Useful Resources](#useful-resources)
@@ -37,7 +36,6 @@
   ├──📜data.tf
   ├──📜definitions.tf
   ├──📜initiatives.tf
-  ├──📜management_groups.tf
   ├──📜variables.tf
 📦modules
   └──📂def_assignment
@@ -59,6 +57,7 @@
       ├──📜outputs.tf
       └──📜variables.tf
 📦policies
+  ├──📜convert_to_v2.ps1 (converts policies to version 2 of the repo library)
   └──📂policy_category (e.g. General, should correspond to [var.policy_category])
       └──📜policy_name.json (e.g. whitelist_regions, should correspond to [var.policy_name])
 ```
@@ -81,8 +80,6 @@ module whitelist_regions {
 > :bulb: **Note:** Specify the `policy_mode` variable if you wish to [change the mode](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#mode) of a definition from the module default `All` to `Indexed`.
 
 > :information_source: [Microsoft Docs: Azure Policy definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
-> 
-> :information_source: [Microsoft Docs: Author policies for array properties on Azure resources](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/author-policies-for-arrays)
 
 ## Policy Initiative (Set Definitions) Module
 
@@ -140,11 +137,11 @@ Azure Policy supports the following types of effect:
 
 The `def_assignment` and `set_assignment` modules will automatically create [remediation tasks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation) for policies with effects of `DeployIfNotExists` and `Modify`. The task name is suffixed with a timestamp to ensure a new task gets created on each `terraform apply`. This can be prevented with `-var "skip_remediation=true"`.
 
-> :bulb: **Note:** To fully automate remediation tasks without manual intervention via the portal, it may be necessary in some instances to create custom role definitions. This is a disadvantage by design as identified [in this GitHub issue](https://github.com/Azure/azure-powershell/issues/10196). However a Custom or [Built-In](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) Role definition reference can be assigned to the managed identity created by the policy assignment [as seen here](examples/assignments_org.tf#L60).
+> :bulb: **Note:** The required [Role Definitions](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#configure-policy-definition) for the System Assigned Identity will be scoped at the policy assignment by default, you can override these [as seen here](examples/assignments_org.tf#L101-L104) or specify a blank array to omit creation: `role_definition_ids = []`.
 
 ## Creating Custom Versions of Built-In Policies
 
-It is possible to reference the json of a built-in definition using the [Terraform data source](https://www.terraform.io/docs/providers/azurerm/d/policy_definition.html), this will improve the amount of copy/past but potentially impose a risk if Microsoft release a breaking change. This is how one could modify the effect of a policy without having a its rules copied into a separate JSON file.
+It is possible to reference the json of a built-in definition using the [Terraform data source](https://www.terraform.io/docs/providers/azurerm/d/policy_definition.html), this will improve the amount of copy/past but potentially impose a risk if Microsoft release a breaking change. This is how one could modify the effect of a built-in definition without storing in a local library.
 
 ```hcl
 data azurerm_policy_definition allowed_resource_types {
@@ -184,28 +181,12 @@ output builtin_policy_metadata {
 `Output: builtin_policy_metadata = {"category":"Tags","version":"2.0.0"}`
 
 
-### Sourcing Versions of Custom Policies
-
-To source a policy module (or any module in fact) that lives in a directory of the same repo use the format below
-
-```hcl
-module from_mono_repo {
-  source = "git::ssh://.../<org>/<repo>.git//<my_module_dir>"
-  ...
-}
-
-module from_mono_repo_with_tags {
-   source = "git::ssh://..../<org>/<repo>.git//<my_module_dir>?ref=1.2.3"
-   ...
-}
-```
-
 ## Definition and Assignment Scopes
 
   - Should be Defined as **high up** in the hierarchy as possible
   - Should be Assigned as **low down** in the hierarchy as possible
   - `assignment_not_scopes` such as child resource groups, individual resources or entire subscriptions, can be specified as enforcement exemptions
-  - Policy **overrides RBAC** so even Subscription owners fall under the same compliance enforcements assigned at a higher scope
+  - Policy **overrides RBAC** so even Subscription owners fall under the same compliance enforcements assigned at a higher scope (does not apply if assigned at subscription scope)
 
 ![Policy Definition and Assignment Scopes](img/scopes.svg)
 
@@ -241,6 +222,7 @@ module from_mono_repo_with_tags {
 - [Microsoft Docs: Index of Azure Policy Samples](https://docs.microsoft.com/en-us/azure/governance/policy/samples/)
 - [Microsoft Docs: Design Azure Policy as Code workflows](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code)
 - [Microsoft Docs: Evaluate the impact of a new Azure Policy definition](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/evaluate-impact)
+- [Microsoft Docs: Author policies for array properties on Azure resources](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/author-policies-for-arrays)
 - [Microsoft Docs: Azure Policy Regulatory Compliance (Benchmarks)](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
 - [Microsoft Docs: Azure Policy Exemption (preview)](https://docs.microsoft.com/en-gb/azure/governance/policy/concepts/exemption-structure)
 - [Microsoft Tutorial: Build policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
@@ -255,4 +237,4 @@ module from_mono_repo_with_tags {
 
 ### Error: Invalid for_each argument
 
-You may sometimes experience plan/apply issues when running an initial deployment of the `set_assignment` module. To prevent this, set the flag `-var "skip_remediation=true"` and omit for consecutive builds.
+You may experience plan/apply issues when running an initial deployment of the `set_assignment` module. To prevent this, set the flag `-var "skip_remediation=true"` and omit for consecutive builds.

@@ -52,24 +52,17 @@ module configure_asc_initiative {
 
 # Assignment
 module org_mg_configure_asc_initiative {
-  source            = "..//modules/set_assignment"
-  initiative        = module.configure_asc_initiative.initiative
-  assignment_scope  = data.azurerm_management_group.org.id
-  assignment_effect = "DeployIfNotExists"
-  skip_remediation  = var.skip_remediation
+  source              = "..//modules/set_assignment"
+  initiative          = module.configure_asc_initiative.initiative
+  assignment_scope    = data.azurerm_management_group.org.id
+  assignment_effect   = "DeployIfNotExists"
+  skip_remediation    = var.skip_remediation
+  role_definition_ids = module.configure_asc_initiative.role_definition_ids # using roles found in member_definitions
   assignment_parameters = {
     workspaceId           = local.logging_law_id
     eventHubDetails       = local.logging_eventhub_namespace_authorization_rule_id
     securityContactsEmail = "admin@cloud.com"
     securityContactsPhone = "44897654987"
   }
-}
-
-# Security Admin Role Assignment
-resource azurerm_role_assignment org_mg_configure_asc_initiative {
-  count              = var.skip_remediation ? 0 : 1
-  scope              = data.azurerm_management_group.org.id
-  role_definition_id = data.azurerm_role_definition.security_admin.id
-  principal_id       = module.org_mg_configure_asc_initiative.identity_id
 }
 ```
