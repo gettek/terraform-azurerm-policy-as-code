@@ -8,9 +8,6 @@ resource azurerm_policy_set_definition cis_benchmark {
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes = [
-      metadata
-    ]
   }
 
   parameters = local.parameters

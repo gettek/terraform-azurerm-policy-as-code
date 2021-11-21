@@ -1,12 +1,12 @@
 ##################
 # CIS Custom Benchmark
 ##################
-module cis_custom_benchmark {
+module "cis_custom_benchmark" {
   source                = "..//modules/cis_benchmark"
   name                  = "cis_custom_benchmark"
   display_name          = "[Security]: CIS Custom Benchmark"
   description           = "Subset of CIS definitions based on CISO requirements"
-  management_group_name = azurerm_management_group.org.name
+  management_group_name = data.azurerm_management_group.org.name
 
   audit_log_analytics_workspace_retention_id = module.audit_log_analytics_workspace_retention.id
 }
@@ -14,13 +14,13 @@ module cis_custom_benchmark {
 ##################
 # Security Center
 ##################
-module configure_asc_initiative {
+module "configure_asc_initiative" {
   source                  = "..//modules/initiative"
   initiative_name         = "configure_asc_initiative"
   initiative_display_name = "[Security]: Configure Azure Security Center"
   initiative_description  = "Deploys and configures Azure Security Center settings and defines exports"
   initiative_category     = "Security Center"
-  management_group_name   = azurerm_management_group.org.name
+  management_group_name   = data.azurerm_management_group.org.name
 
   member_definitions = [
     module.configure_asc["auto_enroll_subscriptions"].definition,
@@ -34,13 +34,13 @@ module configure_asc_initiative {
 ##################
 # Monitoring: Resource & Activity Log Forwarders
 ##################
-module platform_diagnostics_initiative {
+module "platform_diagnostics_initiative" {
   source                  = "..//modules/initiative"
   initiative_name         = "platform_diagnostics_initiative"
   initiative_display_name = "[Platform]: Diagnostics Settings Policy Initiative"
   initiative_description  = "Collection of policies that deploy resource and activity log forwarders to logging core resources"
   initiative_category     = "Monitoring"
-  management_group_name   = azurerm_management_group.org.name
+  management_group_name   = data.azurerm_management_group.org.name
 
   member_definitions = [
     module.deploy_subscription_diagnostic_setting.definition,

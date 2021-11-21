@@ -1,3 +1,18 @@
+# Org Management Group
+data "azurerm_management_group" "org" {
+  name = "policy_dev"
+}
+
+# Child Management Group
+data "azurerm_management_group" "team_a" {
+  name = "team_a"
+}
+
+# Contributor role
+data "azurerm_role_definition" "contributor" {
+  name = "Contributor"
+}
+
 locals {
   # existing resources would typically be referenced up with a datasource
   dummy_resource_ids = {
@@ -6,13 +21,4 @@ locals {
     azurerm_eventhub_namespace                    = "/uri/event-hub-namespace-diagnostics"
     azurerm_eventhub_namespace_authorization_rule = "/uri/event-hub-namespace-diagnostics/RootManageSharedAccessKey"
   }
-}
-
-# Built-in Roles
-data "azurerm_role_definition" "contributor" {
-  name = "Contributor"
-}
-
-data "azurerm_role_definition" "tag_contributor" {
-  name = "Tag Contributor"
 }

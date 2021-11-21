@@ -40,18 +40,23 @@ variable member_definitions {
 locals {
   parameters = {
     for d in var.member_definitions :
-    jsondecode(d.parameters) == null ? null :
-    d.name => jsondecode(d.parameters)
+    d.name => try(jsondecode(d.parameters), null)
   }
 
+  # combine all discovered definition parameters using interpolation
   all_parameters = jsonencode(merge(values(local.parameters)...))
+
+  # get role definition IDs
+  role_definition_ids = {
+    for d in var.member_definitions :
+    d.id => try(jsondecode(d.policy_rule).then.details.roleDefinitionIds, [])
+  }
+
+  # combine all discovered role definition IDs
+  all_role_definition_ids = distinct([for v in flatten(values(local.role_definition_ids)) : lower(v)])
   
   metadata = jsonencode(merge(
-    { createdBy = data.azurerm_client_config.current.client_id },
     { category = var.initiative_category },
-    { createdOn = timestamp() },
-    { updatedBy = "" },
-    { updatedOn = "" },
     { version = var.initiative_version },
   ))
 }
