@@ -65,7 +65,7 @@
 ```hcl
 module whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/definition"
-  version               = "2.0.0"
+  version               = "2.1.0"
   policy_name           = "whitelist_regions"
   display_name          = "Allow resources only in whitelisted regions"
   policy_category       = "General"
@@ -86,7 +86,7 @@ Policy Initiatives are used to combine sets of definitions in order to simplify 
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "2.0.0"
+  version                 = "2.1.0"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -107,7 +107,7 @@ module platform_baseline_initiative {
 ```hcl
 module org_mg_whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version               = "2.0.0"
+  version               = "2.1.0"
   definition            = module.whitelist_regions.definition
   assignment_scope      = local.default_assignment_scope
   assignment_effect     = "Deny"
@@ -176,7 +176,7 @@ output builtin_policy_metadata {
   value = data.azurerm_policy_definition.builtin_policy.metadata
 }
 ```
-`Output: builtin_policy_metadata = {"category":"Tags","version":"2.0.0"}`
+`Output: builtin_policy_metadata = {"category":"Tags","version":"1.0.0"}`
 
 
 ## Definition and Assignment Scopes
@@ -235,4 +235,4 @@ output builtin_policy_metadata {
 
 ### Error: Invalid for_each argument
 
-You may experience plan/apply issues when running an initial deployment of the `set_assignment` module. To prevent this, set the flag `-var "skip_remediation=true"` and omit for consecutive builds.
+You may experience plan/apply issues when running an initial deployment of the `set_assignment` module. To prevent this, set the flag `-var "skip_remediation=true"` and omit for consecutive builds. This may also be required for destroy tasks.
