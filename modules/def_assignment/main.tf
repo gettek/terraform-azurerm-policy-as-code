@@ -1,4 +1,4 @@
-resource "azurerm_management_group_policy_assignment" "def" {
+resource azurerm_management_group_policy_assignment def {
   count                = local.assignment_scope.mg
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -7,7 +7,6 @@ resource "azurerm_management_group_policy_assignment" "def" {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  metadata             = var.definition.metadata
   parameters           = local.parameters
   location             = var.assignment_location
 
@@ -23,7 +22,7 @@ resource "azurerm_management_group_policy_assignment" "def" {
   }
 }
 
-resource "azurerm_subscription_policy_assignment" "def" {
+resource azurerm_subscription_policy_assignment def {
   count                = local.assignment_scope.sub
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -32,7 +31,6 @@ resource "azurerm_subscription_policy_assignment" "def" {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  metadata             = var.definition.metadata
   parameters           = local.parameters
   location             = var.assignment_location
 
@@ -49,7 +47,7 @@ resource "azurerm_subscription_policy_assignment" "def" {
 }
 
 
-resource "azurerm_resource_group_policy_assignment" "def" {
+resource azurerm_resource_group_policy_assignment def {
   count                = local.assignment_scope.rg
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -58,7 +56,6 @@ resource "azurerm_resource_group_policy_assignment" "def" {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  metadata             = var.definition.metadata
   parameters           = local.parameters
   location             = var.assignment_location
 
@@ -74,7 +71,7 @@ resource "azurerm_resource_group_policy_assignment" "def" {
   }
 }
 
-resource "azurerm_resource_policy_assignment" "def" {
+resource azurerm_resource_policy_assignment def {
   count                = local.assignment_scope.resource
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -83,7 +80,6 @@ resource "azurerm_resource_policy_assignment" "def" {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  metadata             = var.definition.metadata
   parameters           = local.parameters
   location             = var.assignment_location
 
@@ -100,7 +96,7 @@ resource "azurerm_resource_policy_assignment" "def" {
 }
 
 
-resource "azurerm_role_assignment" "rem_role" {
+resource azurerm_role_assignment rem_role {
   for_each                         = toset(local.role_definition_ids)
   scope                            = local.role_assignment_scope
   role_definition_id               = each.value
@@ -109,7 +105,7 @@ resource "azurerm_role_assignment" "rem_role" {
 }
 
 
-resource "azurerm_policy_remediation" "rem" {
+resource azurerm_policy_remediation rem {
   count                   = local.create_remediation ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   scope                   = var.assignment_scope

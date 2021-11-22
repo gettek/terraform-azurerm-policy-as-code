@@ -25,5 +25,5 @@ output initiative {
 
 output role_definition_ids {
   description = "Role definition IDs for remediation"
-  value = local.all_role_definition_ids
+  value       = local.all_role_definition_ids
 }

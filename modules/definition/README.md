@@ -2,7 +2,7 @@
 
 This module depends on populating `var.policy_category` and `var.policy_name` to correspond with respective policy definition `json` files.
 
-> :bulb: **Note:** More information on Policy Defenition Structure [can be found here](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
+> :bulb: **Note:** More information on Policy Definition Structure [can be found here](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
 
 
 
@@ -14,7 +14,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 2.84.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
 
 ## Modules
 

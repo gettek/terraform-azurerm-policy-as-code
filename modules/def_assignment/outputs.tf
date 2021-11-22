@@ -13,7 +13,7 @@ output remediation_id {
   value       = azurerm_policy_remediation.rem[*].id
 }
 
-output "role_definition_ids" {
+output role_definition_ids {
   description = "The List of Role Defenition Ids assignable to the managed identity"
-  value = local.role_definition_ids
+  value       = local.role_definition_ids
 }
