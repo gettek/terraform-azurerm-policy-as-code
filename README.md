@@ -43,12 +43,10 @@
       ├──📜outputs.tf
       └──📜variables.tf
   └──📂definition
-      ├──📜data.tf
       ├──📜main.tf
       ├──📜outputs.tf
       └──📜variables.tf
   └──📂initiative
-      ├──📜data.tf
       ├──📜main.tf
       ├──📜outputs.tf
       └──📜variables.tf

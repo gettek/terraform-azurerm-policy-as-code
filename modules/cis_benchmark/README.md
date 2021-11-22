@@ -37,7 +37,6 @@ No modules.
 | Name | Type |
 |------|------|
 | [azurerm_policy_set_definition.cis_benchmark](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition) | resource |
-| [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 
 ## Inputs
 
