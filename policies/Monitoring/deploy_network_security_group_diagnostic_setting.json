@@ -71,7 +71,7 @@
         "defaultValue": "True"
       }
     },
-    "rules": {
+    "policyRule": {
       "if": {
         "allOf": [
           {

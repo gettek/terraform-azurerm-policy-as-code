@@ -80,6 +80,12 @@ variable skip_remediation {
   default     = false
 }
 
+variable skip_role_assignment {
+  type        = bool
+  description = "Should the module skip creation of role assignment for policies that DeployIfNotExists and Modify"
+  default     = false
+}
+
 locals {
   # assignment_name will be trimmed if exceeds 24 characters
   assignment_name = lower(substr(var.definition.name, 0, 24))
@@ -107,17 +113,17 @@ locals {
   # merge effect with parameter_values if specified, will use definition defaults if omitted
   parameters = var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values)
 
-  # determine managed identity type from effect
-  identity_type = var.assignment_effect != null ? contains(["DeployIfNotExists", "Modify"], var.assignment_effect) ? {type = "SystemAssigned"} : {} : {}
-
-  # create a remediation task for policies with DeployIfNotExists and Modify effects only if var.skip_remediation != false
-  create_remediation = var.skip_remediation == false ? var.assignment_effect != null ? contains(["DeployIfNotExists", "Modify"], var.assignment_effect) ? true : false : false : false
+  # determine managed identity type
+  identity_type = length(try(coalescelist(var.role_definition_ids, try(jsondecode(var.definition.policy_rule).then.details.roleDefinitionIds, [])), [])) > 0 ? {type = "SystemAssigned"} : {}
 
   # try to use policy definition roles if ommitted
-  role_definition_ids = var.skip_remediation == false ? toset(try(coalescelist(var.role_definition_ids, try(jsondecode(var.definition.policy_rule).then.details.roleDefinitionIds, [])), [])) : []
+  role_definition_ids = var.skip_remediation == false ? var.skip_role_assignment == false ? try(coalescelist(var.role_definition_ids, try(jsondecode(var.definition.policy_rule).then.details.roleDefinitionIds, [])), []) : [] : []
   
   # policy assignment scope will be used if omitted
   role_assignment_scope = try(coalesce(var.role_assignment_scope, var.assignment_scope), "")
+
+  # create a remediation task for policies with DeployIfNotExists and Modify effects only if also creating role assignments
+  create_remediation = length(local.role_definition_ids) > 0 ? true : false
 
   # evaluate assignment outputs
   assignment_id = try(

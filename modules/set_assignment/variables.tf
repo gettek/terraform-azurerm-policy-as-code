@@ -80,6 +80,12 @@ variable skip_remediation {
   default     = false
 }
 
+variable skip_role_assignment {
+  type        = bool
+  description = "Should the module skip creation of role assignment for policies that DeployIfNotExists and Modify"
+  default     = false
+}
+
 locals {
   # evaluate policy assignment scope from resource identifier
   assignment_scope = try({
@@ -107,20 +113,17 @@ locals {
   # merge effect and parameter_values if specified, will use definition defaults if omitted
   parameters = var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values)
 
-  # determine managed identity type from effect
-  identity_type = var.assignment_effect != null ? contains(["DeployIfNotExists", "Modify"], var.assignment_effect) ? {type = "SystemAssigned"} : {} : {}
-
-  # create a remediation task for policies with DeployIfNotExists and Modify effects only if var.skip_remediation != false
-  create_remediation = var.skip_remediation == false ? var.assignment_effect != null ? contains(["DeployIfNotExists", "Modify"], var.assignment_effect) ? true : false : false : false
-  
-  # retrieve definition references
-  definition_reference = local.create_remediation == true ? toset(try(var.initiative.policy_definition_reference, [])) : []
-
   # try to use policy definition roles if ommitted
-  role_definition_ids = local.create_remediation == true ? toset(try(var.role_definition_ids, [])) : []
+  role_definition_ids = var.skip_remediation == false ? var.skip_role_assignment == false ? toset(try(var.role_definition_ids, [])) : [] : []
 
   # policy assignment scope will be used if omitted
-  role_assignment_scope = try(coalesce(var.role_assignment_scope, var.assignment_scope), "")
+  role_assignment_scope = coalesce(var.role_assignment_scope, var.assignment_scope)
+
+  # determine managed identity type
+  identity_type = length(try(var.role_definition_ids, [])) > 0 ? {type = "SystemAssigned"} : {}
+
+  # retrieve definition references & create a remediation task for policies with DeployIfNotExists and Modify effects if also creating role assignments
+  definition_reference = length(local.role_definition_ids) > 0 ? try(var.initiative.policy_definition_reference, []) : []
 
   # evaluate assignment outputs
   assignment_id = try(

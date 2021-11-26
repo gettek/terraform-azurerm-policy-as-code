@@ -14,6 +14,9 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+Local policy library
+policies/Guest Configuration/CGC_*.json
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json

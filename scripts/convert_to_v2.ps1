@@ -24,7 +24,7 @@ try {
     # check dependancies
     if ($PSVersionTable.PSVersion.Major -lt 7) { throw "Please use PowerShell >= 7.0" }
 
-    Push-Location -Path $PSScriptRoot
+    Push-Location -Path "$PSScriptRoot/../policies"
 
     $categories = (Get-ChildItem -Directory).BaseName
     $categories | Foreach-Object {
@@ -49,7 +49,7 @@ try {
                         category = $category
                     }
                     parameters = $params
-                    rules      = $rules
+                    policyRule = $rules
                 }
             }
             

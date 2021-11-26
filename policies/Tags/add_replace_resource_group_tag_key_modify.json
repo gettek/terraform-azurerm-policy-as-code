@@ -19,7 +19,7 @@
         }
       }
     },
-    "rules": {
+    "policyRule": {
       "if": {
         "allOf": [
           {

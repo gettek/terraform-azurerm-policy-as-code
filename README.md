@@ -55,9 +55,12 @@
       ├──📜outputs.tf
       └──📜variables.tf
 📦policies
-  ├──📜convert_to_v2.ps1 (converts policies to version 2 of the repo library)
   └──📂policy_category (e.g. General, should correspond to [var.policy_category])
       └──📜policy_name.json (e.g. whitelist_regions, should correspond to [var.policy_name])
+📦scripts
+  ├──📂dsc_examples
+  ├──📜build_guest_config_packages.ps1
+  └──📜convert_to_v2.ps1 (converts policies to version 2 of the repo library)
 ```
 
 ## Policy Definitions Module
@@ -135,11 +138,11 @@ Azure Policy supports the following types of effect:
 
 The `def_assignment` and `set_assignment` modules will automatically create [remediation tasks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation) for policies with effects of `DeployIfNotExists` and `Modify`. The task name is suffixed with a timestamp to ensure a new task gets created on each `terraform apply`. This can be prevented with `-var "skip_remediation=true"`.
 
-> :bulb: **Note:** The required [Role Definitions](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#configure-policy-definition) for the System Assigned Identity will be scoped at the policy assignment by default, you can override these [as seen here](examples/assignments_org.tf#L101-L104) or specify a blank array to omit creation: `role_definition_ids = []`.
+> :bulb: **Note:** The required [Role Definitions](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#configure-policy-definition) for the System Assigned Identity will be scoped at the policy assignment by default, you can override these [as seen here](examples/assignments_org.tf#L71-L74) or specify `skip_role_assignment=true` to omit creation.
 
 ## Creating Custom Versions of Built-In Policies
 
-It is possible to reference the json of a built-in definition using the [Terraform data source](https://www.terraform.io/docs/providers/azurerm/d/policy_definition.html), this will improve the amount of copy/past but potentially impose a risk if Microsoft release a breaking change. This is how one could modify the effect of a built-in definition without storing in a local library.
+Referencing built-in definitions using the [Terraform data source](https://www.terraform.io/docs/providers/azurerm/d/policy_definition.html), may improve management of a local definition library but potentially impose a risk if Microsoft release a breaking change. This is how one could modify the effect of a built-in definition:
 
 ```hcl
 data azurerm_policy_definition allowed_resource_types {
@@ -235,4 +238,4 @@ output builtin_policy_metadata {
 
 ### Error: Invalid for_each argument
 
-You may experience plan/apply issues when running an initial deployment of the `set_assignment` module. To prevent this, set the flag `-var "skip_remediation=true"` and omit for consecutive builds. This may also be required for destroy tasks.
+You may experience plan/apply issues when running an initial deployment of the `set_assignment` module. This is because `azurerm_role_assignment.rem_role` and `azurerm_policy_remediation.rem` depend on resources to exist before producing a successful continuos deployment. To overcome this, set the flag `-var "skip_remediation=true"` and omit for consecutive builds. This may also be required for destroy tasks.

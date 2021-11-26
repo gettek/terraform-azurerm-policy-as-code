@@ -60,7 +60,7 @@
         }
       }
     },
-    "rules": {
+    "policyRule": {
       "if": {
         "allOf": [
           {

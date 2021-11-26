@@ -27,7 +27,7 @@
         "defaultValue": 456
       }
     },
-    "rules": {
+    "policyRule": {
       "if": {
         "allOf": [
           {
