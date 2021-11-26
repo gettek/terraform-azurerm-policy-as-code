@@ -59,7 +59,7 @@
       └──📜policy_name.json (e.g. whitelist_regions, should correspond to [var.policy_name])
 📦scripts
   ├──📂dsc_examples
-  ├──📜build_guest_config_packages.ps1
+  ├──📜build_guest_config_packages.ps1 (build and publish azure policy guest configuration packages)
   └──📜convert_to_v2.ps1 (converts policies to version 2 of the repo library)
 ```
 
