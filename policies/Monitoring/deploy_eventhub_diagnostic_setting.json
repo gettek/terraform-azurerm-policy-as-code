@@ -83,7 +83,7 @@
         }
       }
     },
-    "rules": {
+    "policyRule": {
       "if": {
         "field": "type",
         "equals": "Microsoft.EventHub/namespaces"

@@ -1,0 +1,377 @@
+{
+  "name": "onboard_to_automation_dsc_windows",
+  "properties": {
+    "displayName": "Onboard Azure VM and Arc connected Windows machines to Azure Automation DSC",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "Deploys the DSC extension to onboard Windows nodes to Azure Automation DSC. Assigns a configuration.",
+    "metadata": {
+      "category": "Automation",
+      "version": "2.0.0"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "DeployIfNotExists",
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        }
+      },
+      "automationAccountId": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+          "displayName": "Automation Account Id",
+          "description": "Automation Account Id. If this account is outside of the scope of the assignment you must manually grant 'Contributor' permissions (or similar) on the Automation account to the policy assignment's principal ID.",
+          "assignPermissions": true
+        }
+      },
+      "nodeConfigurationName": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+          "displayName": "Windows Node Configuration Name",
+          "description": "Specifies the node configuration in the Automation account to assign to the node. NOTE: will auto-suffix '.localhost'."
+        }
+      },
+      "nodeConfigurationMode": {
+        "type": "String",
+        "defaultValue": "ApplyAndAutoCorrect",
+        "allowedValues": [
+          "ApplyAndAutoCorrect",
+          "applyAndMonitor",
+          "ApplyOnly"
+        ],
+        "metadata": {
+          "displayName": "Node Configuration Mode",
+          "description": "Specifies the mode for LCM. Valid options include ApplyOnly, ApplyandMonitor, and ApplyandAutoCorrect. The default value is ApplyAndAutoCorrect."
+        }
+      },
+      "listOfImageIdToInclude_windows": {
+        "type": "Array",
+        "defaultValue": [],
+        "metadata": {
+          "displayName": "Optional: List of VM images that have supported Windows OS to add to scope",
+          "description": "Example value: '/subscriptions/<subscriptionId>/resourceGroups/YourResourceGroup/providers/Microsoft.Compute/images/ContosoStdImage'"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "anyOf": [
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Compute/virtualMachines"
+              },
+              {
+                "anyOf": [
+                  {
+                    "field": "Microsoft.Compute/imageId",
+                    "in": "[parameters('listOfImageIdToInclude_windows')]"
+                  },
+                  {
+                    "field": "Microsoft.Compute/imageId",
+                    "contains": "win"
+                  },
+                  {
+                    "field": "Microsoft.Compute/imagePublisher",
+                    "in": [
+                      "esri",
+                      "incredibuild",
+                      "MicrosoftDynamicsAX",
+                      "MicrosoftSharepoint",
+                      "MicrosoftVisualStudio",
+                      "MicrosoftWindowsDesktop",
+                      "MicrosoftWindowsServerHPCPack"
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "MicrosoftWindowsServer"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageSKU",
+                        "notLike": "2008*"
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "MicrosoftSQLServer"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "notLike": "SQL2008*"
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "microsoft-dsvm"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "equals": "dsvm-windows"
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "microsoft-ads"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "in": [
+                          "standard-data-science-vm",
+                          "windows-data-science-vm"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "batch"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "equals": "rendering-windows2016"
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "center-for-internet-security-inc"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "like": "cis-windows-server-201*"
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "pivotal"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "like": "bosh-windows-server*"
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "cloud-infrastructure-services"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "like": "ad*"
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "anyOf": [
+                          {
+                            "field": "Microsoft.Compute/virtualMachines/osProfile.windowsConfiguration",
+                            "exists": "true"
+                          },
+                          {
+                            "field": "Microsoft.Compute/virtualMachines/storageProfile.osDisk.osType",
+                            "like": "Windows*"
+                          }
+                        ]
+                      },
+                      {
+                        "anyOf": [
+                          {
+                            "field": "Microsoft.Compute/imageSKU",
+                            "exists": "false"
+                          },
+                          {
+                            "allOf": [
+                              {
+                                "field": "Microsoft.Compute/imageSKU",
+                                "notLike": "2008*"
+                              },
+                              {
+                                "field": "Microsoft.Compute/imageOffer",
+                                "notLike": "SQL2008*"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.HybridCompute/machines"
+              },
+              {
+                "field": "Microsoft.HybridCompute/imageOffer",
+                "like": "windows*"
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "type": "[if(equals(tolower(field('Type')),'microsoft.compute/virtualmachines'),'Microsoft.Compute/virtualMachines/extensions','Microsoft.Compute/virtualMachineScaleSets/extensions')]",
+          "name": "Microsoft.Powershell.DSC",
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "parameters": {
+                "automationAccountId": {
+                  "value": "[parameters('automationAccountId')]"
+                },
+                "nodeConfigurationName": {
+                  "value": "[parameters('nodeConfigurationName')]"
+                },
+                "nodeConfigurationMode": {
+                  "value": "[parameters('nodeConfigurationMode')]"
+                },
+                "machineName": {
+                  "value": "[field('name')]"
+                },
+                "location": {
+                  "value": "[field('location')]"
+                },
+                "type": {
+                  "value": "[field('type')]"
+                }
+              },
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "automationAccountId": {
+                    "type": "string"
+                  },
+                  "nodeConfigurationName": {
+                    "type": "string"
+                  },
+                  "nodeConfigurationMode": {
+                    "type": "string"
+                  },
+                  "machineName": {
+                    "type": "String"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  }
+                },
+                "resources": [
+                  {
+                    "condition": "[equals(toLower(parameters('type')), toLower('Microsoft.Compute/virtualMachines'))]",
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "name": "[concat(parameters('machineName'),'/Microsoft.Powershell.DSC')]",
+                    "apiVersion": "2021-04-01",
+                    "location": "[parameters('location')]",
+                    "properties": {
+                      "publisher": "Microsoft.Powershell",
+                      "type": "DSC",
+                      "typeHandlerVersion": "2.80",
+                      "autoUpgradeMinorVersion": true,
+                      "settings": {
+                        "configurationArguments": {
+                          "RegistrationUrl": "[reference(parameters('automationAccountId'),'2018-01-15').registrationUrl]",
+                          "NodeConfigurationName": "[format('{0}.localhost', parameters('nodeConfigurationName'))]",
+                          "ActionAfterReboot": "continueConfiguration",
+                          "ConfigurationMode": "[parameters('nodeConfigurationMode')]",
+                          "ConfigurationModeFrequencyMins": 15,
+                          "RefreshFrequencyMins": 30,
+                          "AllowModuleOverwrite": true,
+                          "RebootNodeIfNeeded": true
+                        }
+                      },
+                      "protectedSettings": {
+                        "configurationArguments": {
+                          "RegistrationKey": {
+                            "userName": "NOT_USED",
+                            "Password": "[listKeys(parameters('automationAccountId'), '2018-01-15').Keys[0].value]"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "condition": "[equals(toLower(parameters('type')), toLower('Microsoft.Compute/virtualMachineScaleSets'))]",
+                    "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+                    "name": "[concat(parameters('machineName'),'/Microsoft.Powershell.DSC')]",
+                    "apiVersion": "2021-04-01",
+                    "location": "[parameters('location')]",
+                    "properties": {
+                      "publisher": "Microsoft.Powershell",
+                      "type": "DSC",
+                      "typeHandlerVersion": "2.80",
+                      "autoUpgradeMinorVersion": true,
+                      "settings": {
+                        "configurationArguments": {
+                          "RegistrationUrl": "[reference(parameters('automationAccountId'),'2018-01-15').registrationUrl]",
+                          "NodeConfigurationName": "[format('{0}.localhost', parameters('nodeConfigurationName'))]",
+                          "ActionAfterReboot": "continueConfiguration",
+                          "ConfigurationMode": "[parameters('nodeConfigurationMode')]",
+                          "ConfigurationModeFrequencyMins": 15,
+                          "RefreshFrequencyMins": 30,
+                          "AllowModuleOverwrite": true,
+                          "RebootNodeIfNeeded": true
+                        }
+                      },
+                      "protectedSettings": {
+                        "configurationArguments": {
+                          "RegistrationKey": {
+                            "userName": "NOT_USED",
+                            "Password": "[listKeys(parameters('automationAccountId'), '2018-01-15').Keys[0].value]"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

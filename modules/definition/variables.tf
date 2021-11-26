@@ -12,12 +12,13 @@ variable policy_name {
 variable display_name {
   type        = string
   description = "Display Name to be used for this policy"
+  default     = null
 }
 
 variable policy_description {
   type        = string
   description = "Policy definition description"
-  default     = ""
+  default     = null
 }
 
 variable policy_mode {
@@ -58,12 +59,12 @@ variable policy_metadata {
 locals {
   policy_object = try(templatefile("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}.json", {}), {})
 
-  # use local library rules if var.policy_rule omitted
-  policy_rule = var.policy_rule == null ? jsondecode(local.policy_object).properties.rules : var.policy_rule
-
-  # use local library parameters if var.policy_parameters omitted
+  # use local library attributes if runtime vars omitted
+  display_name = var.display_name == null ? try(jsondecode(local.policy_object).properties.display_name, "") : title(replace(var.policy_name, "_", " "))
+  description = var.policy_description == null ? try(jsondecode(local.policy_object).properties.description, "") : var.policy_description
+  policy_rule = var.policy_rule == null ? jsondecode(local.policy_object).properties.policyRule : var.policy_rule
   parameters = var.policy_parameters == null ? jsondecode(local.policy_object).properties.parameters : var.policy_parameters
-  
+
   # create metadata if var.policy_metadata is omitted
   metadata = var.policy_metadata == null ? jsonencode(merge(
     { category = var.policy_category },

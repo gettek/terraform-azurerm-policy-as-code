@@ -16,10 +16,6 @@ resource azurerm_management_group_policy_assignment def {
       type = identity.value
     }
   }
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource azurerm_subscription_policy_assignment def {
@@ -39,10 +35,6 @@ resource azurerm_subscription_policy_assignment def {
     content {
       type = identity.value
     }
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 }
 
@@ -65,10 +57,6 @@ resource azurerm_resource_group_policy_assignment def {
       type = identity.value
     }
   }
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource azurerm_resource_policy_assignment def {
@@ -88,10 +76,6 @@ resource azurerm_resource_policy_assignment def {
     content {
       type = identity.value
     }
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 }
 

@@ -20,7 +20,7 @@
         "defaultValue": "Deny"
       }
     },
-    "rules": {
+    "policyRule": {
       "if": {
         "allOf": [
           {

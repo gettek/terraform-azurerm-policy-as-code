@@ -57,7 +57,6 @@ module org_mg_configure_asc_initiative {
   assignment_scope    = data.azurerm_management_group.org.id
   assignment_effect   = "DeployIfNotExists"
   skip_remediation    = var.skip_remediation
-  role_definition_ids = module.configure_asc_initiative.role_definition_ids # using roles found in member_definitions
   assignment_parameters = {
     workspaceId           = local.logging_law_id
     eventHubDetails       = local.logging_eventhub_namespace_authorization_rule_id

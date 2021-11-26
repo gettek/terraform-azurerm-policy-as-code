@@ -11,10 +11,10 @@ resource azurerm_policy_set_definition set {
 
   dynamic "policy_definition_reference" {
     for_each = [for d in var.member_definitions : {
-      id          = d.id
-      ref_id      = substr(md5("${var.initiative_name}${d.id}"), 0, 20)
-      parameters  = jsondecode(d.parameters)
-      group_names = null
+      id         = d.id
+      ref_id     = substr(md5("${var.initiative_name}${d.id}"), 0, 20)
+      parameters = jsondecode(d.parameters)
+      groups     = []
     }]
 
     content {
@@ -24,7 +24,7 @@ resource azurerm_policy_set_definition set {
         for k in keys(policy_definition_reference.value.parameters) :
         k => { value = "[parameters('${k}')]" }
       })
-      policy_group_names = policy_definition_reference.value.group_names
+      policy_group_names = policy_definition_reference.value.groups
     }
   }
 

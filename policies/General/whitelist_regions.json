@@ -32,7 +32,7 @@
         }
       }
     },
-    "rules": {
+    "policyRule": {
       "if": {
         "not": {
           "field": "location",

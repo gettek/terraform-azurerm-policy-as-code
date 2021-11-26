@@ -41,7 +41,7 @@
         }
       }
     },
-    "rules": {
+    "policyRule": {
       "if": {
         "allOf": [
           {
