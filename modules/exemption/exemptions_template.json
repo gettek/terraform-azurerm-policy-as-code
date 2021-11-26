@@ -1,0 +1,86 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "exemption_name": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the Policy Exemption"
+            }
+        },
+        "scopes": {
+            "type": "string",
+            "metadata": {
+                "description": "Scopes for the Policy Exemption"
+            }
+        },
+        "policy_assignment_id": {
+            "type": "string",
+            "metadata": {
+                "description": "Definition Assignment for the Policy Exemption"
+            }
+        },
+        "exemption_category": {
+            "type": "string",
+            "metadata": {
+                "description": "Category for the Policy Exemption"
+            }
+        },
+        "exemption_display_name": {
+            "type": "string",
+            "metadata": {
+                "description": "Display name for the Policy Exemption"
+            }
+        },
+        "exemption_description": {
+            "type": "string",
+            "metadata": {
+                "description": "Description for the Policy Exemption"
+            }
+        },
+        "requested_by": {
+            "type": "string",
+            "metadata": {
+                "description": "Requestor for the Policy Exemption"
+            }
+        },
+        "approved_by": {
+            "type": "string",
+            "metadata": {
+                "description": "Approver for the Policy Exemption"
+            }
+        },
+        "approved_date": {
+            "type": "string",
+            "metadata": {
+                "description": "Date Approved for the Policy Exemption"
+            }
+        },
+        "ticket_ref": {
+            "type": "string",
+            "metadata": {
+                "description": "Ticket Reference for the Policy Exemption"
+            }
+        }
+    },
+    "resources": [
+    {
+        "name": "[parameters('exemption_name')]",
+        "type": "Microsoft.Authorization/policyExemptions",
+        "apiVersion": "2020-07-01-preview",
+        "location": "uksouth",
+        "scope": "[parameters('scopes')]",
+        "properties": {
+            "policyAssignmentId": "[parameters('policy_assignment_id')]",
+            "exemptionCategory": "[parameters('exemption_category')]",
+            "displayName": "[parameters('exemption_display_name')]",
+            "description": "[parameters('exemption_description')]",
+            "metadata": { 
+                "requestedBy": "[parameters('requested_by')]", 
+                "approvedBy": "[parameters('approved_by')]",  
+                "approvedOn": "[parameters('approved_date')]", 
+                "ticketRef": "[parameters('ticket_ref')]"
+            }
+        }
+    }]
+}
