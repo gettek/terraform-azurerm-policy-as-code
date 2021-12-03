@@ -114,3 +114,51 @@ module exemption_customer_mg_deny_nic_public_ip {
   description                     = "Allows NIC Public IPs for testing"
 }
 ```
+
+
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [azurerm_management_group_template_deployment.management_group_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_template_deployment) | resource |
+| [azurerm_resource_group_template_deployment.resource_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_template_deployment) | resource |
+| [azurerm_resource_group_template_deployment.resource_group_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_template_deployment) | resource |
+| [azurerm_subscription_template_deployment.subscription_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subscription_template_deployment) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_description"></a> [description](#input\_description) | Description for the Policy Exemption | `string` | n/a | yes |
+| <a name="input_display_name"></a> [display\_name](#input\_display\_name) | Display name for the Policy Exemption | `string` | n/a | yes |
+| <a name="input_exemption_category"></a> [exemption\_category](#input\_exemption\_category) | The policy exemption category. Possible values are Waiver and Mitigated. Defaults to Waiver | `string` | `"Waiver"` | no |
+| <a name="input_expires_on"></a> [expires\_on](#input\_expires\_on) | The expiration date and time (in UTC ISO 8601 format yyyy-MM-ddTHH:mm:ssZ) of the policy exemption | `string` | n/a | yes |
+| <a name="input_location"></a> [location](#input\_location) | The Azure Region where the Management Group or Subscription Scope Template Deployment should exist. Changing this forces a new Template to be created. Defaults to UK South | `string` | `"uksouth"` | no |
+| <a name="input_metadata"></a> [metadata](#input\_metadata) | Optional policy exemption metadata. For example but not limited to; requestedBy, approvedBy, approvedOn, ticketRef, etc | `any` | `{}` | no |
+| <a name="input_name"></a> [name](#input\_name) | Name for the Policy Exemption | `string` | n/a | yes |
+| <a name="input_policy_assignment_id"></a> [policy\_assignment\_id](#input\_policy\_assignment\_id) | The ID of the policy assignment that is being exempted | `string` | n/a | yes |
+| <a name="input_policy_definition_reference_ids"></a> [policy\_definition\_reference\_ids](#input\_policy\_definition\_reference\_ids) | The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition | `list` | `[]` | no |
+| <a name="input_scope"></a> [scope](#input\_scope) | Scope for the Policy Exemption | `string` | `""` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_id"></a> [id](#output\_id) | The Id of the Policy Exemption |
+| <a name="output_output_content"></a> [output\_content](#output\_output\_content) | The Content of the Outputs of the ARM Template Deployment |

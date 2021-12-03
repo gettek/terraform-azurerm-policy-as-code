@@ -1,10 +1,10 @@
 ##################
 # General
 ##################
-module "whitelist_resources" {
+module "deny_resources_types" {
   source                = "..//modules/definition"
-  policy_name           = "whitelist_resources"
-  display_name          = "Whitelist Azure Resource types"
+  policy_name           = "deny_resources_types"
+  display_name          = "Deny Azure Resource types"
   policy_category       = "General"
   management_group_name = data.azurerm_management_group.org.name
 }
@@ -56,61 +56,13 @@ module "deploy_resource_diagnostic_setting" {
   management_group_name = data.azurerm_management_group.org.name
 }
 
-module "audit_log_analytics_workspace_retention" {
-  source                = "..//modules/definition"
-  policy_name           = "audit_log_analytics_workspace_retention"
-  display_name          = "Log Analytics workspace logs should be retained for the specified amount of days"
-  policy_category       = "Monitoring"
-  management_group_name = data.azurerm_management_group.org.name
-}
-
 ##################
 # Network
 ##################
-module "deny_nic_public_ip_on_specific_subnets" {
-  source                = "..//modules/definition"
-  policy_name           = "deny_nic_public_ip_on_specific_subnets"
-  display_name          = "Network interfaces in a specified subnet should not have public IPs"
-  policy_category       = "Network"
-  management_group_name = data.azurerm_management_group.org.name
-}
-
-module "deny_nat_rules_firewalls" {
-  source                = "..//modules/definition"
-  policy_name           = "deny_nat_rules_firewalls"
-  display_name          = "NAT rules should not be allowed on Azure Firewalls"
-  policy_category       = "Network"
-  management_group_name = data.azurerm_management_group.org.name
-}
-
 module "deny_nic_public_ip" {
   source                = "..//modules/definition"
   policy_name           = "deny_nic_public_ip"
   display_name          = "Network interfaces should not have public IPs"
-  policy_category       = "Network"
-  management_group_name = data.azurerm_management_group.org.name
-}
-
-module "deny_nsg_outbound_allow_all" {
-  source                = "..//modules/definition"
-  policy_name           = "deny_nsg_outbound_allow_all"
-  display_name          = "Deny NSG rule changes that allow all outbound traffic"
-  policy_category       = "Network"
-  management_group_name = data.azurerm_management_group.org.name
-}
-
-module "deny_pip_authorised_resources" {
-  source                = "..//modules/definition"
-  policy_name           = "deny_pip_if_not_associated_authorised_resource"
-  display_name          = "Deny Public IP if not associated with authorised resources"
-  policy_category       = "Network"
-  management_group_name = data.azurerm_management_group.org.name
-}
-
-module "create_nsg_rule_append" {
-  source                = "..//modules/definition"
-  policy_name           = "create_nsg_rule_append"
-  display_name          = "Create NSG Rule Append"
   policy_category       = "Network"
   management_group_name = data.azurerm_management_group.org.name
 }
@@ -162,21 +114,6 @@ module "storage_enforce_minimum_tls1_2" {
 ##################
 # Tags
 ##################
-module "require_resource_group_tags" {
-  source                = "..//modules/definition"
-  policy_name           = "require_resource_group_tags"
-  display_name          = "Require set of tags on resource groups"
-  policy_category       = "Tags"
-  management_group_name = data.azurerm_management_group.org.name
-}
-
-module "add_replace_resource_group_tag_key_modify" {
-  source                = "..//modules/definition"
-  policy_name           = "add_replace_resource_group_tag_key_modify"
-  display_name          = "Add or replace a tag on resource groups"
-  policy_category       = "Tags"
-  management_group_name = data.azurerm_management_group.org.name
-}
 
 module "inherit_resource_group_tags_modify" {
   source                = "..//modules/definition"

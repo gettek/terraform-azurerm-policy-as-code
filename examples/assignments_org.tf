@@ -1,26 +1,4 @@
 ##################
-# CIS Custom Benchmark
-##################
-
-module org_mg_cis_custom_benchmark {
-  source           = "..//modules/set_assignment"
-  initiative       = module.cis_custom_benchmark.initiative
-  assignment_scope = data.azurerm_management_group.org.id
-  assignment_parameters = {
-    NetworkWatcherResourceGroupName                 = ""
-    listOfApprovedVMExtensions                      = [""]
-    listOfRegionsWhereNetworkWatcherShouldBeEnabled = ["uksouth", "ukwest"]
-    workspaceRetentionDays                          = 456
-    workspaceRetentionEffect                        = "AuditIfNotExists"
-  }
-
-  depends_on = [
-    module.cis_custom_benchmark
-  ]
-}
-
-
-##################
 # General
 ##################
 
@@ -82,11 +60,6 @@ module org_mg_platform_diagnostics_initiative {
     metricsEnabled              = "True"
     logsEnabled                 = "True"
   }
-
-  depends_on = [
-    module.deploy_subscription_diagnostic_setting,
-    module.deploy_resource_diagnostic_setting
-  ]
 }
 
 
@@ -104,17 +77,6 @@ module org_mg_storage_enforce_https {
 module org_mg_storage_enforce_minimum_tls1_2 {
   source            = "..//modules/def_assignment"
   definition        = module.storage_enforce_minimum_tls1_2.definition
-  assignment_scope  = data.azurerm_management_group.org.id
-  assignment_effect = "Deny"
-}
-
-
-##################
-# Network
-##################
-module org_mg_network_deny_nat_rules_firewall {
-  source            = "..//modules/def_assignment"
-  definition        = module.deny_nat_rules_firewalls.definition
   assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
 }

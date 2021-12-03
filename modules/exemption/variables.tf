@@ -1,62 +1,86 @@
-variable management_group_name {
+variable name {
   type        = string
-  description = "The scope at which the initiative will be defined. Currently this must be the group_id of a management group. Changing this forces a new resource to be created"
-  default     = null
+  description = "Name for the Policy Exemption"
 }
 
-variable initiative_name {
+variable scope {
   type        = string
-  description = "Policy initiative name. Changing this forces a new resource to be created"
-}
-
-variable initiative_display_name {
-  type        = string
-  description = "Policy initiative display name"
-}
-
-variable initiative_description {
-  type        = string
-  description = "Policy initiative description"
+  description = "Scope for the Policy Exemption"
   default     = ""
 }
 
-variable initiative_category {
+variable location {
   type        = string
-  description = "The category of the initiative"
-  default     = "General"
+  description = "The Azure Region where the Management Group or Subscription Scope Template Deployment should exist. Changing this forces a new Template to be created. Defaults to UK South"
+  default     = "uksouth"
 }
 
-variable initiative_version {
+variable policy_assignment_id {
   type        = string
-  description = "The version for this initiative, defaults to 1.0.0"
-  default     = "1.0.0"
+  description = "The ID of the policy assignment that is being exempted"
 }
 
-variable member_definitions {
+variable policy_definition_reference_ids {
+  type        = list
+  description = "The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition"
+  default     = []
+}
+
+variable exemption_category {
+  type        = string
+  description = "The policy exemption category. Possible values are Waiver and Mitigated. Defaults to Waiver"
+  default     = "Waiver"
+}
+
+variable expires_on {
+  type        = string
+  description = "The expiration date and time (in UTC ISO 8601 format yyyy-MM-ddTHH:mm:ssZ) of the policy exemption"
+}
+
+variable display_name {
+  type        = string
+  description = "Display name for the Policy Exemption"
+}
+
+variable description {
+  type        = string
+  description = "Description for the Policy Exemption"
+}
+
+variable metadata {
   type        = any
-  description = "Policy Defenition resource nodes that will be members of this initiative"
+  description = "Optional policy exemption metadata. For example but not limited to; requestedBy, approvedBy, approvedOn, ticketRef, etc"
+  default     = {}
 }
 
 locals {
-  parameters = {
-    for d in var.member_definitions :
-    d.name => try(jsondecode(d.parameters), null)
+  exemptions_template = file("${path.module}/exemptions.json")
+
+  exemption_scope = try({
+    mg = length(regexall("(\\/managementGroups\\/)", var.scope)) > 0 ? 1 : 0,
+    sub = length(split("/", var.scope)) == 3 ? 1 : 0,
+    rg = length(regexall("(\\/managementGroups\\/)", var.scope)) < 1 ? length(split("/", var.scope)) == 5 ? 1 : 0 : 0,
+    resource = length(split("/", var.scope)) >= 6 ? 1 : 0,
+  })
+
+  parameters_content = {
+    name                         = { value = var.name }
+    scope                        = { value = local.exemption_scope.mg + local.exemption_scope.sub > 0 ? "" : var.scope }
+    policyAssignmentId           = { value = var.policy_assignment_id }
+    policyDefinitionReferenceIds = { value = var.policy_definition_reference_ids }
+    exemptionCategory            = { value = var.exemption_category }
+    expiresOn                    = { value = var.expires_on }
+    displayName                  = { value = var.display_name }
+    description                  = { value = var.description }
+    metadata                     = { value = var.metadata }
   }
 
-  # combine all discovered definition parameters using interpolation
-  all_parameters = jsonencode(merge(values(local.parameters)...))
+  deployment_name = (replace(local.parameters_content.name.value, " ", "_"))
 
-  # get role definition IDs
-  role_definition_ids = {
-    for d in var.member_definitions :
-    d.id => try(jsondecode(d.policy_rule).then.details.roleDefinitionIds, [])
-  }
-
-  # combine all discovered role definition IDs
-  all_role_definition_ids = distinct([for v in flatten(values(local.role_definition_ids)) : lower(v)])
-  
-  metadata = jsonencode(merge(
-    { category = var.initiative_category },
-    { version = var.initiative_version },
-  ))
+  exemption_resource_node = try(
+    azurerm_management_group_template_deployment.management_group_exemption[0],
+    azurerm_subscription_template_deployment.subscription_exemption[0],
+    azurerm_resource_group_template_deployment.resource_group_exemption[0],
+    azurerm_resource_group_template_deployment.resource_exemption[0],
+    "")
 }

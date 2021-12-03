@@ -1,0 +1,44 @@
+{
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "deny_resources_types",
+  "properties": {
+    "metadata": {
+      "category": "General"
+    },
+    "parameters": {
+      "listOfResourceTypesNotAllowed": {
+        "type": "Array",
+        "metadata": {
+          "description": "The list of resource types that cannot be deployed.",
+          "displayName": "Disallowed resources",
+          "strongType": "resourceTypes"
+        },
+        "defaultValue": [
+          ""
+        ]
+      },
+      "effect": {
+        "type": "String",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "The effect determines what happens when the policy rule is evaluated to match"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "in": "[parameters('listOfResourceTypesNotAllowed')]"
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

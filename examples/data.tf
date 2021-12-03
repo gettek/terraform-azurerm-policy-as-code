@@ -1,3 +1,5 @@
+data azurerm_client_config current {}
+
 # Org Management Group
 data "azurerm_management_group" "org" {
   name = "policy_dev"
@@ -12,6 +14,12 @@ data "azurerm_management_group" "team_a" {
 data "azurerm_role_definition" "contributor" {
   name = "Contributor"
 }
+
+# Virtual Machine Contributor role
+data "azurerm_role_definition" "vm_contributor" {
+  name = "Virtual Machine Contributor"
+}
+
 
 locals {
   # existing resources would typically be referenced up with a datasource

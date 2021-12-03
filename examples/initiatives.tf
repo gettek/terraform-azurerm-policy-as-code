@@ -1,17 +1,4 @@
 ##################
-# CIS Custom Benchmark
-##################
-module "cis_custom_benchmark" {
-  source                = "..//modules/cis_benchmark"
-  name                  = "cis_custom_benchmark"
-  display_name          = "[Security]: CIS Custom Benchmark"
-  description           = "Subset of CIS definitions based on CISO requirements"
-  management_group_name = data.azurerm_management_group.org.name
-
-  audit_log_analytics_workspace_retention_id = module.audit_log_analytics_workspace_retention.id
-}
-
-##################
 # Security Center
 ##################
 module "configure_asc_initiative" {
