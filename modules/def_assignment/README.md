@@ -1,6 +1,8 @@
 # POLICY DEFINITION ASSIGNMENT MODULE
 
-Assignments can be scoped from overarching management groups right down to individual resources
+Assignments can be scoped from overarching management groups right down to individual resources.
+
+> 💡 A Role Assignment and Remediation Task will be created if the Policy definition contains a list of `roleDefinitionIds`.
 
 ## Examples
 
@@ -39,6 +41,26 @@ module customer_mg_inherit_resource_group_tags_modify {
   role_assignment_scope = "omit this to assign at same scope as policy assignment"
   assignment_parameters = {
     tagName = "environment"
+  }
+}
+```
+
+### Built-In Policy Definition Assignment
+
+```hcl
+data azurerm_policy_definition deploy_law_on_linux_vms {
+  display_name = "Deploy Log Analytics extension for Linux VMs"
+}
+
+module customer_mg_inherit_resource_group_tags_modify {
+  source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
+  definition        = data.azurerm_policy_definition.deploy_law_on_linux_vms
+  assignment_scope  = data.azurerm_management_group.team_a.id
+  assignment_parameters = {
+    logAnalytics           = local.dummy_resource_ids.azurerm_log_analytics_workspace
+    listOfImageIdToInclude = [
+      local.dummy_resource_ids.custom_linux_image_id
+    ]
   }
 }
 ```

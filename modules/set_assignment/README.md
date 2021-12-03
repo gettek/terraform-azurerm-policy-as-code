@@ -2,6 +2,8 @@
 
 Assignments can be scoped from overarching management groups right down to individual resources
 
+> 💡 To automate Role Assignment and Remediation you must explicitly parse a list of required `role_definition_ids` to this module.
+
 ## Examples
 
 ### Custom Policy Initiative Assignment
@@ -40,8 +42,6 @@ module org_mg_cis_1_3_0_benchmark {
 ```
 
 ### Built-In Policy Initiative Containing DINE/Modify Assignment
-
-To automate role assignment and remediation you must explicitly parse a list of required `role_definition_ids` to the module
 
 ```hcl
 data "azurerm_policy_set_definition" "configure_az_monitor_linux_vm_initiative" {

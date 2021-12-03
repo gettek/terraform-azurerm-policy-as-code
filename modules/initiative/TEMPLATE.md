@@ -8,7 +8,7 @@ Dynamically creates a policy set based on multiple policy definition references
 ### Create an Initiative with custom Policy definitions
 
 ```hcl
-module "configure_asc_initiative" {
+module configure_asc_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
   initiative_name         = "configure_asc_initiative"
   initiative_display_name = "[Security]: Configure Azure Security Center"
@@ -29,11 +29,11 @@ module "configure_asc_initiative" {
 ### Create an Initiative with a mix of custom & built-in Policy definitions
 
 ```hcl
-data "azurerm_policy_definition" "deploy_law_on_linux_vms" {
+data azurerm_policy_definition deploy_law_on_linux_vms {
   display_name = "Deploy Log Analytics extension for Linux VMs"
 }
 
-module "configure_asc_initiative" {
+module configure_asc_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
   initiative_name         = "configure_asc_initiative"
   initiative_display_name = "[Security]: Configure Azure Security Center"
