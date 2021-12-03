@@ -14,15 +14,21 @@ variable assignment_not_scopes {
   default     = []
 }
 
+variable assignment_name {
+  type        = string
+  description = "The name which should be used for this Policy Assignment, defaults to initiative name. Changing this forces a new Policy Assignment to be created"
+  default     = ""
+}
+
 variable assignment_display_name {
   type        = string
-  description = "The policy assignment display name, if blank the definition display_name will be used. Changing this forces a new resource to be created"
+  description = "The policy assignment display name, defaults to initiative display_name. Changing this forces a new resource to be created"
   default     = ""
 }
 
 variable assignment_description {
   type        = string
-  description = "A description to use for the Policy Assignment. Changing this forces a new resource to be created"
+  description = "A description to use for the Policy Assignment, defaults to initiative description. Changing this forces a new resource to be created"
   default     = ""
 }
 
@@ -96,7 +102,7 @@ locals {
   })
 
   # assignment_name will be trimmed if exceeds 24 characters
-  assignment_name = lower(substr(var.initiative.name, 0, 24))
+  assignment_name = try(lower(substr(coalesce(var.assignment_name, var.initiative.name), 0, 24)), "")
 
   # initiative display_name will be used if omitted
   display_name = try(coalesce(var.assignment_display_name, var.initiative.display_name), "")

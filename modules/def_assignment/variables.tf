@@ -14,15 +14,21 @@ variable assignment_not_scopes {
   default     = []
 }
 
+variable assignment_name {
+  type        = string
+  description = "The name which should be used for this Policy Assignment, defaults to definition name. Changing this forces a new Policy Assignment to be created"
+  default     = ""
+}
+
 variable assignment_display_name {
   type        = string
-  description = "The policy assignment display name, if blank the definition display_name will be used. Changing this forces a new resource to be created"
+  description = "The policy assignment display name, defaults to definition display_name. Changing this forces a new resource to be created"
   default     = ""
 }
 
 variable assignment_description {
   type        = string
-  description = "A description to use for the Policy Assignment. Changing this forces a new resource to be created"
+  description = "A description to use for the Policy Assignment, defaults to definition description. Changing this forces a new resource to be created"
   default     = ""
 }
 
@@ -88,7 +94,7 @@ variable skip_role_assignment {
 
 locals {
   # assignment_name will be trimmed if exceeds 24 characters
-  assignment_name = lower(substr(var.definition.name, 0, 24))
+  assignment_name = try(lower(substr(coalesce(var.assignment_name, var.definition.name), 0, 24)), "")
 
   # evaluate policy assignment scope from resource identifier
   assignment_scope = try({
