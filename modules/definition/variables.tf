@@ -60,7 +60,7 @@ locals {
   policy_object = try(templatefile("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}.json", {}), {})
 
   # use local library attributes if runtime vars omitted
-  display_name = var.display_name == null ? try(jsondecode(local.policy_object).properties.display_name, "") : title(replace(var.policy_name, "_", " "))
+  display_name = var.display_name == null ? try(jsondecode(local.policy_object).properties.displayName, "") : title(replace(var.policy_name, "_", " "))
   description = var.policy_description == null ? try(jsondecode(local.policy_object).properties.description, "") : var.policy_description
   policy_rule = var.policy_rule == null ? jsondecode(local.policy_object).properties.policyRule : var.policy_rule
   parameters = var.policy_parameters == null ? jsondecode(local.policy_object).properties.parameters : var.policy_parameters
