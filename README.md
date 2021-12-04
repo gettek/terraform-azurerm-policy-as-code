@@ -18,9 +18,9 @@
 - [Repo Folder Structure](#repo-folder-structure)
 - [Policy Definitions Module](#policy-definitions-module)
 - [Policy Initiative (Set Definitions) Module](#policy-initiative-set-definitions-module)
-- [Policy Definition Assignment](#policy-definition-assignment)
-- [Policy Initiative Assignment](#policy-initiative-assignment)
-- [Create a time sensitive Policy Exemption](#create-a-time-sensitive-policy-exemption)
+- [Policy Definition Assignment Module](#policy-definition-assignment-module)
+- [Policy Initiative Assignment Module](#policy-initiative-assignment-module)
+- [Policy Exemption Module](#policy-exemption-module)
 - [Assignment Effects](#assignment-effects)
   - [Automate Remediation Tasks](#automate-remediation-tasks)
 - [Definition and Assignment Scopes](#definition-and-assignment-scopes)
@@ -50,9 +50,9 @@
       ├──📜outputs.tf
       └──📜variables.tf
   └──📂exemption
+      ├──📜exemptions.json
       ├──📜main.tf
       ├──📜outputs.tf
-      ├──📜template.json
       └──📜variables.tf
   └──📂initiative
       ├──📜main.tf
@@ -113,7 +113,7 @@ module platform_baseline_initiative {
 
 > ⚠️ **Warning:** If any two `member_definition_ids` contain the same parameters then they will be `merged()` by this module, in most cases this is beneficial but if unique values are required it may be best practice to set unique keys such as `[parameters('whitelist_resources_effect')]` instead of `[parameters('effect')]`.
 
-## Policy Definition Assignment
+## Policy Definition Assignment Module
 
 ```hcl
 module org_mg_whitelist_regions {
@@ -132,7 +132,8 @@ module org_mg_whitelist_regions {
 }
 ```
 
-## Policy Initiative Assignment
+## Policy Initiative Assignment Module
+
 ```hcl
 module org_mg_platform_diagnostics_initiative {
   source               = "gettek/policy-as-code/azurerm//modules/set_assignment"
@@ -159,28 +160,29 @@ module org_mg_platform_diagnostics_initiative {
 }
 ```
 
-## Create a time sensitive Policy Exemption
+## Policy Exemption Module
 
-Use the [exemption module](modules/exemption/README.md) to create an auditable and time-sensitive `not_scope`
+Use the [exemption module](modules/exemption/README.md) to create an auditable and time-sensitive `not_scope` Policy exemption:
 
 ```hcl
-data azurerm_resource_group vaults {
-  name = "rg-dev-uks-vaults"
+data azurerm_resources keyvaults {
+  type                = "Microsoft.KeyVault/vaults"
+  resource_group_name = "rg-dev-uks-vaults"
 }
 
-module exemption_customer_mg_deny_nic_public_ip {
-  source  = "gettek/policy-as-code/azurerm//modules/exemption"
-  version = "2.3.0"
+module exemption_team_a_mg_key_vaults_require_purge_protection {
+  source   = "gettek/policy-as-code/azurerm//modules/exemption"
+  for_each = toset(data.azurerm_resources.keyvaults.resources.*.id)
   providers = {
     azurerm = azurerm.team_a
   }
-  name                            = "Deny NIC Public IP Exemption"
-  scope                           = data.azurerm_resource_group.vaults
-  policy_assignment_id            = module.customer_mg_deny_nic_public_ip.id
+  name                            = "Key vaults should have purge protection enabled Exemption"
+  scope                           = each.value
+  policy_assignment_id            = module.team_a_mg_key_vaults_require_purge_protection.id
   exemption_category              = "Waiver"
   expires_on                      = "2022-05-31"
   display_name                    = "Exempted for testing"
-  description                     = "Allows NIC Public IPs for testing"
+  description                     = "Do not require purge protection on KVs while testing"
 }
 ```
 

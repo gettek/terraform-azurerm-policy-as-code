@@ -10,7 +10,7 @@ Assignments can be scoped from overarching management groups right down to indiv
 ### Assign a definition with Modify effect to automatically create a role assignment and remediation task
 
 ```hcl
-module customer_mg_inherit_resource_group_tags_modify {
+module team_a_mg_inherit_resource_group_tags_modify {
   source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
   definition        = module.inherit_resource_group_tags_modify.definition
   assignment_scope  = data.azurerm_management_group.team_a.id
@@ -29,7 +29,7 @@ data azurerm_role_definition contributor {
   name = "Contributor"
 }
 
-module customer_mg_inherit_resource_group_tags_modify {
+module team_a_mg_inherit_resource_group_tags_modify {
   source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
   definition        = module.inherit_resource_group_tags_modify.definition
   assignment_scope  = data.azurerm_management_group.team_a.id
@@ -45,17 +45,18 @@ module customer_mg_inherit_resource_group_tags_modify {
 }
 ```
 
-### Built-In Policy Definition Assignment
+### Create a Built-In Policy Definition Assignment
 
 ```hcl
 data azurerm_policy_definition deploy_law_on_linux_vms {
   display_name = "Deploy Log Analytics extension for Linux VMs"
 }
 
-module customer_mg_inherit_resource_group_tags_modify {
+module team_a_mg_inherit_resource_group_tags_modify {
   source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
   definition        = data.azurerm_policy_definition.deploy_law_on_linux_vms
   assignment_scope  = data.azurerm_management_group.team_a.id
+  skip_remediation  = var.skip_remediation
   assignment_parameters = {
     logAnalytics           = local.dummy_resource_ids.azurerm_log_analytics_workspace
     listOfImageIdToInclude = [

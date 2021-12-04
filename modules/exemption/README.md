@@ -18,16 +18,18 @@ resource.azurerm_resource_group_template_deployment.resource_group_exemption
 resource.azurerm_resource_group_template_deployment.resource_exemption
 ```
 
+> 💡 azurerm_resource_group_template_deployment resource will automatically attempt to delete resources deployed by the ARM Template when it is deleted. This behaviour can be disabled in the provider `features` block by setting the `delete_nested_items_during_deletion` field to `false` within the `template_deployment` block.
+
 ## Examples
 
 ### At Management Group Scope
 
 ```hcl
-module exemption_customer_mg_deny_nic_public_ip {
+module exemption_team_a_mg_deny_nic_public_ip {
   source   = "gettek/policy-as-code/azurerm//modules/exemption"
   name                            = "Deny NIC Public IP Exemption"
   scope                           = data.azurerm_management_group.team_a.id # should be management_group_id not name
-  policy_assignment_id            = module.customer_mg_deny_nic_public_ip.id
+  policy_assignment_id            = module.team_a_mg_deny_nic_public_ip.id
   exemption_category              = "Waiver"
   expires_on                      = "2022-05-31"
   display_name                    = "Exempted for testing"
@@ -70,18 +72,18 @@ module "exemption_configure_asc_initiative" {
 ### Resource Group Exemption
 
 ```hcl
-data azurerm_resource_group vaults {
-  name = "rg-dev-uks-vaults"
+data azurerm_resource_group vms {
+  name = "rg-dev-uks-vms"
 }
 
-module exemption_customer_mg_deny_nic_public_ip {
+module exemption_team_a_mg_deny_nic_public_ip {
   source   = "gettek/policy-as-code/azurerm//modules/exemption"
   providers = {
     azurerm = azurerm.team_a
   }
   name                            = "Deny NIC Public IP Exemption"
-  scope                           = data.azurerm_resource_group.vaults
-  policy_assignment_id            = module.customer_mg_deny_nic_public_ip.id
+  scope                           = data.azurerm_resource_group.vms
+  policy_assignment_id            = module.team_a_mg_deny_nic_public_ip.id
   exemption_category              = "Waiver"
   expires_on                      = "2022-05-31"
   display_name                    = "Exempted for testing"
@@ -99,19 +101,19 @@ data azurerm_resources keyvaults {
   resource_group_name = "rg-dev-uks-vaults"
 }
 
-module exemption_customer_mg_deny_nic_public_ip {
+module exemption_team_a_mg_key_vaults_require_purge_protection {
   source   = "gettek/policy-as-code/azurerm//modules/exemption"
   for_each = toset(data.azurerm_resources.keyvaults.resources.*.id)
   providers = {
     azurerm = azurerm.team_a
   }
-  name                            = "Deny NIC Public IP Exemption"
+  name                            = "Key vaults should have purge protection enabled Exemption"
   scope                           = each.value
-  policy_assignment_id            = module.customer_mg_deny_nic_public_ip.id
+  policy_assignment_id            = module.team_a_mg_key_vaults_require_purge_protection.id
   exemption_category              = "Waiver"
   expires_on                      = "2022-05-31"
   display_name                    = "Exempted for testing"
-  description                     = "Allows NIC Public IPs for testing"
+  description                     = "Do not require purge protection on KVs while testing"
 }
 ```
 

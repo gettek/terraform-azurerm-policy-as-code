@@ -1,7 +1,7 @@
 ##################
 # General
 ##################
-module "customer_mg_deny_resources_types" {
+module "team_a_mg_deny_resources_types" {
   source                = "..//modules/def_assignment"
   definition            = module.deny_resources_types.definition
   assignment_scope      = data.azurerm_management_group.team_a.id
@@ -20,7 +20,7 @@ module "customer_mg_deny_resources_types" {
 ##################
 # Network
 ##################
-module "customer_mg_deny_nic_public_ip" {
+module "team_a_mg_deny_nic_public_ip" {
   source            = "..//modules/def_assignment"
   definition        = module.deny_nic_public_ip.definition
   assignment_scope  = data.azurerm_management_group.team_a.id
@@ -31,7 +31,7 @@ module "customer_mg_deny_nic_public_ip" {
 # Tags
 ##################
 
-module "customer_mg_inherit_resource_group_tags_modify" {
+module "team_a_mg_inherit_resource_group_tags_modify" {
   source            = "..//modules/def_assignment"
   definition        = module.inherit_resource_group_tags_modify.definition
   assignment_scope  = data.azurerm_management_group.team_a.id

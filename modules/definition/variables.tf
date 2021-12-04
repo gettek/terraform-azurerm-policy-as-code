@@ -40,19 +40,19 @@ variable policy_version {
 
 variable policy_rule {
   type        = any
-  description = "The policy rule for the policy definition. This is a JSON string representing the rule that contains an if and a then block. Omitting this assumes the file is located at /policies/var.policy_category/var.policy_name/rules.json/"
+  description = "The policy rule for the policy definition. This is a JSON object representing the rule that contains an if and a then block. Omitting this assumes the rules are located in /policies/var.policy_category/var.policy_name.json"
   default     = null
 }
 
 variable policy_parameters {
   type        = any
-  description = "Parameters for the policy definition. This field is a JSON string that allows you to parameterise your policy definition. Omitting this assumes the file is located at /policies/var.policy_category/var.policy_name/parameters.json"
+  description = "Parameters for the policy definition. This field is a JSON object that allows you to parameterise your policy definition. Omitting this assumes the parameters are located in /policies/var.policy_category/var.policy_name.json"
   default     = null
 }
 
 variable policy_metadata {
   type        = any
-  description = "The metadata for the policy definition. This is a JSON string representing additional metadata that should be stored with the policy definition. Omitting this will merge var.policy_category and var.policy_version as the metadata"
+  description = "The metadata for the policy definition. This is a JSON object representing additional metadata that should be stored with the policy definition. Omitting this will merge var.policy_category and var.policy_version as the metadata"
   default     = null
 }
 

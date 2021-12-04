@@ -120,10 +120,10 @@ locals {
   parameters = var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values)
 
   # determine managed identity type
-  identity_type = length(try(coalescelist(var.role_definition_ids, try(jsondecode(var.definition.policy_rule).then.details.roleDefinitionIds, [])), [])) > 0 ? {type = "SystemAssigned"} : {}
+  identity_type = length(try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), [])) > 0 ? {type = "SystemAssigned"} : {}
 
   # try to use policy definition roles if ommitted
-  role_definition_ids = var.skip_remediation == false ? var.skip_role_assignment == false ? try(coalescelist(var.role_definition_ids, try(jsondecode(var.definition.policy_rule).then.details.roleDefinitionIds, [])), []) : [] : []
+  role_definition_ids = var.skip_remediation == false ? var.skip_role_assignment == false ? try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), []) : [] : []
   
   # policy assignment scope will be used if omitted
   role_assignment_scope = try(coalesce(var.role_assignment_scope, var.assignment_scope), "")
