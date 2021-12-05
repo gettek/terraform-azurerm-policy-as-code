@@ -3,7 +3,7 @@
 ##################
 
 # Onboarding Prerequisites
-module team_a_mg_guest_config_prereqs_initiative {
+module "team_a_mg_guest_config_prereqs_initiative" {
   source              = "..//modules/set_assignment"
   initiative          = module.guest_config_prereqs_initiative.initiative
   assignment_scope    = data.azurerm_management_group.team_a.id
@@ -16,7 +16,7 @@ module team_a_mg_guest_config_prereqs_initiative {
 }
 
 # Custom Config Packages
-module team_a_mg_custom_guest_configs_initiative {
+module "team_a_mg_custom_guest_configs_initiative" {
   source              = "..//modules/set_assignment"
   initiative          = module.custom_guest_configs_initiative.initiative
   assignment_scope    = data.azurerm_management_group.team_a.id

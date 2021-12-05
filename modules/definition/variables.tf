@@ -29,7 +29,7 @@ variable policy_mode {
 
 variable policy_category {
   type        = string
-  description = "The category of the policy, should correspond to the correct category folder under /policies/policy_category"
+  description = "The category of the policy, should correspond to the correct category folder under /policies/var.policy_category"
 }
 
 variable policy_version {

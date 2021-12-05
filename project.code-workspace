@@ -14,6 +14,12 @@
 				],
 				"url": "https://schema.management.azure.com/schemas/2020-10-01/policyDefinition.json"
 			}
-		]
+		],
+		"github-actions.workflows.pinned.workflows": [
+			".github/workflows/ci.yml",
+			".github/workflows/cd.yml"
+		],
+		"github-actions.workflows.pinned.refresh.enabled": true,
+		"github-actions.workflows.pinned.refresh.interval": 30,
 	}
 }

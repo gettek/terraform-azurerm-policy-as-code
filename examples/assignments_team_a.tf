@@ -2,10 +2,10 @@
 # General
 ##################
 module "team_a_mg_deny_resources_types" {
-  source                = "..//modules/def_assignment"
-  definition            = module.deny_resources_types.definition
-  assignment_scope      = data.azurerm_management_group.team_a.id
-  assignment_effect     = "Audit"
+  source            = "..//modules/def_assignment"
+  definition        = module.deny_resources_types.definition
+  assignment_scope  = data.azurerm_management_group.team_a.id
+  assignment_effect = "Audit"
   assignment_parameters = [
     "Microsoft.Storage/operations",
     "Microsoft.Storage/storageAccounts",
