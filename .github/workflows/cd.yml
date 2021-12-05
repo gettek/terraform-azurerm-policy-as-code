@@ -1,7 +1,7 @@
 name: cd
 on:
   push:
-    branches: ["2.3.0"]
+    branches: [main]
     paths:
       - "examples"
   workflow_dispatch:

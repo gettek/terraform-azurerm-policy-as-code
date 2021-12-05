@@ -7,20 +7,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  Terraform-ValidationTests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Validate Terraform
-        uses: docker://ghcr.io/github/super-linter:slim-v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: main
-          VALIDATE_TERRAFORM: true
-          VALIDATE_TERRAFORM_TERRASCAN: true
 
   Terraform-CI-Tests:
     env:
@@ -30,13 +16,11 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-    needs: Terraform-ValidationTests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1.2.1
         with:
-          cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
           terraform_version: 1.0.11
 
       - name: Terraform Format
