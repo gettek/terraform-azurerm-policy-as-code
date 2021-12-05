@@ -17,7 +17,3 @@ module "exemption_configure_asc_initiative" {
   description        = "Excludes subscription from ASC onboarding during development"
 }
 
-output "policy_definition_reference" {
-  value = module.org_mg_configure_asc_initiative.initiative.policy_definition_reference
-}
-
