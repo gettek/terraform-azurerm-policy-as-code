@@ -79,13 +79,14 @@ jobs:
         run: terraform apply -auto-approve -var="skip_remediation=true" && terraform apply -auto-approve
 
       - name: Log in with Azure
+        if: steps.apply.outcome == 'success'
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
 
       - name: Clean Resources with PowerShell
-        id: destroy
+        if: steps.apply.outcome == 'success'
         uses: azure/powershell@v1
         with:
           inlineScript: |
