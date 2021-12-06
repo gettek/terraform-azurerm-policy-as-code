@@ -11,5 +11,5 @@ variable "skip_remediation" {
 variable "build_packages" {
   type        = bool
   description = "Create and publish custom guest config polices with build_guest_config_packages.ps1"
-  default     = false
+  default     = true
 }

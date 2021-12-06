@@ -4,7 +4,7 @@ resource "azurerm_resource_group" "guest_config_rg" {
   tags     = {}
 }
 
-resource "azurerm_storage_account" "guest_config_store" {
+resource azurerm_storage_account guest_config_store {
   name                = "guestconfig${substr(md5(data.azurerm_client_config.current.subscription_id), 0, 5)}"
   resource_group_name = azurerm_resource_group.guest_config_rg.name
   location            = azurerm_resource_group.guest_config_rg.location
@@ -22,7 +22,7 @@ resource "azurerm_storage_account" "guest_config_store" {
   }
 }
 
-resource "azurerm_storage_container" "guest_config_container" {
+resource azurerm_storage_container guest_config_container {
   name                  = "configs"
   storage_account_name  = azurerm_storage_account.guest_config_store.name
   container_access_type = "blob"
