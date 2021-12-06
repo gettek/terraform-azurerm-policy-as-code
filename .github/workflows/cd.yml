@@ -22,18 +22,27 @@ jobs:
         with:
           terraform_version: 1.0.11
 
-      - name: Terraform Init
-        id: init
-        run: terraform init -no-color
-        working-directory: examples
+      # - name: Terraform Init
+      #   id: init
+      #   run: terraform init -no-color
+      #   working-directory: examples
 
-      - name: Terraform Apply
-        id: apply
-        if: ${{ success() }}
-        run: terraform apply -auto-approve -var="skip_remediation=true" && terraform apply -auto-approve
-        working-directory: examples
+      # - name: Terraform Apply
+      #   id: apply
+      #   if: ${{ success() }}
+      #   run: terraform apply -auto-approve -var="skip_remediation=true" && terraform apply -auto-approve
+      #   working-directory: examples
 
-      - name: Terraform Destroy
+      - name: Log in with Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
+
+      - name: Clean Resources with PowerShell
         id: destroy
-        run: terraform destroy -auto-approve -var="skip_remediation=true" && terraform destroy -auto-approve
-        working-directory: examples
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            scripts/deletePolicies.ps1
+          azPSVersion: "latest"
