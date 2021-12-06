@@ -78,6 +78,16 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -var="skip_remediation=true" && terraform apply -auto-approve
 
-      - name: Terraform Destroy
+      - name: Log in with Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
+
+      - name: Clean Resources with PowerShell
         id: destroy
-        run: terraform destroy -auto-approve
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            scripts/deletePolicies.ps1
+          azPSVersion: "latest"
