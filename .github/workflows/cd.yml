@@ -32,3 +32,8 @@ jobs:
         if: ${{ success() }}
         run: terraform apply -auto-approve -var="skip_remediation=true" && terraform apply -auto-approve
         working-directory: examples
+
+      - name: Terraform Destroy
+        id: destroy
+        run: terraform destroy -auto-approve -var="skip_remediation=true" && terraform destroy -auto-approve
+        working-directory: examples

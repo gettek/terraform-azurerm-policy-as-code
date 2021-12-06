@@ -74,5 +74,10 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
+        id: apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -var="skip_remediation=true" && terraform apply -auto-approve
+
+      - name: Terraform Destroy
+        id: destroy
+        run: terraform destroy -auto-approve -var="skip_remediation=true" && terraform destroy -auto-approve
