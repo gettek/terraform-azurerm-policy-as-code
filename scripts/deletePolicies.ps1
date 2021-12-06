@@ -5,3 +5,6 @@ Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/
 Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/policy_dev" | Remove-AzPolicyAssignment -Verbose
 Get-AzPolicySetDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicySetDefinition -Force -Verbose
 Get-AzPolicyDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicyDefinition -Force -Verbose
+
+# Remove policy exemption.tf deployment
+Remove-AzDeployment -name "Onboard_subscription_to_ASC_Exemption"
