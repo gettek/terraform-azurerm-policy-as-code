@@ -17,7 +17,7 @@ module "org_mg_configure_az_monitor_linux_vm_initiative" {
     data.azurerm_role_definition.vm_contributor.id
   ]
   assignment_parameters = {
-    "listOfLinuxImageIdToInclude" = []
-    dcrResourceId                 = "/Data/Collection/Rule/Resource/Id"
+    listOfLinuxImageIdToInclude = []
+    dcrResourceId               = "/Data/Collection/Rule/Resource/Id"
   }
 }

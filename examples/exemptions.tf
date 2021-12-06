@@ -5,7 +5,7 @@ module "exemption_configure_asc_initiative" {
     azurerm = azurerm.team_a
   }
   name                 = "Onboard subscription to ASC Exemption"
-  scope                = "/subscriptions/${var.team_a_subscription_id}"
+  scope                = "/subscriptions/${data.azurerm_client_config.current.subscription_id}"
   policy_assignment_id = module.org_mg_configure_asc_initiative.id
   policy_definition_reference_ids = [
     "6d237bfef483fbb3308d",
@@ -16,4 +16,3 @@ module "exemption_configure_asc_initiative" {
   display_name       = "Exempted while testing"
   description        = "Excludes subscription from ASC onboarding during development"
 }
-
