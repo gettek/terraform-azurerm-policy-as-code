@@ -1,4 +1,4 @@
-resource azurerm_resource_group guest_config_rg {
+resource "azurerm_resource_group" "guest_config_rg" {
   name     = "dsc"
   location = "uksouth"
   tags     = {}
@@ -38,10 +38,10 @@ locals {
 
 # execute script to build and publish custom guest config packages located in scripts/dsc_examples
 # requires PWSH >= 7
-resource null_resource guest_config_packages_script {
+resource "null_resource" "guest_config_packages_script" {
   count = var.build_packages ? 1 : 0
   provisioner "local-exec" {
-    command     = "pwsh -file build_guest_config_packages.ps1 -checkDependancies -housekeeping -storageResourceGroupName ${local.script_params.rg} -storageAccountName ${local.script_params.sa} -containerName ${local.script_params.container}"
+    command     = "pwsh -file build_guest_config_packages.ps1 -checkDependancies -connectAzAccount -housekeeping -storageResourceGroupName ${local.script_params.rg} -storageAccountName ${local.script_params.sa} -containerName ${local.script_params.container}"
     interpreter = ["PowerShell", "-Command"]
     working_dir = "${path.module}/../scripts"
   }

@@ -1,5 +1,70 @@
 # POLICY DEFINITION ASSIGNMENT MODULE
 
+Assignments can be scoped from overarching management groups right down to individual resources.
+
+> 💡 A Role Assignment and Remediation Task will be created if the Policy definition contains a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment = true`, the scope can also be changed by setting `role_assignment_scope`.
+
+## Examples
+
+
+### Assign a definition with Modify effect to automatically create a role assignment and remediation task
+
+```hcl
+module team_a_mg_inherit_resource_group_tags_modify {
+  source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
+  definition        = module.inherit_resource_group_tags_modify.definition
+  assignment_scope  = data.azurerm_management_group.team_a.id
+  assignment_effect = "Modify"
+  skip_remediation  = var.skip_remediation
+  assignment_parameters = {
+    tagName = "environment"
+  }
+}
+```
+
+### Assign a definition with Modify effect to automatically create a role assignment and remediation task with an explicit role
+
+```hcl
+data azurerm_role_definition contributor {
+  name = "Contributor"
+}
+
+module team_a_mg_inherit_resource_group_tags_modify {
+  source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
+  definition        = module.inherit_resource_group_tags_modify.definition
+  assignment_scope  = data.azurerm_management_group.team_a.id
+  assignment_effect = "Modify"
+  skip_remediation  = var.skip_remediation
+  role_definition_ids = [
+      data.azurerm_role_definition.contributor
+  ]
+  role_assignment_scope = "omit this to assign at same scope as policy assignment"
+  assignment_parameters = {
+    tagName = "environment"
+  }
+}
+```
+
+### Create a Built-In Policy Definition Assignment
+
+```hcl
+data azurerm_policy_definition deploy_law_on_linux_vms {
+  display_name = "Deploy Log Analytics extension for Linux VMs"
+}
+
+module team_a_mg_inherit_resource_group_tags_modify {
+  source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
+  definition        = data.azurerm_policy_definition.deploy_law_on_linux_vms
+  assignment_scope  = data.azurerm_management_group.team_a.id
+  skip_remediation  = var.skip_remediation
+  assignment_parameters = {
+    logAnalytics           = local.dummy_resource_ids.azurerm_log_analytics_workspace
+    listOfImageIdToInclude = [
+      local.dummy_resource_ids.custom_linux_image_id
+    ]
+  }
+}
+```
 
 
 ## Requirements
@@ -31,11 +96,12 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_assignment_description"></a> [assignment\_description](#input\_assignment\_description) | A description to use for the Policy Assignment. Changing this forces a new resource to be created | `string` | `""` | no |
-| <a name="input_assignment_display_name"></a> [assignment\_display\_name](#input\_assignment\_display\_name) | The policy assignment display name, if blank the definition display\_name will be used. Changing this forces a new resource to be created | `string` | `""` | no |
+| <a name="input_assignment_description"></a> [assignment\_description](#input\_assignment\_description) | A description to use for the Policy Assignment, defaults to definition description. Changing this forces a new resource to be created | `string` | `""` | no |
+| <a name="input_assignment_display_name"></a> [assignment\_display\_name](#input\_assignment\_display\_name) | The policy assignment display name, defaults to definition display\_name. Changing this forces a new resource to be created | `string` | `""` | no |
 | <a name="input_assignment_effect"></a> [assignment\_effect](#input\_assignment\_effect) | The effect of the policy. Changing this forces a new resource to be created | `string` | `null` | no |
 | <a name="input_assignment_enforcement_mode"></a> [assignment\_enforcement\_mode](#input\_assignment\_enforcement\_mode) | Control whether the assignment is enforced | `bool` | `true` | no |
 | <a name="input_assignment_location"></a> [assignment\_location](#input\_assignment\_location) | The Azure location where this policy assignment should exist, required when an Identity is assigned. Defaults to UK South. Changing this forces a new resource to be created | `string` | `"uksouth"` | no |
+| <a name="input_assignment_name"></a> [assignment\_name](#input\_assignment\_name) | The name which should be used for this Policy Assignment, defaults to definition name. Changing this forces a new Policy Assignment to be created | `string` | `""` | no |
 | <a name="input_assignment_not_scopes"></a> [assignment\_not\_scopes](#input\_assignment\_not\_scopes) | A list of the Policy Assignment's excluded scopes. Must be full resource IDs | `list` | `[]` | no |
 | <a name="input_assignment_parameters"></a> [assignment\_parameters](#input\_assignment\_parameters) | The policy assignment parameters. Changing this forces a new resource to be created | `any` | `null` | no |
 | <a name="input_assignment_scope"></a> [assignment\_scope](#input\_assignment\_scope) | The scope at which the policy will be assigned. Must be full resource IDs. Changing this forces a new resource to be created | `string` | n/a | yes |

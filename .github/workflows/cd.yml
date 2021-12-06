@@ -1,0 +1,34 @@
+name: cd
+on:
+  push:
+    branches: [main]
+    paths:
+      - "examples"
+  workflow_dispatch:
+
+jobs:
+  cd:
+    env:
+      TF_IN_AUTOMATION: true
+      TF_INPUT: false
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1.2.1
+        with:
+          terraform_version: 1.0.11
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -no-color
+        working-directory: examples
+
+      - name: Terraform Apply
+        id: apply
+        if: ${{ success() }}
+        run: terraform apply -auto-approve -var="skip_remediation=true" && terraform apply -auto-approve
+        working-directory: examples

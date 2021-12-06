@@ -12,7 +12,7 @@ locals {
   ]
 }
 
-module guest_config_prereqs {
+module "guest_config_prereqs" {
   source                = "..//modules/definition"
   for_each              = toset(local.guest_config_prereqs)
   policy_name           = each.value
@@ -20,7 +20,7 @@ module guest_config_prereqs {
   management_group_name = data.azurerm_management_group.org.name
 }
 
-module guest_config_prereqs_initiative {
+module "guest_config_prereqs_initiative" {
   source                  = "..//modules/initiative"
   initiative_name         = "guest_config_prereqs_initiative"
   initiative_display_name = "[GC]: Deploys Guest Config Prerequisites"
@@ -36,7 +36,7 @@ module guest_config_prereqs_initiative {
 
 
 # Custom Config Definitions
-module custom_guest_configs {
+module "custom_guest_configs" {
   source                = "..//modules/definition"
   for_each              = fileset("${path.module}/../policies/Guest Configuration", "CGC_*.json")
   policy_name           = replace(each.key, ".json", "")
@@ -49,7 +49,7 @@ module custom_guest_configs {
   ]
 }
 
-module custom_guest_configs_initiative {
+module "custom_guest_configs_initiative" {
   source                  = "..//modules/initiative"
   initiative_name         = "custom_guest_configs_initiative"
   initiative_display_name = "[CGC]: Deploys Custom Guest Config Packages"
@@ -57,7 +57,7 @@ module custom_guest_configs_initiative {
   initiative_category     = "Guest Configuration"
   management_group_name   = data.azurerm_management_group.org.name
 
-  member_definitions = [ 
+  member_definitions = [
     for cgc in module.custom_guest_configs :
     cgc.definition
   ]

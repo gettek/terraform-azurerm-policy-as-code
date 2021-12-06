@@ -28,10 +28,6 @@ resource azurerm_policy_set_definition set {
     }
   }
 
-  lifecycle {
-    create_before_destroy = true
-  }
-
   timeouts {
     read = "10m"
   }

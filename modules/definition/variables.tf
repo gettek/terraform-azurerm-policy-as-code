@@ -29,7 +29,7 @@ variable policy_mode {
 
 variable policy_category {
   type        = string
-  description = "The category of the policy, should correspond to the correct category folder under /policies/policy_category"
+  description = "The category of the policy, should correspond to the correct category folder under /policies/var.policy_category"
 }
 
 variable policy_version {
@@ -40,19 +40,19 @@ variable policy_version {
 
 variable policy_rule {
   type        = any
-  description = "The policy rule for the policy definition. This is a JSON string representing the rule that contains an if and a then block. Omitting this assumes the file is located at /policies/var.policy_category/var.policy_name/rules.json/"
+  description = "The policy rule for the policy definition. This is a JSON object representing the rule that contains an if and a then block. Omitting this assumes the rules are located in /policies/var.policy_category/var.policy_name.json"
   default     = null
 }
 
 variable policy_parameters {
   type        = any
-  description = "Parameters for the policy definition. This field is a JSON string that allows you to parameterise your policy definition. Omitting this assumes the file is located at /policies/var.policy_category/var.policy_name/parameters.json"
+  description = "Parameters for the policy definition. This field is a JSON object that allows you to parameterise your policy definition. Omitting this assumes the parameters are located in /policies/var.policy_category/var.policy_name.json"
   default     = null
 }
 
 variable policy_metadata {
   type        = any
-  description = "The metadata for the policy definition. This is a JSON string representing additional metadata that should be stored with the policy definition. Omitting this will merge var.policy_category and var.policy_version as the metadata"
+  description = "The metadata for the policy definition. This is a JSON object representing additional metadata that should be stored with the policy definition. Omitting this will merge var.policy_category and var.policy_version as the metadata"
   default     = null
 }
 
@@ -60,7 +60,7 @@ locals {
   policy_object = try(templatefile("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}.json", {}), {})
 
   # use local library attributes if runtime vars omitted
-  display_name = var.display_name == null ? try(jsondecode(local.policy_object).properties.display_name, "") : title(replace(var.policy_name, "_", " "))
+  display_name = var.display_name == null ? try(jsondecode(local.policy_object).properties.displayName, "") : title(replace(var.policy_name, "_", " "))
   description = var.policy_description == null ? try(jsondecode(local.policy_object).properties.description, "") : var.policy_description
   policy_rule = var.policy_rule == null ? jsondecode(local.policy_object).properties.policyRule : var.policy_rule
   parameters = var.policy_parameters == null ? jsondecode(local.policy_object).properties.parameters : var.policy_parameters

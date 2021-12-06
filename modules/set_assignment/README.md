@@ -1,5 +1,73 @@
 # POLICY INITIATIVE ASSIGNMENT MODULE
 
+Assignments can be scoped from overarching management groups right down to individual resources
+
+> 💡 To automate Role Assignment and Remediation you must explicitly parse a list of required `role_definition_ids` to this module. Specify a `role_assignment_scope` to change role assignments to a lower scope beneath the Policy assignment.
+
+> ⚠️ **Warning:** You may experience plan/apply issues when running an initial deployment of a `set_assignment`. This is because `azurerm_role_assignment.rem_role` and `azurerm_policy_remediation.rem` depend on resources to exist before producing a successful deployment. To overcome this, set the flag `-var "skip_remediation=true"` and omit for consecutive builds. This may also be required for destroy tasks.
+
+## Examples
+
+### Custom Policy Initiative Assignment
+```hcl
+module org_mg_configure_asc_initiative {
+  source               = "gettek/policy-as-code/azurerm//modules/set_assignment"
+  initiative           = module.configure_asc_initiative.initiative
+  assignment_scope     = data.azurerm_management_group.org.id
+  assignment_effect    = "DeployIfNotExists"
+  skip_remediation     = var.skip_remediation
+  skip_role_assignment = false
+  role_definition_ids  = module.configure_asc_initiative.role_definition_ids
+  assignment_parameters = {
+    workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
+    eventHubDetails       = local.dummy_resource_ids.azurerm_eventhub_namespace_authorization_rule
+    securityContactsEmail = "admin@cloud.com"
+    securityContactsPhone = "44897654987"
+  }
+}
+```
+
+### Built-In Policy Initiative Assignment
+```hcl
+data "azurerm_policy_set_definition" "cis_1_3_0" {
+  display_name = "CIS Microsoft Azure Foundations Benchmark v1.3.0"
+}
+
+module org_mg_cis_1_3_0_benchmark {
+  source           = "gettek/policy-as-code/azurerm//modules/set_assignment"
+  initiative       = data.azurerm_policy_set_definition.cis_1_3_0
+  assignment_scope = data.azurerm_management_group.org.id
+  assignment_parameters = {
+    "effect-b954148f-4c11-4c38-8221-be76711e194a-MicrosoftSql-servers-firewallRules-delete" = "Disabled"
+  }
+}
+```
+
+### Built-In Policy Initiative Containing DINE/Modify Assignment
+
+```hcl
+data "azurerm_policy_set_definition" "configure_az_monitor_linux_vm_initiative" {
+  display_name = "Configure Linux machines to run Azure Monitor Agent and associate them to a Data Collection Rule"
+}
+
+data "azurerm_role_definition" "vm_contributor" {
+  name = "Virtual Machine Contributor"
+}
+
+module org_mg_configure_az_monitor_linux_vm_initiative {
+  source           = "gettek/policy-as-code/azurerm//modules/set_assignment"
+  initiative       = data.azurerm_policy_set_definition.configure_az_monitor_linux_vm_initiative
+  assignment_scope = data.azurerm_management_group.org.id
+  skip_remediation = var.skip_remediation
+  role_definition_ids = [
+    data.azurerm_role_definition.vm_contributor.id
+  ]
+  assignment_parameters = {
+    "listOfLinuxImageIdToInclude" = []
+    dcrResourceId                 = "/Data/Collection/Rule/Resource/Id"
+  }
+}
+```
 
 
 ## Requirements
@@ -31,11 +99,12 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_assignment_description"></a> [assignment\_description](#input\_assignment\_description) | A description to use for the Policy Assignment. Changing this forces a new resource to be created | `string` | `""` | no |
-| <a name="input_assignment_display_name"></a> [assignment\_display\_name](#input\_assignment\_display\_name) | The policy assignment display name, if blank the definition display\_name will be used. Changing this forces a new resource to be created | `string` | `""` | no |
+| <a name="input_assignment_description"></a> [assignment\_description](#input\_assignment\_description) | A description to use for the Policy Assignment, defaults to initiative description. Changing this forces a new resource to be created | `string` | `""` | no |
+| <a name="input_assignment_display_name"></a> [assignment\_display\_name](#input\_assignment\_display\_name) | The policy assignment display name, defaults to initiative display\_name. Changing this forces a new resource to be created | `string` | `""` | no |
 | <a name="input_assignment_effect"></a> [assignment\_effect](#input\_assignment\_effect) | The effect of the policy. Changing this forces a new resource to be created | `string` | `null` | no |
 | <a name="input_assignment_enforcement_mode"></a> [assignment\_enforcement\_mode](#input\_assignment\_enforcement\_mode) | Control whether the assignment is enforced | `bool` | `true` | no |
 | <a name="input_assignment_location"></a> [assignment\_location](#input\_assignment\_location) | The Azure location where this policy assignment should exist, required when an Identity is assigned. Defaults to UK South. Changing this forces a new resource to be created | `string` | `"uksouth"` | no |
+| <a name="input_assignment_name"></a> [assignment\_name](#input\_assignment\_name) | The name which should be used for this Policy Assignment, defaults to initiative name. Changing this forces a new Policy Assignment to be created | `string` | `""` | no |
 | <a name="input_assignment_not_scopes"></a> [assignment\_not\_scopes](#input\_assignment\_not\_scopes) | A list of the Policy Assignment's excluded scopes. Must be full resource IDs | `list` | `[]` | no |
 | <a name="input_assignment_parameters"></a> [assignment\_parameters](#input\_assignment\_parameters) | The policy assignment parameters. Changing this forces a new resource to be created | `any` | `null` | no |
 | <a name="input_assignment_scope"></a> [assignment\_scope](#input\_assignment\_scope) | The scope at which the policy initiative will be assigned. Must be full resource IDs. Changing this forces a new resource to be created | `string` | n/a | yes |
