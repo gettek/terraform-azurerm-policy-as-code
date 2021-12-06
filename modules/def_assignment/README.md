@@ -2,7 +2,7 @@
 
 Assignments can be scoped from overarching management groups right down to individual resources.
 
-> 💡 A Role Assignment and Remediation Task will be created if the Policy definition contains a list of `roleDefinitionIds`.
+> 💡 A Role Assignment and Remediation Task will be created if the Policy definition contains a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment = true`, the scope can also be changed by setting `role_assignment_scope`.
 
 ## Examples
 
