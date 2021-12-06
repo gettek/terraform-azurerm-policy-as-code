@@ -6,15 +6,17 @@ module "team_a_mg_deny_resources_types" {
   definition        = module.deny_resources_types.definition
   assignment_scope  = data.azurerm_management_group.team_a.id
   assignment_effect = "Audit"
-  assignment_parameters = [
-    "Microsoft.Storage/operations",
-    "Microsoft.Storage/storageAccounts",
-    "Microsoft.Storage/storageAccounts/blobServices",
-    "Microsoft.Storage/storageAccounts/blobServices/containers",
-    "Microsoft.Storage/storageAccounts/listAccountSas",
-    "Microsoft.Storage/storageAccounts/listServiceSas",
-    "Microsoft.Storage/usages",
-  ]
+  assignment_parameters = {
+    listOfResourceTypesNotAllowed = [
+      "Microsoft.Storage/operations",
+      "Microsoft.Storage/storageAccounts",
+      "Microsoft.Storage/storageAccounts/blobServices",
+      "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "Microsoft.Storage/storageAccounts/listAccountSas",
+      "Microsoft.Storage/storageAccounts/listServiceSas",
+      "Microsoft.Storage/usages",
+    ]
+  }
 }
 
 ##################
