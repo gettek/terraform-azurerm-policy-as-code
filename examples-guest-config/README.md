@@ -49,7 +49,7 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_build_packages"></a> [build\_packages](#input\_build\_packages) | Create and publish custom guest config polices with build\_guest\_config\_packages.ps1 | `bool` | `false` | no |
+| <a name="input_build_packages"></a> [build\_packages](#input\_build\_packages) | Create and publish custom guest config polices with build\_guest\_config\_packages.ps1 | `bool` | `true` | no |
 | <a name="input_skip_remediation"></a> [skip\_remediation](#input\_skip\_remediation) | Skip creation of all remediation tasks for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 
 ## Outputs

@@ -56,11 +56,8 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_skip_remediation"></a> [skip\_remediation](#input\_skip\_remediation) | Skip creation of all remediation tasks for policies that DeployIfNotExists and Modify | `bool` | `true` | no |
-| <a name="input_team_a_subscription_id"></a> [team\_a\_subscription\_id](#input\_team\_a\_subscription\_id) | Team A Subscription Id | `string` | `"26daef58-833e-4124-b0c8-afd7619ca427"` | no |
+| <a name="input_skip_remediation"></a> [skip\_remediation](#input\_skip\_remediation) | Skip creation of all remediation tasks for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_policy_definition_reference"></a> [policy\_definition\_reference](#output\_policy\_definition\_reference) | n/a |
+No outputs.
