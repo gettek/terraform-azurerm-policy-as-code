@@ -116,7 +116,7 @@ locals {
     key => merge({ value = value })
   } : null
 
-  # merge effect and parameter_values if specified, will use definition defaults if omitted
+  # merge effect and parameter_values if specified, will use definition default effects if omitted
   parameters = var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values)
 
   # try to use policy definition roles if ommitted

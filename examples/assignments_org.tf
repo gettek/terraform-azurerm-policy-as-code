@@ -27,7 +27,7 @@ module "org_mg_configure_asc_initiative" {
   assignment_scope     = data.azurerm_management_group.org.id
   assignment_effect    = "DeployIfNotExists"
   skip_remediation     = var.skip_remediation
-  skip_role_assignment = false
+  skip_role_assignment = var.skip_role_assignment
   role_definition_ids  = module.configure_asc_initiative.role_definition_ids
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
@@ -47,7 +47,7 @@ module "org_mg_platform_diagnostics_initiative" {
   assignment_scope     = data.azurerm_management_group.org.id
   assignment_effect    = "DeployIfNotExists"
   skip_remediation     = var.skip_remediation
-  skip_role_assignment = false
+  skip_role_assignment = var.skip_role_assignment
   role_definition_ids = [
     data.azurerm_role_definition.contributor.id # using explicit roles
   ]
