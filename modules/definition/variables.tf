@@ -57,13 +57,13 @@ variable policy_metadata {
 }
 
 locals {
-  policy_object = try(templatefile("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}.json", {}), {})
+  policy_object = jsondecode(file("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}.json"))
 
   # use local library attributes if runtime vars omitted
-  display_name = var.display_name == null ? try(jsondecode(local.policy_object).properties.displayName, "") : title(replace(var.policy_name, "_", " "))
-  description = var.policy_description == null ? try(jsondecode(local.policy_object).properties.description, "") : var.policy_description
-  policy_rule = var.policy_rule == null ? jsondecode(local.policy_object).properties.policyRule : var.policy_rule
-  parameters = var.policy_parameters == null ? jsondecode(local.policy_object).properties.parameters : var.policy_parameters
+  display_name = var.display_name == null ? try((local.policy_object).properties.displayName, "") : title(replace(var.policy_name, "_", " "))
+  description = var.policy_description == null ? try((local.policy_object).properties.description, "") : var.policy_description
+  policy_rule = var.policy_rule == null ? (local.policy_object).properties.policyRule : var.policy_rule
+  parameters = var.policy_parameters == null ? (local.policy_object).properties.parameters : var.policy_parameters
 
   # create metadata if var.policy_metadata is omitted
   metadata = var.policy_metadata == null ? jsonencode(merge(

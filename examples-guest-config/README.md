@@ -20,30 +20,30 @@ No requirements.
 | Name | Version |
 |------|---------|
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 2.84.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | 1.4.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.1.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_custom_guest_configs"></a> [custom\_guest\_configs](#module\_custom\_guest\_configs) | ..//modules/definition | n/a |
-| <a name="module_custom_guest_configs_initiative"></a> [custom\_guest\_configs\_initiative](#module\_custom\_guest\_configs\_initiative) | ..//modules/initiative | n/a |
 | <a name="module_guest_config_prereqs"></a> [guest\_config\_prereqs](#module\_guest\_config\_prereqs) | ..//modules/definition | n/a |
 | <a name="module_guest_config_prereqs_initiative"></a> [guest\_config\_prereqs\_initiative](#module\_guest\_config\_prereqs\_initiative) | ..//modules/initiative | n/a |
-| <a name="module_team_a_mg_custom_guest_configs_initiative"></a> [team\_a\_mg\_custom\_guest\_configs\_initiative](#module\_team\_a\_mg\_custom\_guest\_configs\_initiative) | ..//modules/set_assignment | n/a |
 | <a name="module_team_a_mg_guest_config_prereqs_initiative"></a> [team\_a\_mg\_guest\_config\_prereqs\_initiative](#module\_team\_a\_mg\_guest\_config\_prereqs\_initiative) | ..//modules/set_assignment | n/a |
+| <a name="module_team_a_mg_vm_custom_guest_configs"></a> [team\_a\_mg\_vm\_custom\_guest\_configs](#module\_team\_a\_mg\_vm\_custom\_guest\_configs) | ..//modules/def_assignment | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [azurerm_resource_group.guest_config_rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
-| [azurerm_storage_account.guest_config_store](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
-| [azurerm_storage_container.guest_config_container](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
 | [null_resource.guest_config_packages_script](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_management_group.org](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/management_group) | data source |
 | [azurerm_management_group.team_a](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/management_group) | data source |
+| [azurerm_policy_definition.custom_guest_config_definitions](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/policy_definition) | data source |
+| [azurerm_role_definition.contributor](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) | data source |
+| [azurerm_storage_container.guest_config_container](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/storage_container) | data source |
+| [local_file.cgc_definition_list](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) | data source |
 
 ## Inputs
 
@@ -54,4 +54,6 @@ No requirements.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_cgc_definition_list"></a> [cgc\_definition\_list](#output\_cgc\_definition\_list) | output of the build packages script |

@@ -1,35 +1,30 @@
 ﻿<#
 Create & Publish Azure Policy Guest Configuration packages from local PowerShell DSC Configs
 MS Docs: How to create custom guest configuration package artifacts: https://docs.microsoft.com/en-us/azure/governance/policy/how-to/guest-configuration-create
-Requires Azure PowerShell token, assumes already authenticated with az cli
+Requires Azure PowerShell token, use -connectAzAccount flag to assume az cli token
 #>
 
 [CmdletBinding()]
 Param(
-    [bool][Parameter(Mandatory = $false)] $createGuestConfigPackage = $true,
-    [bool][Parameter(Mandatory = $false)] $createGuestConfigPolicy = $true,
-    [string][Parameter(Mandatory = $false)] $publishGuestConfigPolicyMG,
-    [string][Parameter(Mandatory = $false)] $storageResourceGroupName,
-    [string][Parameter(Mandatory = $false)] $storageAccountName,
-    [string][Parameter(Mandatory = $false)] $containerName,
-    [switch][Parameter(Mandatory = $false)] $connectAzAccount,
-    [switch][Parameter(Mandatory = $false)] $checkDependancies,
-    [switch][Parameter(Mandatory = $false)] $housekeeping
+    [switch][Parameter(Mandatory = $false)] $env:connectAzAccount, # use az cli token to authenticate to Azure PowerShell
+    [switch][Parameter(Mandatory = $false)] $env:checkDependancies, # check and install required PowerShell modules
+    [switch][Parameter(Mandatory = $false)] $env:housekeeping, # keep or remove local dsc packages
+    [switch][Parameter(Mandatory = $false)] $env:createGuestConfigPackage, # generate the dsc package locally
+    [switch][Parameter(Mandatory = $false)] $env:createGuestConfigPolicy, # generate the policy definition and publish dsc packages to storage
+    [string][Parameter(Mandatory = $false)] $env:storageResourceGroupName, # storage account resource group name
+    [string][Parameter(Mandatory = $false)] $env:storageAccountName, # storage account that will hold dsc packages
+    [string][Parameter(Mandatory = $false)] $env:containerName, # storage container name that will hold dsc packages
+    [string][Parameter(Mandatory = $false)] $env:publishGuestConfigPolicyMG # managment group to publish definitions
 )
-
-$ErrorActionPreference = "Stop"
-$VerbosePreference = "Continue"
-
-# Set working directory to script path
-Push-Location -Path "$PSScriptRoot/dsc_examples"
 
 try {
     # Check dependancies required to build Custom Guest Configuration Packages
-    if ($checkDependancies) {
+    if ($env:checkDependancies) {
         if ($PSVersionTable.PSVersion.Major -lt 7) { throw "Please use PowerShell >= 7.0" }
 
-        # include modules required by dsc configs
+        # Include modules required by dsc configs
         $requiredModules = @(
+            "Az.Accounts"
             "GuestConfiguration"
             "PSDscResources"
             "PSDesiredStateConfiguration"
@@ -38,86 +33,109 @@ try {
             "xWebAdministration"
             "nx"
         )
+        Import-Module PowerShellGet
         $requiredModules | ForEach-Object {
             $latestVersion = (Find-Module -Name $_).Version.ToString()
             $installedVersion = Get-Module -ListAvailable -FullyQualifiedName $_
 
             if ($null -eq $installedVersion) {
-                Write-Host "🔷 Installing Module $_..." -ForegroundColor Magenta
+                Write-Host "Installing Module $_..." -ForegroundColor Magenta
                 Install-Module $_ -Force -confirm:$false -AllowClobber
             }
             elseif ($latestVersion -gt $installedVersion.Version.ToString()) {
-                Write-Host "🔷 Updating Module $_ to the latest version $latestVersion"
+                Write-Host "Updating Module $_ to the latest version $latestVersion"
                 Update-Module -Name $_ -Confirm:$false -Force
             }
+            Write-Host "Importing Module $_"
             Import-Module -Name $_
         }
     }
+    
+    if ($env:createGuestConfigPackage) {
+    
+        # Connect to Azure PowerShell using current az cli token context
+        if ($env:connectAzAccount) {
+            $token = (az account get-access-token | ConvertFrom-Json).accessToken
+            $accountId = (az account show | ConvertFrom-Json)
+            Connect-AzAccount -AccessToken $token -AccountId $accountId.user.name -Subscription $accountId.Id
+        }
+    
+        # Set working directory to script path
+        Push-Location -Path "$PSScriptRoot/dsc_examples"
+    
+        # Prepare output object
+        $definitionList = [ordered]@{}
+        
+        foreach ($configName in (Get-ChildItem "*.ps1").BaseName) {
 
-    # Connect to Azure PowerShell using current az cli token context
-    if ($connectAzAccount) {
-        $token = (az account get-access-token | ConvertFrom-Json).accessToken
-        $accountId = (az account show | ConvertFrom-Json)
-        Connect-AzAccount -AccessToken $token -AccountId $accountId.user.name -Subscription $accountId.Id
-    }
-
-    # retrieve dsc configs
-    $configs = Get-ChildItem "*.ps1"
-    $configs.Name | ForEach-Object {
-        $configName = ($_ -replace ".ps1", "")
-
-        & .\$_ # Compile the DSC configuration MOF file - ensure the configuration name is ALSO referenced at the end of the file itself for this line to work!
-
-        # Create the Guest Configuration custom policy package
-        if ($createGuestConfigPackage) {
+            # Compile the DSC configuration MOF file
+            # ensure the configuration name is ALSO referenced at the end of the file itself
+            & .\$configName
+            
+            # Create the Guest Configuration custom policy package
             $package = New-GuestConfigurationPackage `
                 -Name $configName `
                 -Configuration "./$configName/localhost.mof" `
                 -Path "./" `
-                -Force `
-                -Verbose
-        }
+                -Force
 
-        if ($createGuestConfigPolicy) {
-            # Upload the package to azure storage blob
-            $publish = Publish-GuestConfigurationPackage `
-                -Path $package.Path `
-                -ResourceGroupName $storageResourceGroupName `
-                -StorageAccountName $storageAccountName `
-                -StorageContainerName $containerName `
-                -Force `
-                -Verbose
-            
-            # Create the Guest Configuration Policy definition
-            $policy = New-GuestConfigurationPolicy `
-                -PolicyId "CGC_$configName" `
-                -ContentUri $publish.ContentUri `
-                -DisplayName $configName `
-                -Description "VM Custom Guest Configuration: $configName" `
-                -Path "../../policies/Guest Configuration/CGC_$configName" `
-                -Version 1.0.0 `
-                -Mode 'ApplyAndAutoCorrect' `
-                -Platform $(if ($configName -like "nx*") { "Linux" } else { "Windows" }) `
-                -Verbose
-        }
+            if ($env:createGuestConfigPolicy) {
+                # Upload the package to azure storage blob
+                $package = Publish-GuestConfigurationPackage `
+                    -Path $package.Path `
+                    -ResourceGroupName $env:storageResourceGroupName `
+                    -StorageAccountName $env:storageAccountName `
+                    -StorageContainerName $env:containerName `
+                    -Force -Verbose
+                
+                # Create the Guest Configuration Policy definition
+                $policy = New-GuestConfigurationPolicy `
+                    -PolicyId "CGC_$configName" `
+                    -ContentUri $package.ContentUri `
+                    -DisplayName $configName `
+                    -Description "VM Custom Guest Configuration: $configName" `
+                    -Path "../../policies/Guest Configuration/CGC_$configName" `
+                    -Version 1.0.0 `
+                    -Mode 'ApplyAndAutoCorrect' `
+                    -Platform $(if ($configName -like "nx*") { "Linux" } else { "Windows" })
+                
+                # Publish the Guest Configuration Policy to a Management Group
+                if ($env:publishGuestConfigPolicyMG) {
+                    $definition = Publish-GuestConfigurationPolicy -Path $policy.Path -ManagementGroupName $publishGuestConfigPolicyMG
+                    $policyDefinitionId = $definition.PolicyDefinitionId
+                }
+                else { $policyDefinitionId = $null }
 
-        # Publish the Guest Configuration Policy to a Management Group
-        if ($publishGuestConfigPolicyMG) {
-            Publish-GuestConfigurationPolicy -Path $policy.Path -ManagementGroupName $publishGuestConfigPolicyMG
-        }
+                # Populate output object
+                $definitionList["CGC_$configName"] = @{
+                    contentUri         = $package.ContentUri
+                    policyDefinitionId = $policyDefinitionId
+                }
 
-        # Move and rename policy to correct category path
-        Move-Item ($policy.Path + "/DeployIfNotExists.json") -Destination ($policy.Path + ".json") -Force
-        Start-Sleep -Seconds 1.5
-        Remove-Item -Confirm:$false -Recurse -Force $policy.Path
-        
-        # Clear or keep local DSC artifacts
-        if ($housekeeping) {
+                # Move and rename local policy to correct category path
+                Move-Item ($policy.Path + "/DeployIfNotExists.json") -Destination ($policy.Path + ".json") -Force
+                Start-Sleep -Seconds 1.5
+                Remove-Item -Confirm:$false -Recurse -Force $policy.Path
+            }
+
+            # Clear or keep local DSC artifacts
+            if ($env:housekeeping) {
+                Start-Sleep -Seconds 1.5
+                Remove-Item -Confirm:$false -Recurse -Force "./$configName"
+            }
+        }
+        # Write output object
+        $definitionList | ConvertTo-Json | Out-File -FilePath "$PSScriptRoot/definitionList.json" -Force
+    
+        # Return to original working directory
+        Pop-Location
+    
+        # Clear Az PowerShell Context
+        if ($env:connectAzAccount) { 
             Start-Sleep -Seconds 1.5
-            Remove-Item -Confirm:$false -Recurse -Force "./$configName"
+            Clear-AzContext -Confirm:$false -Force
         }
     }
-    if ($connectAzAccount) { Clear-AzContext -Confirm:$false -Force }
 }
 catch {
     [System.Management.Automation.ErrorRecord]$e = $_
@@ -130,7 +148,7 @@ catch {
         Target    = $e.CategoryInfo.TargetName
     }
     $info
-    if ($connectAzAccount) { Clear-AzContext -Confirm:$false -Force }
     Pop-Location
+    if ($env:connectAzAccount) { Clear-AzContext -Confirm:$false -Force }
     Write-Error -Message $_.Exception -ErrorAction "stop"
 }
