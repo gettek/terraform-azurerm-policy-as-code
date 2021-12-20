@@ -1,4 +1,4 @@
-name: cd
+name: cd-guest-config
 on:
   push:
     branches: [main]

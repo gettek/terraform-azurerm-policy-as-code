@@ -28,4 +28,8 @@ module "team_a_mg_vm_custom_guest_configs" {
   assignment_parameters = {
     IncludeArcMachines = "False"
   }
+
+  depends_on = [
+    null_resource.guest_config_packages_script
+  ]
 }
