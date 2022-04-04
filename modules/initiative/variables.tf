@@ -1,23 +1,38 @@
-variable management_group_name {
+variable management_group {
   type        = string
-  description = "The scope at which the initiative will be defined. Currently this must be the group_id of a management group. Changing this forces a new resource to be created"
+  description = "The management group scope at which the initiative will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. Note: if you are using azurerm_management_group to assign a value to management_group_id, be sure to use name or group_id attribute, but not id."
   default     = null
 }
 
 variable initiative_name {
   type        = string
   description = "Policy initiative name. Changing this forces a new resource to be created"
+
+  validation {
+    condition     = length(var.initiative_name) <= 64
+    error_message = "Initiative names have a maximum 64 character limit."
+  }
 }
 
 variable initiative_display_name {
   type        = string
   description = "Policy initiative display name"
+
+  validation {
+    condition     = length(var.initiative_display_name) <= 128
+    error_message = "Initiative display names have a maximum 128 character limit."
+  }
 }
 
 variable initiative_description {
   type        = string
   description = "Policy initiative description"
   default     = ""
+
+  validation {
+    condition     = length(var.initiative_description) <= 512
+    error_message = "Initiative descriptions have a maximum 512 character limit."
+  }
 }
 
 variable initiative_category {
@@ -54,7 +69,7 @@ locals {
 
   # combine all discovered role definition IDs
   all_role_definition_ids = distinct([for v in flatten(values(local.role_definition_ids)) : lower(v)])
-  
+
   metadata = jsonencode(merge(
     { category = var.initiative_category },
     { version = var.initiative_version },

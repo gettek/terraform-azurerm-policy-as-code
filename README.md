@@ -104,9 +104,9 @@ module platform_baseline_initiative {
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
   initiative_category     = "General"
-  management_group_name   = local.default_management_group_scope_name
+  management_group        = local.default_management_group_scope_name
 
-  member_definition_ids = [ 
+  member_definition_ids = [
     module.whitelist_resources.definition,
     module.whitelist_regions.definition
   ]
@@ -240,6 +240,7 @@ The `def_assignment` and `set_assignment` modules will automatically create [rem
 
 - [GitHub Repo: Azure Built-In Policies and Samples](https://github.com/Azure/azure-policy)
 - [GitHub Repo: Contribute to Community Policies](https://github.com/Azure/Community-Policy)
+- [GitHub Repo: globalbao/awesome-azure-policy](https://github.com/globalbao/awesome-azure-policy)
 - [Microsoft Docs: Azure Policy Home](https://docs.microsoft.com/en-us/azure/governance/policy/)
 - [Microsoft Docs: List of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
 - [Microsoft Docs: Index of Azure Policy Samples](https://docs.microsoft.com/en-us/azure/governance/policy/samples/)

@@ -5,7 +5,7 @@ resource azurerm_policy_definition def {
   policy_type  = "Custom"
   mode         = var.policy_mode
 
-  management_group_name = var.management_group_name
+  management_group_id = var.management_group
 
   policy_rule = jsonencode(local.policy_rule)
   parameters  = jsonencode(local.parameters)
