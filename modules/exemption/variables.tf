@@ -28,8 +28,13 @@ variable policy_definition_reference_ids {
 
 variable exemption_category {
   type        = string
-  description = "The policy exemption category. Possible values are Waiver and Mitigated. Defaults to Waiver"
+  description = "The policy exemption category. Possible values are Waiver or Mitigated. Defaults to Waiver"
   default     = "Waiver"
+
+  validation {
+    condition     = var.exemption_category == "Waiver" || var.exemption_category == "Mitigated"
+    error_message = "Exemption category possible values are: Waiver or Mitigated."
+  }
 }
 
 variable expires_on {

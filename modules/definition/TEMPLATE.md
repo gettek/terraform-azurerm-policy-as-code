@@ -1,6 +1,6 @@
 # POLICY DEFINITION MODULE
 
-This module depends on populating `var.policy_category` and `var.policy_name` to correspond with respective policy definition `json` files found in the local library.
+This module depends on populating `var.policy_category` and `var.policy_name` to correspond with the respective custom policy definition `json` file found in the [local library](../../policies/).
 
 > :bulb: **Note:** More information on Policy Definition Structure [can be found here](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
 
@@ -15,7 +15,7 @@ module whitelist_regions {
   policy_name           = "whitelist_regions"
   display_name          = "Allow resources only in whitelisted regions"
   policy_category       = "General"
-  management_group_name = local.default_management_group_scope_name
+  management_group      = local.default_management_group_scope_name
 }
 ```
 
@@ -38,6 +38,6 @@ module "configure_asc" {
   display_name          = title(replace(each.key, "_", " "))
   policy_description    = each.value
   policy_category       = "Security Center"
-  management_group_name = data.azurerm_management_group.org.name
+  management_group      = data.azurerm_management_group.org.name
 }
 ```

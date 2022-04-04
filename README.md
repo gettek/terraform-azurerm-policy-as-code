@@ -9,7 +9,7 @@
   <p align="center">
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-orange.svg" alt="MIT License"></a>
     <a href="https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/"><img src="https://img.shields.io/badge/terraform-registry-blue.svg" alt="TF Registry"></a></br>
-    <a href="https://open.vscode.dev/gettek/terraform-azurerm-policy-as-code"><img src="https://open.vscode.dev/badges/open-in-vscode.svg" alt="Open in Visual Studio Code"></a></br>
+    <a href="https://open.vscode.dev/gettek/terraform-azurerm-policy-as-code"><img src="https://img.shields.io/badge/Open%20in-VSCode-1f425f.svg" alt="Open in Visual Studio Code"></a></br>
     <a href="https://github.com/gettek/terraform-azurerm-policy-as-code/actions/workflows/cd.yml"><img src="https://github.com/gettek/terraform-azurerm-policy-as-code/actions/workflows/cd.yml/badge.svg?branch=main" alt="CD Tests"></a>
     <a href="https://github.com/gettek/terraform-azurerm-policy-as-code/actions/workflows/ci.yml"><img src="https://github.com/gettek/terraform-azurerm-policy-as-code/actions/workflows/ci.yml/badge.svg" alt="CI Tests"></a></br>
     <a href="https://github.com/gettek/terraform-azurerm-policy-as-code/discussions"><img src="https://img.shields.io/badge/topic-discussions-yellowgreen.svg" alt="Go to topic discussions"></a>
@@ -104,9 +104,9 @@ module platform_baseline_initiative {
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
   initiative_category     = "General"
-  management_group_name   = local.default_management_group_scope_name
+  management_group        = local.default_management_group_scope_name
 
-  member_definition_ids = [ 
+  member_definition_ids = [
     module.whitelist_resources.definition,
     module.whitelist_regions.definition
   ]
@@ -240,6 +240,7 @@ The `def_assignment` and `set_assignment` modules will automatically create [rem
 
 - [GitHub Repo: Azure Built-In Policies and Samples](https://github.com/Azure/azure-policy)
 - [GitHub Repo: Contribute to Community Policies](https://github.com/Azure/Community-Policy)
+- [GitHub Repo: globalbao/awesome-azure-policy](https://github.com/globalbao/awesome-azure-policy)
 - [Microsoft Docs: Azure Policy Home](https://docs.microsoft.com/en-us/azure/governance/policy/)
 - [Microsoft Docs: List of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
 - [Microsoft Docs: Index of Azure Policy Samples](https://docs.microsoft.com/en-us/azure/governance/policy/samples/)

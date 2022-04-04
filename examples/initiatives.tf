@@ -7,7 +7,7 @@ module "configure_asc_initiative" {
   initiative_display_name = "[Security]: Configure Azure Security Center"
   initiative_description  = "Deploys and configures Azure Security Center settings and defines exports"
   initiative_category     = "Security Center"
-  management_group_name   = data.azurerm_management_group.org.name
+  management_group        = data.azurerm_management_group.org.name
 
   member_definitions = [
     module.configure_asc["auto_enroll_subscriptions"].definition,
@@ -27,7 +27,7 @@ module "platform_diagnostics_initiative" {
   initiative_display_name = "[Platform]: Diagnostics Settings Policy Initiative"
   initiative_description  = "Collection of policies that deploy resource and activity log forwarders to logging core resources"
   initiative_category     = "Monitoring"
-  management_group_name   = data.azurerm_management_group.org.name
+  management_group        = data.azurerm_management_group.org.name
 
   member_definitions = [
     module.deploy_subscription_diagnostic_setting.definition,

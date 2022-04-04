@@ -58,8 +58,13 @@ variable assignment_location {
 
 variable resource_discovery_mode {
   type        = string
-  description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant, ReEvaluateCompliance. Defaults to ExistingNonCompliant."
+  description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant."
   default     = "ExistingNonCompliant"
+
+  validation {
+    condition     = var.resource_discovery_mode == "ExistingNonCompliant" || var.resource_discovery_mode == "ReEvaluateCompliance"
+    error_message = "Resource Discovery Mode possible values are: ExistingNonCompliant or ReEvaluateCompliance."
+  }
 }
 
 variable location_filters {
@@ -124,7 +129,7 @@ locals {
 
   # try to use policy definition roles if ommitted
   role_definition_ids = var.skip_remediation == false ? var.skip_role_assignment == false ? try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), []) : [] : []
-  
+
   # policy assignment scope will be used if omitted
   role_assignment_scope = try(coalesce(var.role_assignment_scope, var.assignment_scope), "")
 
