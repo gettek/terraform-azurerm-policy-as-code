@@ -13,11 +13,11 @@ locals {
 }
 
 module "guest_config_prereqs" {
-  source                = "..//modules/definition"
-  for_each              = toset(local.guest_config_prereqs)
-  policy_name           = each.value
-  policy_category       = "Guest Configuration"
-  management_group_name = data.azurerm_management_group.org.name
+  source           = "..//modules/definition"
+  for_each         = toset(local.guest_config_prereqs)
+  policy_name      = each.value
+  policy_category  = "Guest Configuration"
+  management_group = data.azurerm_management_group.org.name
 }
 
 module "guest_config_prereqs_initiative" {
@@ -26,7 +26,7 @@ module "guest_config_prereqs_initiative" {
   initiative_display_name = "[GC]: Deploys Guest Config Prerequisites"
   initiative_description  = "Deploys and configures Windows and Linux VM Guest Config Prerequisites"
   initiative_category     = "Guest Configuration"
-  management_group_name   = data.azurerm_management_group.org.name
+  management_group        = data.azurerm_management_group.org.name
 
   member_definitions = [
     for gcp in module.guest_config_prereqs :
