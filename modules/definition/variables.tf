@@ -1,4 +1,4 @@
-variable management_group {
+variable management_group_id {
   type        = string
   description = "The management group scope at which the policy will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. Note: if you are using azurerm_management_group to assign a value to management_group_id, be sure to use name or group_id attribute, but not id."
   default     = null

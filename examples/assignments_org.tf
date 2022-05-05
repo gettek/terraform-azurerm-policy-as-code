@@ -7,6 +7,7 @@ module "org_mg_whitelist_regions" {
   definition        = module.whitelist_regions.definition
   assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
+
   assignment_parameters = {
     "listOfRegionsAllowed" = [
       "UK South",
@@ -29,6 +30,7 @@ module "org_mg_configure_asc_initiative" {
   skip_remediation     = var.skip_remediation
   skip_role_assignment = var.skip_role_assignment
   role_definition_ids  = module.configure_asc_initiative.role_definition_ids
+
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
     eventHubDetails       = local.dummy_resource_ids.azurerm_eventhub_namespace_authorization_rule
@@ -48,10 +50,13 @@ module "org_mg_platform_diagnostics_initiative" {
   assignment_effect    = "DeployIfNotExists"
   skip_remediation     = var.skip_remediation
   skip_role_assignment = var.skip_role_assignment
+
   role_definition_ids = [
     data.azurerm_role_definition.contributor.id # using explicit roles
   ]
+
   role_assignment_scope = data.azurerm_management_group.team_a.id # using explicit scopes
+
   assignment_parameters = {
     workspaceId                 = local.dummy_resource_ids.azurerm_log_analytics_workspace
     storageAccountId            = local.dummy_resource_ids.azurerm_storage_account

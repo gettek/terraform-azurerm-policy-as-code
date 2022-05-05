@@ -14,7 +14,7 @@ module configure_asc_initiative {
   initiative_display_name = "[Security]: Configure Azure Security Center"
   initiative_description  = "Deploys and configures Azure Security Center settings and defines exports"
   initiative_category     = "Security Center"
-  management_group        = data.azurerm_management_group.org.name
+  management_group_id     = data.azurerm_management_group.org.id
 
   member_definitions = [
     module.configure_asc["auto_enroll_subscriptions"].definition,
@@ -39,7 +39,7 @@ module configure_asc_initiative {
   initiative_display_name = "[Security]: Configure Azure Security Center"
   initiative_description  = "Deploys and configures Azure Security Center settings and defines exports"
   initiative_category     = "Security Center"
-  management_group        = data.azurerm_management_group.org.name
+  management_group_id     = data.azurerm_management_group.org.id
 
   member_definitions = [
     module.configure_asc["auto_enroll_subscriptions"].definition,
@@ -69,7 +69,7 @@ module "guest_config_prereqs" {
   for_each              = toset(local.guest_config_prereqs)
   policy_name           = each.value
   policy_category       = "Guest Configuration"
-  management_group      = data.azurerm_management_group.org.name
+  management_group_id   = data.azurerm_management_group.org.id
 }
 
 module "guest_config_prereqs_initiative" {
@@ -78,7 +78,7 @@ module "guest_config_prereqs_initiative" {
   initiative_display_name = "[GC]: Deploys Guest Config Prerequisites"
   initiative_description  = "Deploys and configures Windows and Linux VM Guest Config Prerequisites"
   initiative_category     = "Guest Configuration"
-  management_group        = data.azurerm_management_group.org.name
+  management_group_id     = data.azurerm_management_group.org.id
 
   member_definitions = [
     for gcp in module.guest_config_prereqs :

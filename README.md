@@ -75,20 +75,20 @@
 
 ## Policy Definitions Module
 
+This module depends on populating `var.policy_name` and `var.policy_category` to correspond with the respective custom policy definition `json` file found in the [local library](../../policies/).
+
 ```hcl
 module whitelist_regions {
-  source                = "gettek/policy-as-code/azurerm//modules/definition"
-  version               = "2.3.1"
-  policy_name           = "whitelist_regions"
-  display_name          = "Allow resources only in whitelisted regions"
-  policy_category       = "General"
-  management_group_name = local.default_management_group_scope_name
+  source              = "gettek/policy-as-code/azurerm//modules/definition"
+  version             = "2.5.0"
+  policy_name         = "whitelist_regions"
+  display_name        = "Allow resources only in whitelisted regions"
+  policy_category     = "General"
+  management_group_id = data.azurerm_management_group.org.id
 }
 ```
 
-> 💡 **Note:** `policy_name` should match the JSON filename. The module assumes that `policy_category` is also the category folder name which is a child of the **policies** folder. Template files can also be parsed in at runtime, see the [definition module readme](modules/definition/README.md) for more information on acceptable inputs.
-
-> 💡 **Note:** Specify the `policy_mode` variable if you wish to [change the mode](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#mode) of a definition from the module default `All` to `Indexed`.
+> 💡 **Note:** You can also parse in Template files and Data Sources at runtime, see the [definition module readme](modules/definition/README.md) for examples and acceptable inputs.
 
 > ℹ️ [Microsoft Docs: Azure Policy definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
 
@@ -99,14 +99,14 @@ Policy Initiatives are used to combine sets of definitions in order to simplify 
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "2.3.1"
+  version                 = "2.5.0"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
   initiative_category     = "General"
-  management_group        = local.default_management_group_scope_name
+  management_group_id     = data.azurerm_management_group.org.id
 
-  member_definition_ids = [
+  member_definitions = [
     module.whitelist_resources.definition,
     module.whitelist_regions.definition
   ]
@@ -120,9 +120,9 @@ module platform_baseline_initiative {
 ```hcl
 module org_mg_whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version               = "2.3.1"
+  version               = "2.5.0"
   definition            = module.whitelist_regions.definition
-  assignment_scope      = local.default_assignment_scope
+  assignment_scope      = data.azurerm_management_group.org.id
   assignment_effect     = "Deny"
   assignment_parameters = {
     "listOfRegionsAllowed" = [
@@ -139,9 +139,9 @@ module org_mg_whitelist_regions {
 ```hcl
 module org_mg_platform_diagnostics_initiative {
   source               = "gettek/policy-as-code/azurerm//modules/set_assignment"
-  version              = "2.3.1"
+  version              = "2.5.0"
   initiative           = module.platform_diagnostics_initiative.initiative
-  assignment_scope     = local.default_assignment_scope
+  assignment_scope     = data.azurerm_management_group.org.id
   assignment_effect    = "DeployIfNotExists"
   skip_remediation     = var.skip_remediation
   skip_role_assignment = false
@@ -154,6 +154,12 @@ module org_mg_platform_diagnostics_initiative {
     metricsEnabled              = "True"
     logsEnabled                 = "True"
   }
+
+  assignment_not_scopes = [
+    data.azurerm_management_group.team_a.id
+  ]
+
+  non_compliance_message = "example non-compliance message to display as opposed to default policy error"
 
   depends_on = [
     module.deploy_subscription_diagnostic_setting,
@@ -221,20 +227,20 @@ The `def_assignment` and `set_assignment` modules will automatically create [rem
 - `DisplayName` has a maximum length of **128** characters and `description` a maximum length of **512** characters
 - There's a [maximum count](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-policy-limits) for each object type for Azure Policy. For definitions, an entry of Scope means the management group or subscription. For assignments and exemptions, an entry of Scope means the management group, subscription, resource group, or individual resource:
 
-| Where                            | What                               | Maximum count |
-|----------------------------------|------------------------------------|---------------|
-| Scope                            | Policy   definitions               | 500           |
-| Scope                            | Initiative   definitions           | 200           |
-| Tenant                           | Initiative   definitions           | 2,500         |
-| Scope                            | Policy   or initiative assignments | 200           |
-| Scope                            | Exemptions                         | 1000          |
-| Policy definition                | Parameters                         | 20            |
-| Initiative definition            | Policies                           | 1000          |
-| Initiative definition            | Parameters                         | 100           |
-| Policy or initiative assignments | Exclusions   (notScopes)           | 400           |
-| Policy rule                      | Nested   conditionals              | 512           |
-| Remediation task                 | Resources                          | 500           |
-
+| Where                                                     | What                             | Maximum count |
+|-----------------------------------------------------------|----------------------------------|---------------|
+| Scope                                                     | Policy definitions               | 500           |
+| Scope                                                     | Initiative definitions           | 200           |
+| Tenant                                                    | Initiative definitions           | 2,500         |
+| Scope                                                     | Policy or initiative assignments | 200           |
+| Scope                                                     | Exemptions                       | 1,000         |
+| Policy definition                                         | Parameters                       | 20            |
+| Initiative definition                                     | Policies                         | 1,000         |
+| Initiative definition                                     | Parameters                       | 300           |
+| Policy or initiative assignments                          | Exclusions (notScopes)           | 400           |
+| Policy rule                                               | Nested conditionals              | 512           |
+| Remediation task                                          | Resources                        | 50,000        |
+| Policy definition, initiative, or assignment request body | Bytes                            | 1,048,576     |
 
 ## Useful Resources
 
@@ -248,14 +254,15 @@ The `def_assignment` and `set_assignment` modules will automatically create [rem
 - [Microsoft Docs: Evaluate the impact of a new Azure Policy definition](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/evaluate-impact)
 - [Microsoft Docs: Author policies for array properties on Azure resources](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/author-policies-for-arrays)
 - [Microsoft Docs: Azure Policy Regulatory Compliance (Benchmarks)](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
-- [Microsoft Docs: Azure Policy Exemption (preview)](https://docs.microsoft.com/en-gb/azure/governance/policy/concepts/exemption-structure)
+- [Microsoft Docs: Azure Policy Exemption](https://docs.microsoft.com/en-gb/azure/governance/policy/concepts/exemption-structure)
 - [Microsoft Tutorial: Build policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
 - [Microsoft Tutorial: Security Center - Working with security policies](https://docs.microsoft.com/en-us/azure/security-center/tutorial-security-policy)
 - [VSCode Marketplace: Azure Policy Extension](https://marketplace.visualstudio.com/items?itemName=AzurePolicy.azurepolicyextension)
 - [Terraform Provider: azurerm_policy_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_definition)
 - [Terraform Provider: azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
-- [Terraform Provider: there are multiple assignment resources beginning with: azurerm_management_group_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment)
-- [Terraform Provider: azurerm_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation)
+- [Terraform Provider: multiple assignment resources beginning with: azurerm_management_group_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment)
+- [Terraform Provider: multiple remediation resources beginning with: azurerm_management_group_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_remediation)
+- [Terraform Provider: multiple exemption resources beginning with: azurerm_management_group_policy_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_exemption)
 
 ## Known Issues
 

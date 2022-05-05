@@ -10,6 +10,8 @@ This example executes a terraform null resource to run the [build_guest_config_p
 
 CGC Definitions will be added to the local library under the **"Guest Configuration"** category prefixed with **"CGC_"** for terraform to identify with the `fileset()` function in our [included example](initiatives.tf#L41).
 
+> 💡 **Note:** see also [Terraform Provider: azurerm_policy_virtual_machine_configuration_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_virtual_machine_configuration_assignment)
+
 
 ## Requirements
 
@@ -19,9 +21,9 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 2.84.0 |
-| <a name="provider_local"></a> [local](#provider\_local) | 1.4.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.1.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
+| <a name="provider_local"></a> [local](#provider\_local) | n/a |
+| <a name="provider_null"></a> [null](#provider\_null) | n/a |
 
 ## Modules
 

@@ -7,3 +7,13 @@ output identity_id {
   description = "The Managed Identity block containing Principal Id & Tenant Id of this Policy Assignment if type is SystemAssigned"
   value       = local.principal_id
 }
+
+output remediation_tasks {
+  value = [
+    for rem in local.remediation_tasks :
+    tomap({
+      "id"                   = rem.id
+      "policy_definition_id" = rem.policy_definition_id
+    })
+  ]
+}
