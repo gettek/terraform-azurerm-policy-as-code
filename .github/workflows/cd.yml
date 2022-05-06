@@ -22,16 +22,16 @@ jobs:
         with:
           terraform_version: 1.0.11
 
-      - name: Terraform Init
-        id: init
-        run: terraform init -no-color
-        working-directory: examples
+      # - name: Terraform Init
+      #   id: init
+      #   run: terraform init -no-color
+      #   working-directory: examples
 
-      - name: Terraform Apply
-        id: apply
-        if: ${{ success() }}
-        run: terraform apply -auto-approve -parallelism=30 -var="skip_remediation=true" && terraform apply -auto-approve -parallelism=30
-        working-directory: examples
+      # - name: Terraform Apply
+      #   id: apply
+      #   if: ${{ success() }}
+      #   run: terraform apply -auto-approve -parallelism=30 -var="skip_remediation=true" && terraform apply -auto-approve -parallelism=30
+      #   working-directory: examples
 
       - name: Log in with Azure
         uses: azure/login@v1
