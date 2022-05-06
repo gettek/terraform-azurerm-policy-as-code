@@ -10,7 +10,7 @@ Exemptions can be used where `not_scopes` become time sensitive or require alter
 module exemption_team_a_mg_deny_nic_public_ip {
   source   = "gettek/policy-as-code/azurerm//modules/exemption"
   name                            = "Deny NIC Public IP Exemption"
-  display_name                    = "Exempted for testing"
+  display_name                    = "Exempted while testing"
   description                     = "Allows NIC Public IPs for testing"
   scope                           = data.azurerm_management_group.team_a.id
   policy_assignment_id            = module.team_a_mg_deny_nic_public_ip.id
@@ -54,10 +54,10 @@ data azurerm_resource_group vms {
 module exemption_team_a_mg_deny_nic_public_ip {
   source   = "gettek/policy-as-code/azurerm//modules/exemption"
   name                            = "Deny NIC Public IP Exemption"
+  display_name                    = "Exempted while testing"
+  description                     = "Allows NIC Public IPs for testing"
   scope                           = data.azurerm_resource_group.vms.id
   policy_assignment_id            = module.team_a_mg_deny_nic_public_ip.id
-  display_name                    = "Exempted for testing"
-  description                     = "Allows NIC Public IPs for testing"
 }
 ```
 
@@ -75,11 +75,11 @@ module exemption_team_a_mg_key_vaults_require_purge_protection {
   source               = "gettek/policy-as-code/azurerm//modules/exemption"
   for_each             = toset(data.azurerm_resources.keyvaults.resources.*.id)
   name                 = "Key vaults should have purge protection enabled Exemption"
+  display_name         = "Exempted while testing"
+  description          = "Do not require purge protection on KVs while testing"
   scope                = each.value
   policy_assignment_id = module.team_a_mg_key_vaults_require_purge_protection.id
   exemption_category   = "Mitigated"
   expires_on           = "2023-05-25"
-  display_name         = "Exempted for testing"
-  description          = "Do not require purge protection on KVs while testing"
 }
 ```
