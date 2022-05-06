@@ -30,20 +30,20 @@ jobs:
       - name: Terraform Apply
         id: apply
         if: ${{ success() }}
-        run: terraform apply -auto-approve -var="skip_remediation=true" && terraform apply -auto-approve
+        run: terraform apply -auto-approve -parallelism=30 -var="skip_remediation=true" && terraform apply -auto-approve -parallelism=30
         working-directory: examples
 
       - name: Log in with Azure
         uses: azure/login@v1
-        if: steps.apply.outcome == 'failure' || steps.apply.outcome == 'success'
+        if: ${{ failure() }} || ${{ success() }}
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
 
       - name: Clean Resources with PowerShell
         id: destroy
-        if: steps.apply.outcome == 'failure' || steps.apply.outcome == 'success'
         uses: azure/powershell@v1
+        if: ${{ failure() }} || ${{ success() }}
         with:
           azPSVersion: "latest"
           inlineScript: |
