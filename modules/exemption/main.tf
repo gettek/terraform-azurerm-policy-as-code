@@ -1,34 +1,51 @@
-resource "azurerm_management_group_template_deployment" "management_group_exemption" {
-  count               = local.exemption_scope.mg
-  name                = local.deployment_name
-  location            = var.location
-  management_group_id = var.scope
-  parameters_content  = jsonencode(local.parameters_content)
-  template_content    = local.exemptions_template
+resource "azurerm_management_group_policy_exemption" "management_group_exemption" {
+  count                           = local.exemption_scope.mg
+  name                            = var.name
+  display_name                    = var.display_name
+  description                     = var.description
+  management_group_id             = var.scope
+  policy_assignment_id            = var.policy_assignment_id
+  exemption_category              = var.exemption_category
+  expires_on                      = local.expires_on
+  policy_definition_reference_ids = var.policy_definition_reference_ids
+  metadata                        = jsonencode(var.metadata)
 }
 
-resource "azurerm_subscription_template_deployment" "subscription_exemption" {
-  count               = local.exemption_scope.sub
-  name                = local.deployment_name
-  location            = var.location
-  parameters_content  = jsonencode(local.parameters_content)
-  template_content    = local.exemptions_template
+resource "azurerm_subscription_policy_exemption" "subscription_exemption" {
+  count                           = local.exemption_scope.sub
+  name                            = var.name
+  display_name                    = var.display_name
+  description                     = var.description
+  subscription_id                 = var.scope
+  policy_assignment_id            = var.policy_assignment_id
+  exemption_category              = var.exemption_category
+  expires_on                      = local.expires_on
+  policy_definition_reference_ids = var.policy_definition_reference_ids
+  metadata                        = jsonencode(var.metadata)
 }
 
-resource "azurerm_resource_group_template_deployment" "resource_group_exemption" {
-  count               = local.exemption_scope.rg
-  name                = local.deployment_name
-  resource_group_name = split("/", var.scope)[4]
-  parameters_content  = jsonencode(local.parameters_content)
-  template_content    = local.exemptions_template
-  deployment_mode     = "Incremental"
+resource "azurerm_resource_group_policy_exemption" "resource_group_exemption" {
+  count                           = local.exemption_scope.rg
+  name                            = var.name
+  display_name                    = var.display_name
+  description                     = var.description
+  resource_group_id               = var.scope
+  policy_assignment_id            = var.policy_assignment_id
+  exemption_category              = var.exemption_category
+  expires_on                      = local.expires_on
+  policy_definition_reference_ids = var.policy_definition_reference_ids
+  metadata                        = jsonencode(var.metadata)
 }
 
-resource "azurerm_resource_group_template_deployment" "resource_exemption" {
-  count               = local.exemption_scope.resource
-  name                = local.deployment_name
-  resource_group_name = split("/", var.scope)[4]
-  parameters_content  = jsonencode(local.parameters_content)
-  template_content    = local.exemptions_template
-  deployment_mode     = "Incremental"
+resource "azurerm_resource_policy_exemption" "resource_exemption" {
+  count                           = local.exemption_scope.resource
+  name                            = var.name
+  display_name                    = var.display_name
+  description                     = var.description
+  resource_id                     = var.scope
+  policy_assignment_id            = var.policy_assignment_id
+  exemption_category              = var.exemption_category
+  expires_on                      = local.expires_on
+  policy_definition_reference_ids = var.policy_definition_reference_ids
+  metadata                        = jsonencode(var.metadata)
 }

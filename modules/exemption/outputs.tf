@@ -1,9 +1,9 @@
 output id {
   description = "The Id of the Policy Exemption"
-  value       = local.exemption_resource_node.id
+  value       = local.exemption_resource_nodes.id
 }
 
-output output_content {
-  description = "The Content of the Outputs of the ARM Template Deployment"
-  value       = jsondecode(local.exemption_resource_node.output_content)
+output exemption_resource_nodes {
+  description = "The Policy Exemption resource node(s)"
+  value       = local.exemption_resource_nodes
 }

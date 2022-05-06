@@ -9,6 +9,7 @@ output identity_id {
 }
 
 output remediation_tasks {
+  description = "The Remediation Task Ids and related Policy Definition Ids"
   value = [
     for rem in local.remediation_tasks :
     tomap({

@@ -3,16 +3,19 @@ variable name {
   description = "Name for the Policy Exemption"
 }
 
+variable display_name {
+  type        = string
+  description = "Display name for the Policy Exemption"
+}
+
+variable description {
+  type        = string
+  description = "Description for the Policy Exemption"
+}
+
 variable scope {
   type        = string
   description = "Scope for the Policy Exemption"
-  default     = ""
-}
-
-variable location {
-  type        = string
-  description = "The Azure Region where the Management Group or Subscription Scope Template Deployment should exist. Changing this forces a new Template to be created. Defaults to UK South"
-  default     = "uksouth"
 }
 
 variable policy_assignment_id {
@@ -21,7 +24,7 @@ variable policy_assignment_id {
 }
 
 variable policy_definition_reference_ids {
-  type        = list
+  type        = list(any)
   description = "The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition"
   default     = []
 }
@@ -39,17 +42,8 @@ variable exemption_category {
 
 variable expires_on {
   type        = string
-  description = "The expiration date and time (in UTC ISO 8601 format yyyy-MM-ddTHH:mm:ssZ) of the policy exemption"
-}
-
-variable display_name {
-  type        = string
-  description = "Display name for the Policy Exemption"
-}
-
-variable description {
-  type        = string
-  description = "Description for the Policy Exemption"
+  description = "Optional expiration date (format yyyy-mm-dd) of the policy exemption. Defaults to no expiry"
+  default     = null
 }
 
 variable metadata {
@@ -59,33 +53,20 @@ variable metadata {
 }
 
 locals {
-  exemptions_template = file("${path.module}/exemptions.json")
-
   exemption_scope = try({
-    mg = length(regexall("(\\/managementGroups\\/)", var.scope)) > 0 ? 1 : 0,
-    sub = length(split("/", var.scope)) == 3 ? 1 : 0,
-    rg = length(regexall("(\\/managementGroups\\/)", var.scope)) < 1 ? length(split("/", var.scope)) == 5 ? 1 : 0 : 0,
+    mg       = length(regexall("(\\/managementGroups\\/)", var.scope)) > 0 ? 1 : 0,
+    sub      = length(split("/", var.scope)) == 3 ? 1 : 0,
+    rg       = length(regexall("(\\/managementGroups\\/)", var.scope)) < 1 ? length(split("/", var.scope)) == 5 ? 1 : 0 : 0,
     resource = length(split("/", var.scope)) >= 6 ? 1 : 0,
   })
 
-  parameters_content = {
-    name                         = { value = var.name }
-    scope                        = { value = local.exemption_scope.mg + local.exemption_scope.sub > 0 ? "" : var.scope }
-    policyAssignmentId           = { value = var.policy_assignment_id }
-    policyDefinitionReferenceIds = { value = var.policy_definition_reference_ids }
-    exemptionCategory            = { value = var.exemption_category }
-    expiresOn                    = { value = var.expires_on }
-    displayName                  = { value = var.display_name }
-    description                  = { value = var.description }
-    metadata                     = { value = var.metadata }
-  }
+  expires_on = var.expires_on != null ? "${var.expires_on}T23:00:00Z" : null
 
-  deployment_name = (replace(local.parameters_content.name.value, " ", "_"))
-
-  exemption_resource_node = try(
-    azurerm_management_group_template_deployment.management_group_exemption[0],
-    azurerm_subscription_template_deployment.subscription_exemption[0],
-    azurerm_resource_group_template_deployment.resource_group_exemption[0],
-    azurerm_resource_group_template_deployment.resource_exemption[0],
-    "")
+  exemption_resource_nodes = try(
+    azurerm_management_group_policy_exemption.management_group_exemption[0],
+    azurerm_subscription_policy_exemption.subscription_exemption[0],
+    azurerm_resource_group_policy_exemption.resource_group_exemption[0],
+    azurerm_resource_policy_exemption.resource_exemption[0],
+    {}
+  )
 }
