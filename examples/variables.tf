@@ -8,7 +8,7 @@ variable "skip_remediation" {
   default     = true
 }
 
-variable skip_role_assignment {
+variable "skip_role_assignment" {
   type        = bool
   description = "Should the module skip creation of role assignment for policies that DeployIfNotExists and Modify"
   default     = true

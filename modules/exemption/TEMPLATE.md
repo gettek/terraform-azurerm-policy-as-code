@@ -8,7 +8,7 @@ Exemptions can be used where `not_scopes` become time sensitive or require alter
 
 ```hcl
 module exemption_team_a_mg_deny_nic_public_ip {
-  source   = "gettek/policy-as-code/azurerm//modules/exemption"
+  source               = "gettek/policy-as-code/azurerm//modules/exemption"
   name                 = "Deny NIC Public IP Exemption"
   display_name         = "Exempted while testing"
   description          = "Allows NIC Public IPs for testing"

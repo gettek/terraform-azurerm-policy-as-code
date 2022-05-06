@@ -81,13 +81,13 @@ locals {
 }
 
 module "configure_asc" {
-  source             = "..//modules/definition"
-  for_each           = local.security_center_policies
-  policy_name        = each.key
-  display_name       = title(replace(each.key, "_", " "))
-  policy_description = each.value
-  policy_category    = "Security Center"
-  management_group   = data.azurerm_management_group.org.id
+  source              = "..//modules/definition"
+  for_each            = local.security_center_policies
+  policy_name         = each.key
+  display_name        = title(replace(each.key, "_", " "))
+  policy_description  = each.value
+  policy_category     = "Security Center"
+  management_group_id = data.azurerm_management_group.org.id
 }
 
 ##################
