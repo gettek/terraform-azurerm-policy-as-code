@@ -40,6 +40,7 @@
   ├──📜backend.tf
   ├──📜data.tf
   ├──📜definitions.tf
+  ├──📜exemptions.tf
   ├──📜initiatives.tf
   ├──📜variables.tf
 📦modules
@@ -52,7 +53,6 @@
       ├──📜outputs.tf
       └──📜variables.tf
   └──📂exemption
-      ├──📜exemptions.json
       ├──📜main.tf
       ├──📜outputs.tf
       └──📜variables.tf
@@ -170,27 +170,26 @@ module org_mg_platform_diagnostics_initiative {
 
 ## Policy Exemption Module
 
-Use the [exemption module](modules/exemption/README.md) to create an auditable and time-sensitive `not_scope` Policy exemption:
+Use the [exemption module](modules/exemption/README.md) to create an auditable and time-sensitive Policy exemption:
 
 ```hcl
-data azurerm_resources keyvaults {
-  type                = "Microsoft.KeyVault/vaults"
-  resource_group_name = "rg-dev-uks-vaults"
-}
+module exemption_team_a_mg_deny_nic_public_ip {
+  source               = "gettek/policy-as-code/azurerm//modules/exemption"
+  name                 = "Deny NIC Public IP Exemption"
+  display_name         = "Exempted while testing"
+  description          = "Allows NIC Public IPs for testing"
+  scope                = data.azurerm_management_group.team_a.id
+  policy_assignment_id = module.team_a_mg_deny_nic_public_ip.id
+  exemption_category   = "Waiver"
+  expires_on           = "2023-05-25" # optional
 
-module exemption_team_a_mg_key_vaults_require_purge_protection {
-  source   = "gettek/policy-as-code/azurerm//modules/exemption"
-  for_each = toset(data.azurerm_resources.keyvaults.resources.*.id)
-  providers = {
-    azurerm = azurerm.team_a
+  # optional
+  metadata = {
+    requested_by  = "Team A"
+    approved_by   = "Mr Smith"
+    approved_date = "2021-11-30"
+    ticket_ref    = "1923"
   }
-  name                            = "Key vaults should have purge protection enabled Exemption"
-  scope                           = each.value
-  policy_assignment_id            = module.team_a_mg_key_vaults_require_purge_protection.id
-  exemption_category              = "Waiver"
-  expires_on                      = "2022-05-31"
-  display_name                    = "Exempted for testing"
-  description                     = "Do not require purge protection on KVs while testing"
 }
 ```
 

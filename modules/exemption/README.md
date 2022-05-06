@@ -9,13 +9,13 @@ Exemptions can be used where `not_scopes` become time sensitive or require alter
 ```hcl
 module exemption_team_a_mg_deny_nic_public_ip {
   source   = "gettek/policy-as-code/azurerm//modules/exemption"
-  name                            = "Deny NIC Public IP Exemption"
-  display_name                    = "Exempted while testing"
-  description                     = "Allows NIC Public IPs for testing"
-  scope                           = data.azurerm_management_group.team_a.id
-  policy_assignment_id            = module.team_a_mg_deny_nic_public_ip.id
-  exemption_category              = "Waiver"
-  expires_on                      = "2023-05-25"
+  name                 = "Deny NIC Public IP Exemption"
+  display_name         = "Exempted while testing"
+  description          = "Allows NIC Public IPs for testing"
+  scope                = data.azurerm_management_group.team_a.id
+  policy_assignment_id = module.team_a_mg_deny_nic_public_ip.id
+  exemption_category   = "Waiver"
+  expires_on           = "2023-05-25"
 
   # optional metadata, these can consist of any key/value pairs, or omit to have none
   metadata = {
@@ -52,12 +52,12 @@ data azurerm_resource_group vms {
 }
 
 module exemption_team_a_mg_deny_nic_public_ip {
-  source   = "gettek/policy-as-code/azurerm//modules/exemption"
-  name                            = "Deny NIC Public IP Exemption"
-  display_name                    = "Exempted while testing"
-  description                     = "Allows NIC Public IPs for testing"
-  scope                           = data.azurerm_resource_group.vms.id
-  policy_assignment_id            = module.team_a_mg_deny_nic_public_ip.id
+  source               = "gettek/policy-as-code/azurerm//modules/exemption"
+  name                 = "Deny NIC Public IP Exemption"
+  display_name         = "Exempted while testing"
+  description          = "Allows NIC Public IPs for testing"
+  scope                = data.azurerm_resource_group.vms.id
+  policy_assignment_id = module.team_a_mg_deny_nic_public_ip.id
 }
 ```
 
