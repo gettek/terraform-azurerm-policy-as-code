@@ -35,12 +35,14 @@ jobs:
 
       - name: Log in with Azure
         uses: azure/login@v1
+        if: steps.apply.outcome == 'failure' || steps.apply.outcome == 'success'
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
 
       - name: Clean Resources with PowerShell
         id: destroy
+        if: steps.apply.outcome == 'failure' || steps.apply.outcome == 'success'
         uses: azure/powershell@v1
         with:
           azPSVersion: "latest"
@@ -52,6 +54,4 @@ jobs:
             Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/policy_dev" | Remove-AzPolicyAssignment -Verbose
             Get-AzPolicySetDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicySetDefinition -Force -Verbose
             Get-AzPolicyDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicyDefinition -Force -Verbose
-
-            # Remove policy exemption.tf deployment
-            Remove-AzDeployment -name "Onboard_subscription_to_ASC_Exemption" -ErrorAction SilentlyContinue
+            Remove-AzPolicyExemption -Name "Onboard subscription to ASC Exemption" -Scope (Get-AzContext).Subscription.Id -Verbose -ErrorAction SilentlyContinue
