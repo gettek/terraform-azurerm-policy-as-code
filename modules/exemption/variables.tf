@@ -67,6 +67,5 @@ locals {
     azurerm_subscription_policy_exemption.subscription_exemption[0],
     azurerm_resource_group_policy_exemption.resource_group_exemption[0],
     azurerm_resource_policy_exemption.resource_exemption[0],
-    {}
   )
 }
