@@ -62,10 +62,10 @@ locals {
 
   expires_on = var.expires_on != null ? "${var.expires_on}T23:00:00Z" : null
 
-  exemption_resource_nodes = try(
-    azurerm_management_group_policy_exemption.management_group_exemption[0],
-    azurerm_subscription_policy_exemption.subscription_exemption[0],
-    azurerm_resource_group_policy_exemption.resource_group_exemption[0],
-    azurerm_resource_policy_exemption.resource_exemption[0],
-  )
+  exemption_id = try(
+    azurerm_management_group_policy_exemption.management_group_exemption[0].id,
+    azurerm_subscription_policy_exemption.subscription_exemption[0].id,
+    azurerm_resource_group_policy_exemption.resource_group_exemption[0].id,
+    azurerm_resource_policy_exemption.resource_exemption[0].id,
+  "")
 }
