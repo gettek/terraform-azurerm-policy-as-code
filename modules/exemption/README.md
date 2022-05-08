@@ -129,5 +129,4 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_exemption_resource_nodes"></a> [exemption\_resource\_nodes](#output\_exemption\_resource\_nodes) | The Policy Exemption resource node(s) |
 | <a name="output_id"></a> [id](#output\_id) | The Id of the Policy Exemption |
