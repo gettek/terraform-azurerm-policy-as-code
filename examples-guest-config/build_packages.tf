@@ -9,13 +9,13 @@ resource "null_resource" "guest_config_packages_script" {
 
     environment = {
       #connectAzAccount = "true"
-      housekeeping = "true"
-      checkDependancies = "true"
-      createGuestConfigPackage = "true"
-      createGuestConfigPolicy = "true"
-      storageResourceGroupName = "dsc"
-      storageAccountName = data.azurerm_storage_container.guest_config_container.storage_account_name
-      containerName = data.azurerm_storage_container.guest_config_container.name
+      housekeeping               = "true"
+      checkDependancies          = "true"
+      createGuestConfigPackage   = "true"
+      createGuestConfigPolicy    = "true"
+      storageResourceGroupName   = "dsc"
+      storageAccountName         = data.azurerm_storage_container.guest_config_container.storage_account_name
+      containerName              = data.azurerm_storage_container.guest_config_container.name
       publishGuestConfigPolicyMG = data.azurerm_management_group.org.name
     }
   }
