@@ -11,6 +11,7 @@ jobs:
     env:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
+      TF_CLI_ARGS_apply: "-auto-approve -parallelism=30"
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
@@ -22,16 +23,16 @@ jobs:
         with:
           terraform_version: 1.0.11
 
-      # - name: Terraform Init
-      #   id: init
-      #   run: terraform init -no-color
-      #   working-directory: examples
+      - name: Terraform Init
+        id: init
+        run: terraform init -no-color
+        working-directory: examples
 
-      # - name: Terraform Apply
-      #   id: apply
-      #   if: ${{ success() }}
-      #   run: terraform apply -auto-approve -parallelism=30 -var="skip_remediation=true" && terraform apply -auto-approve -parallelism=30
-      #   working-directory: examples
+      - name: Terraform Apply
+        id: apply
+        if: ${{ success() }}
+        run: terraform apply -var="skip_remediation=true" && terraform apply
+        working-directory: examples
 
       - name: Log in with Azure
         uses: azure/login@v1

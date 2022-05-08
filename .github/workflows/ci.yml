@@ -1,7 +1,7 @@
 name: ci
 on:
   pull_request:
-    branches: [main]
+    branches: [main,"2.5.0"]
     paths:
       - "examples"
   workflow_dispatch:
@@ -12,6 +12,7 @@ jobs:
     env:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
+      TF_CLI_ARGS_apply: "-auto-approve -parallelism=30"
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
@@ -40,7 +41,7 @@ jobs:
         continue-on-error: true
 
       - name: Update Pull Request
-        uses: actions/github-script@0.9.0
+        uses: actions/github-script@6
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
@@ -62,7 +63,7 @@ jobs:
 
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
 
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -76,19 +77,26 @@ jobs:
       - name: Terraform Apply
         id: apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -var="skip_remediation=true" && terraform apply -auto-approve
+        run: terraform apply -var="skip_remediation=true" && terraform apply
 
       - name: Log in with Azure
-        if: steps.apply.outcome == 'success'
+        if: steps.apply.outcome == 'success' || steps.apply.outcome == 'failure'
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
 
       - name: Clean Resources with PowerShell
-        if: steps.apply.outcome == 'success'
+        if: steps.apply.outcome == 'success' || steps.apply.outcome == 'failure'
         uses: azure/powershell@v1
         with:
-          inlineScript: |
-            scripts/deletePolicies.ps1
           azPSVersion: "latest"
+          inlineScript: |
+            # Used by GitHub Workflows to clean deployed resources quicker than tf destroy
+            # Quicker during CD as remediation tasks must be in a terminal provisioning state (Succeeded, Canceled, Failed) before they can be deleted.
+
+            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/team_a" | Remove-AzPolicyAssignment -Verbose
+            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/policy_dev" | Remove-AzPolicyAssignment -Verbose
+            Get-AzPolicySetDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicySetDefinition -Force -Verbose
+            Get-AzPolicyDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicyDefinition -Force -Verbose
+            Remove-AzPolicyExemption -Name "Onboard subscription to ASC Exemption" -Scope ("/subscriptions/" + (Get-AzContext).Subscription.Id) -Force -Verbose -ErrorAction SilentlyContinue
