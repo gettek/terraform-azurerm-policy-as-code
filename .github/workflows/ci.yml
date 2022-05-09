@@ -4,6 +4,7 @@ on:
     types: [opened, reopened]
     paths:
       - "**.tf"
+  workflow_dispatch:
 
 jobs:
   ci:
@@ -71,30 +72,3 @@ jobs:
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
-
-      - name: Terraform Apply
-        id: apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -var="skip_remediation=true" && terraform apply
-
-      - name: Log in with Azure
-        if: steps.apply.outcome == 'success' || steps.apply.outcome == 'failure'
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          enable-AzPSSession: true
-
-      - name: Clean Resources with PowerShell
-        if: steps.apply.outcome == 'success' || steps.apply.outcome == 'failure'
-        uses: azure/powershell@v1
-        with:
-          azPSVersion: "latest"
-          inlineScript: |
-            # Used by GitHub Workflows to clean deployed resources quicker than tf destroy
-            # Quicker during CD as remediation tasks must be in a terminal provisioning state (Succeeded, Canceled, Failed) before they can be deleted.
-
-            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/team_a" | Remove-AzPolicyAssignment -Verbose
-            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/policy_dev" | Remove-AzPolicyAssignment -Verbose
-            Get-AzPolicySetDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicySetDefinition -Force -Verbose
-            Get-AzPolicyDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicyDefinition -Force -Verbose
-            Remove-AzPolicyExemption -Name "Onboard subscription to ASC Exemption" -Scope ("/subscriptions/" + (Get-AzContext).Subscription.Id) -Force -Verbose -ErrorAction SilentlyContinue
