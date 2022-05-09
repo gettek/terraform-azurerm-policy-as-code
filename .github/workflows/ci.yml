@@ -11,7 +11,6 @@ jobs:
     env:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
-      TF_CLI_ARGS_apply: "-auto-approve -parallelism=30"
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
@@ -42,8 +41,6 @@ jobs:
       - name: Update Pull Request
         uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
