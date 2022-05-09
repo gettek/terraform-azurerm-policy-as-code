@@ -20,9 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: hashicorp/setup-terraform@v1.2.1
+      - uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.0.11
+          terraform_version: ~1.1.0
 
       - name: Log in with Azure
         uses: azure/login@v1

@@ -23,11 +23,14 @@
 - [Policy Definition Assignment Module](#policy-definition-assignment-module)
 - [Policy Initiative Assignment Module](#policy-initiative-assignment-module)
 - [Policy Exemption Module](#policy-exemption-module)
-- [Assignment Effects](#assignment-effects)
-  - [Automate Remediation Tasks](#automate-remediation-tasks)
-- [Definition and Assignment Scopes](#definition-and-assignment-scopes)
+- [Achieving Continuous Compliance](#achieving-continuous-compliance)
+  - [⚙️Assignment Effects](#️assignment-effects)
+  - [👥Role Assignments](#role-assignments)
+  - [✅Remediation Tasks](#remediation-tasks)
+  - [⏱️On-demand evaluation scan](#️on-demand-evaluation-scan)
+  - [🎯Definition and Assignment Scopes](#definition-and-assignment-scopes)
+- [📘Useful Resources](#useful-resources)
 - [Limitations](#limitations)
-- [Useful Resources](#useful-resources)
 - [Known Issues](#known-issues)
   - [Error: Invalid for_each argument](#error-invalid-for_each-argument)
   - [Updating Initiative Member Definitions](#updating-initiative-member-definitions)
@@ -193,7 +196,9 @@ module exemption_team_a_mg_deny_nic_public_ip {
 }
 ```
 
-## Assignment Effects
+## Achieving Continuous Compliance
+
+### ⚙️Assignment Effects
 
 Azure Policy supports the following types of effect:
 
@@ -203,22 +208,51 @@ Azure Policy supports the following types of effect:
 
 > ℹ️ [Microsoft Docs: Understand how effects work](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/effects)
 
-### Automate Remediation Tasks
+### 👥Role Assignments
 
-The `def_assignment` and `set_assignment` modules will automatically create [remediation tasks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation) for policies with effects of `DeployIfNotExists` and `Modify`. The task name is suffixed with a timestamp to ensure a new task gets created on each `terraform apply`. This can be prevented with `skip_remediation=true`.
+Role assignments and remediation tasks will be automatically created if the Policy Definition contains a list of [Role Definitions](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#configure-policy-definition). You can override these with explicit ones, [as seen here](examples/assignments_org.tf#L52-L58), or specify `skip_role_assignment=true` to omit creation. By default these will scope at the policy assignment but can be changed by setting `role_assignment_scope`.
 
-> 💡 **Note:** The required [Role Definitions](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#configure-policy-definition) for the System Assigned Identity will be scoped at the policy assignment by default, you can override these [as seen here](examples/assignments_org.tf#L51-L54) or specify `skip_role_assignment=true` to omit creation.
+### ✅Remediation Tasks
 
-## Definition and Assignment Scopes
+Unless you specify `skip_remediation=true`, the `*_assignment` modules will automatically create [remediation tasks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation) for policies containing effects of `DeployIfNotExists` and `Modify`. The task name is suffixed with a `timestamp()` to ensure a new one gets created on each `terraform apply`.
 
-  - Should be Defined as **high up** in the hierarchy as possible
-  - Should be Assigned as **low down** in the hierarchy as possible
-  - `assignment_not_scopes` such as child resource groups, individual resources or entire subscriptions, can be specified as enforcement exemptions
-  - Policy **overrides RBAC** so even Subscription owners fall under the same compliance enforcements assigned at a higher scope (does not apply if assigned at subscription scope)
+### ⏱️On-demand evaluation scan
+
+To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data) with terraform, set `resource_discovery_mode=ReEvaluateCompliance` on `*_assignment` modules, defaults to `ExistingNonCompliant`. Note this will take extra time depending on the size of your environment.
+
+### 🎯Definition and Assignment Scopes
+
+  - Should be Defined as **high up** in the hierarchy as possible.
+  - Should be Assigned as **low down** in the hierarchy as possible.
+  - `assignment_not_scopes` such as child resource groups, individual resources or entire subscriptions, can be specified as enforcement exemptions.
+  - Policy **overrides RBAC** so even Subscription owners fall under the same compliance enforcements assigned at a higher scope (unless assigned at subscription scope).
 
 ![Policy Definition and Assignment Scopes](img/scopes.svg)
 
 > ⚠️ **Requirement:** Ensure the deployment account has at least [Resource Policy Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#resource-policy-contributor) role at the `definition_scope` and `assignment_scope`
+
+## 📘Useful Resources
+
+- [GitHub Repo: Azure Built-In Policies and Samples](https://github.com/Azure/azure-policy)
+- [GitHub Repo: Contribute to Community Policies](https://github.com/Azure/Community-Policy)
+- [GitHub Repo: AWESOME-Azure-Policy - a collection of awesome references](https://github.com/globalbao/awesome-azure-policy)
+- [Microsoft Docs: Azure Policy Home](https://docs.microsoft.com/en-us/azure/governance/policy/)
+- [Microsoft Docs: List of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
+- [Microsoft Docs: Index of Azure Policy Samples](https://docs.microsoft.com/en-us/azure/governance/policy/samples/)
+- [Microsoft Docs: Design Azure Policy as Code workflows](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code)
+- [Microsoft Docs: Evaluate the impact of a new Azure Policy definition](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/evaluate-impact)
+- [Microsoft Docs: Author policies for array properties on Azure resources](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/author-policies-for-arrays)
+- [Microsoft Docs: Azure Policy Regulatory Compliance (Benchmarks)](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
+- [Microsoft Docs: Azure Policy Exemption](https://docs.microsoft.com/en-gb/azure/governance/policy/concepts/exemption-structure)
+- [Microsoft Tutorial: Build policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
+- [Microsoft Tutorial: Security Center - Working with security policies](https://docs.microsoft.com/en-us/azure/security-center/tutorial-security-policy)
+- [VSCode Marketplace: Azure Policy Extension](https://marketplace.visualstudio.com/items?itemName=AzurePolicy.azurepolicyextension)
+- [AzAdvertizer: Release and change tracking on Azure Governance capabilities](https://www.azadvertizer.net/index.html)
+- [Terraform Provider: azurerm_policy_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_definition)
+- [Terraform Provider: azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
+- [Terraform Provider: multiple assignment resources: azurerm_*_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment)
+- [Terraform Provider: multiple remediation resources: azurerm_*_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_remediation)
+- [Terraform Provider: multiple exemption resources: azurerm_*_policy_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_exemption)
 
 ## Limitations
 
@@ -241,33 +275,11 @@ The `def_assignment` and `set_assignment` modules will automatically create [rem
 | Remediation task                                          | Resources                        | 50,000        |
 | Policy definition, initiative, or assignment request body | Bytes                            | 1,048,576     |
 
-## Useful Resources
-
-- [GitHub Repo: Azure Built-In Policies and Samples](https://github.com/Azure/azure-policy)
-- [GitHub Repo: Contribute to Community Policies](https://github.com/Azure/Community-Policy)
-- [GitHub Repo: globalbao/awesome-azure-policy](https://github.com/globalbao/awesome-azure-policy)
-- [Microsoft Docs: Azure Policy Home](https://docs.microsoft.com/en-us/azure/governance/policy/)
-- [Microsoft Docs: List of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
-- [Microsoft Docs: Index of Azure Policy Samples](https://docs.microsoft.com/en-us/azure/governance/policy/samples/)
-- [Microsoft Docs: Design Azure Policy as Code workflows](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code)
-- [Microsoft Docs: Evaluate the impact of a new Azure Policy definition](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/evaluate-impact)
-- [Microsoft Docs: Author policies for array properties on Azure resources](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/author-policies-for-arrays)
-- [Microsoft Docs: Azure Policy Regulatory Compliance (Benchmarks)](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
-- [Microsoft Docs: Azure Policy Exemption](https://docs.microsoft.com/en-gb/azure/governance/policy/concepts/exemption-structure)
-- [Microsoft Tutorial: Build policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
-- [Microsoft Tutorial: Security Center - Working with security policies](https://docs.microsoft.com/en-us/azure/security-center/tutorial-security-policy)
-- [VSCode Marketplace: Azure Policy Extension](https://marketplace.visualstudio.com/items?itemName=AzurePolicy.azurepolicyextension)
-- [Terraform Provider: azurerm_policy_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_definition)
-- [Terraform Provider: azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
-- [Terraform Provider: multiple assignment resources beginning with: azurerm_management_group_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment)
-- [Terraform Provider: multiple remediation resources beginning with: azurerm_management_group_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_remediation)
-- [Terraform Provider: multiple exemption resources beginning with: azurerm_management_group_policy_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_exemption)
-
 ## Known Issues
 
 ### Error: Invalid for_each argument
 
-You may experience plan/apply issues when running an initial deployment of the `set_assignment` module. This is because `azurerm_role_assignment.rem_role` and `azurerm_policy_remediation.rem` depend on resources to exist before producing a successful continuos deployment. To overcome this, set `skip_remediation=true` and omit for consecutive builds. This may also be required for destroy tasks.
+You may experience plan/apply issues when running an initial deployment of the `set_assignment` module. This is because `azurerm_role_assignment.rem_role` and `azurerm_*_policy_remediation.rem` depend on resources to exist before producing a successful continuos deployment. To overcome this, set `skip_remediation=true` and omit for consecutive builds. This may also be required for destroy tasks.
 
 ### Updating Initiative Member Definitions
 

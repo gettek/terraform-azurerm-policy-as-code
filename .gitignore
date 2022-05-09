@@ -1,11 +1,10 @@
-###Terraform 
+###Terraform
 # Local .terraform directories
 **/.terraform/*
 *.tfstate
 *.tfstate.*
 *.auto.tfvars
 lock.json
-.terraform.lock.hcl
 *.tfvars
 override.tf
 override.tf.json

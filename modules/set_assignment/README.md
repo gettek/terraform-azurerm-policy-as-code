@@ -2,9 +2,9 @@
 
 Assignments can be scoped from overarching management groups right down to individual resources
 
-> 💡 To automate Role Assignment and Remediation you must explicitly parse a list of required `role_definition_ids` to this module. You can assign roles at a different scope to that of the policy assignment (default) using `role_assignment_scope`.
+> 💡 To automate Role Assignment and Remediation you must explicitly parse a list of required `role_definition_ids` to this module as seen below. You may choose to assign roles at a different scope to that of the policy assignment (default) using `role_assignment_scope`.
 
-> ⚠️ **Warning:** You may experience plan/apply issues when running an initial deployment of a `set_assignment`. This is because `azurerm_role_assignment.rem_role` and `azurerm_policy_remediation.rem` depend on resources to exist before producing a successful deployment. To overcome this, set the flag `skip_remediation=true` and omit for consecutive builds. This may also be required for destroy tasks.
+> ⚠️ **Warning:** You may experience plan/apply issues when running an initial deployment of a `set_assignment`. This is because `azurerm_role_assignment.rem_role` and `azurerm_*_policy_remediation.rem` depend on resources to exist before producing a successful deployment. To overcome this, set the flag `skip_remediation=true` and omit for consecutive builds. This may also be required for destroy tasks.
 
 ## Examples
 
