@@ -9,8 +9,8 @@ output identity_id {
 }
 
 output remediation_id {
-  description = "The Id of the Policy Remediation"
-  value       = azurerm_policy_remediation.rem[*].id
+  description = "The Id of the remediation task"
+  value       = local.remediation_id
 }
 
 output role_definition_ids {

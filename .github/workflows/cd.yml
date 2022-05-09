@@ -11,6 +11,7 @@ jobs:
     env:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
+      TF_CLI_ARGS_apply: "-auto-approve -parallelism=30"
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
@@ -18,9 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: hashicorp/setup-terraform@v1.2.1
+      - uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.0.11
+          terraform_version: ~1.1.0
 
       - name: Terraform Init
         id: init
@@ -30,11 +31,12 @@ jobs:
       - name: Terraform Apply
         id: apply
         if: ${{ success() }}
-        run: terraform apply -auto-approve -var="skip_remediation=true" && terraform apply -auto-approve
+        run: terraform apply -var="skip_remediation=true" && terraform apply
         working-directory: examples
 
       - name: Log in with Azure
         uses: azure/login@v1
+        if: ${{ failure() }} || ${{ success() }}
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
@@ -42,6 +44,7 @@ jobs:
       - name: Clean Resources with PowerShell
         id: destroy
         uses: azure/powershell@v1
+        if: ${{ failure() }} || ${{ success() }}
         with:
           azPSVersion: "latest"
           inlineScript: |
@@ -52,6 +55,4 @@ jobs:
             Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/policy_dev" | Remove-AzPolicyAssignment -Verbose
             Get-AzPolicySetDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicySetDefinition -Force -Verbose
             Get-AzPolicyDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicyDefinition -Force -Verbose
-
-            # Remove policy exemption.tf deployment
-            Remove-AzDeployment -name "Onboard_subscription_to_ASC_Exemption" -ErrorAction SilentlyContinue
+            Remove-AzPolicyExemption -Name "Onboard subscription to ASC Exemption" -Scope ("/subscriptions/" + (Get-AzContext).Subscription.Id) -Force -Verbose -ErrorAction SilentlyContinue

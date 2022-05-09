@@ -23,11 +23,11 @@ data "azurerm_storage_container" "guest_config_container" {
 
 # retrieve guest_config_packages_script outputs
 data "local_file" "cgc_definition_list" {
-    filename = "${path.module}/../scripts/definitionList.json"
+  filename = "${path.module}/../scripts/definitionList.json"
 
-    depends_on = [
-      null_resource.guest_config_packages_script
-    ]
+  depends_on = [
+    null_resource.guest_config_packages_script
+  ]
 }
 
 # Retrieve Custom Config Definitions that were built and published by build_packages.tf

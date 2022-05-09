@@ -2,7 +2,9 @@
 
 This module depends on populating `var.policy_category` and `var.policy_name` to correspond with the respective custom policy definition `json` file found in the [local library](../../policies/).
 
-> :bulb: **Note:** More information on Policy Definition Structure [can be found here](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
+> 💡 **Note:** More information on Policy Definition Structure [can be found here](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
+
+> 💡 **Note:** Specify the `policy_mode` variable if you wish to [change the mode](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#mode) which defaults to `All`. Possible values below.
 
 ## Examples
 
@@ -11,11 +13,10 @@ This module depends on populating `var.policy_category` and `var.policy_name` to
 ```hcl
 module whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/definition"
-  version               = "2.3.0"
   policy_name           = "whitelist_regions"
   display_name          = "Allow resources only in whitelisted regions"
   policy_category       = "General"
-  management_group      = local.default_management_group_scope_name
+  management_group_id   = data.azurerm_management_group.org.id
 }
 ```
 
@@ -38,7 +39,7 @@ module "configure_asc" {
   display_name          = title(replace(each.key, "_", " "))
   policy_description    = each.value
   policy_category       = "Security Center"
-  management_group      = data.azurerm_management_group.org.name
+  management_group_id   = data.azurerm_management_group.org.id
 }
 ```
 
@@ -68,7 +69,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_display_name"></a> [display\_name](#input\_display\_name) | Display Name to be used for this policy | `string` | `""` | no |
-| <a name="input_management_group"></a> [management\_group](#input\_management\_group) | The management group scope at which the policy will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. Note: if you are using azurerm\_management\_group to assign a value to management\_group\_id, be sure to use name or group\_id attribute, but not id. | `string` | `null` | no |
+| <a name="input_management_group_id"></a> [management\_group\_id](#input\_management\_group\_id) | The management group scope at which the policy will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. Note: if you are using azurerm\_management\_group to assign a value to management\_group\_id, be sure to use name or group\_id attribute, but not id. | `string` | `null` | no |
 | <a name="input_policy_category"></a> [policy\_category](#input\_policy\_category) | The category of the policy, should correspond to the correct category folder under /policies/var.policy\_category | `string` | `""` | no |
 | <a name="input_policy_description"></a> [policy\_description](#input\_policy\_description) | Policy definition description | `string` | `""` | no |
 | <a name="input_policy_metadata"></a> [policy\_metadata](#input\_policy\_metadata) | The metadata for the policy definition. This is a JSON object representing additional metadata that should be stored with the policy definition. Omitting this will merge var.policy\_category and var.policy\_version as the metadata | `any` | `null` | no |

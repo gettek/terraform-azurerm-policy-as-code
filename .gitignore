@@ -1,4 +1,4 @@
-###Terraform 
+###Terraform
 # Local .terraform directories
 **/.terraform/*
 *.tfstate

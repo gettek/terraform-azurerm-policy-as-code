@@ -2,7 +2,9 @@
 
 This module depends on populating `var.policy_category` and `var.policy_name` to correspond with the respective custom policy definition `json` file found in the [local library](../../policies/).
 
-> :bulb: **Note:** More information on Policy Definition Structure [can be found here](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
+> 💡 **Note:** More information on Policy Definition Structure [can be found here](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
+
+> 💡 **Note:** Specify the `policy_mode` variable if you wish to [change the mode](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#mode) which defaults to `All`. Possible values below.
 
 ## Examples
 
@@ -11,11 +13,10 @@ This module depends on populating `var.policy_category` and `var.policy_name` to
 ```hcl
 module whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/definition"
-  version               = "2.3.0"
   policy_name           = "whitelist_regions"
   display_name          = "Allow resources only in whitelisted regions"
   policy_category       = "General"
-  management_group      = local.default_management_group_scope_name
+  management_group_id   = data.azurerm_management_group.org.id
 }
 ```
 
@@ -38,6 +39,6 @@ module "configure_asc" {
   display_name          = title(replace(each.key, "_", " "))
   policy_description    = each.value
   policy_category       = "Security Center"
-  management_group      = data.azurerm_management_group.org.name
+  management_group_id   = data.azurerm_management_group.org.id
 }
 ```

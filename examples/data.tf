@@ -1,5 +1,7 @@
 data "azurerm_client_config" "current" {}
 
+data "azurerm_subscription" "current" {}
+
 # Org Management Group
 data "azurerm_management_group" "org" {
   name = "policy_dev"

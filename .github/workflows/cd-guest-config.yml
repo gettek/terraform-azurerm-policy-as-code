@@ -11,6 +11,8 @@ jobs:
     env:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
+      TF_CLI_ARGS_apply: "-auto-approve -parallelism=30"
+      TF_CLI_ARGS_destroy: "-auto-approve -parallelism=30"
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
@@ -18,9 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: hashicorp/setup-terraform@v1.2.1
+      - uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.0.11
+          terraform_version: ~1.1.0
 
       - name: Log in with Azure
         uses: azure/login@v1
@@ -36,11 +38,11 @@ jobs:
       - name: Terraform Apply
         id: apply
         if: ${{ success() }}
-        run: terraform apply -auto-approve -var="skip_remediation=true" && terraform apply -auto-approve -var="build_packages=false"
+        run: terraform apply -var="skip_remediation=true" && terraform apply -var="build_packages=false"
         working-directory: examples-guest-config
 
       - name: Terraform Destroy
         id: destroy
         if: ${{ success() }}
-        run: terraform destroy -auto-approve
+        run: terraform destroy
         working-directory: examples-guest-config
