@@ -1,13 +1,11 @@
 name: ci
 on:
   pull_request:
-    branches: [main,"2.5.0"]
+    types: [opened, reopened]
     paths:
-      - "examples"
-  workflow_dispatch:
+      - "**.tf"
 
 jobs:
-
   ci:
     env:
       TF_IN_AUTOMATION: true
