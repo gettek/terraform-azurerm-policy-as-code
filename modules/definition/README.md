@@ -83,7 +83,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_definition"></a> [definition](#output\_definition) | The complete resource node of the Policy Definition |
+| <a name="output_definition"></a> [definition](#output\_definition) | The combined Policy Definition resource node |
 | <a name="output_id"></a> [id](#output\_id) | The Id of the Policy Definition |
 | <a name="output_metadata"></a> [metadata](#output\_metadata) | The metadata of the Policy Definition |
 | <a name="output_name"></a> [name](#output\_name) | The name of the Policy Definition |

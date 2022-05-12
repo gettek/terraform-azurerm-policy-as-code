@@ -4,8 +4,6 @@ Assignments can be scoped from overarching management groups right down to indiv
 
 > 💡 To automate Role Assignment and Remediation you must explicitly parse a list of required `role_definition_ids` to this module as seen below. You may choose to assign roles at a different scope to that of the policy assignment (default) using `role_assignment_scope`.
 
-> ⚠️ **Warning:** You may experience plan/apply issues when running an initial deployment of a `set_assignment`. This is because `azurerm_role_assignment.rem_role` and `azurerm_*_policy_remediation.rem` depend on resources to exist before producing a successful deployment. To overcome this, set the flag `skip_remediation=true` and omit for consecutive builds. This may also be required for destroy tasks.
-
 ## Examples
 
 ### Custom Policy Initiative Assignment with Not-Scope
@@ -15,7 +13,7 @@ module org_mg_configure_asc_initiative {
   initiative           = module.configure_asc_initiative.initiative
   assignment_scope     = data.azurerm_management_group.org.id
   assignment_effect    = "DeployIfNotExists"
-  skip_remediation     = var.skip_remediation
+  skip_remediation     = false
   skip_role_assignment = false
   role_definition_ids  = module.configure_asc_initiative.role_definition_ids
 
@@ -66,7 +64,7 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
   source           = "gettek/policy-as-code/azurerm//modules/set_assignment"
   initiative       = data.azurerm_policy_set_definition.configure_az_monitor_linux_vm_initiative
   assignment_scope = data.azurerm_management_group.org.id
-  skip_remediation = var.skip_remediation
+  skip_remediation = false
 
   role_definition_ids = [
     data.azurerm_role_definition.vm_contributor.id
@@ -74,7 +72,7 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
 
   assignment_parameters = {
     listOfLinuxImageIdToInclude = []
-    dcrResourceId                 = "/Data/Collection/Rule/Resource/Id"
+    dcrResourceId               = "/Data/Collection/Rule/Resource/Id"
   }
 }
 ```
@@ -129,7 +127,7 @@ No modules.
 | <a name="input_non_compliance_message"></a> [non\_compliance\_message](#input\_non\_compliance\_message) | The optional non-compliance message text. This message will be the default for all member definitions in the set. | `string` | `""` | no |
 | <a name="input_resource_discovery_mode"></a> [resource\_discovery\_mode](#input\_resource\_discovery\_mode) | The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant | `string` | `"ExistingNonCompliant"` | no |
 | <a name="input_role_assignment_scope"></a> [role\_assignment\_scope](#input\_role\_assignment\_scope) | The scope at which role definition(s) will be assigned, defaults to Policy Assignment Scope. Must be full resource IDs. Changing this forces a new resource to be created | `string` | `null` | no |
-| <a name="input_role_definition_ids"></a> [role\_definition\_ids](#input\_role\_definition\_ids) | List of Role definition ID's for the System Assigned Identity. Omit this to skip creating role assignments. Changing this forces a new resource to be created | `list(any)` | `[]` | no |
+| <a name="input_role_definition_ids"></a> [role\_definition\_ids](#input\_role\_definition\_ids) | List of Role definition ID's for the System Assigned Identity. Omit this to use those located in policy definitions. Changing this forces a new resource to be created | `list(string)` | `[]` | no |
 | <a name="input_skip_remediation"></a> [skip\_remediation](#input\_skip\_remediation) | Should the module skip creation of a remediation task for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 | <a name="input_skip_role_assignment"></a> [skip\_role\_assignment](#input\_skip\_role\_assignment) | Should the module skip creation of role assignment for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 
@@ -137,6 +135,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_definition_references"></a> [definition\_references](#output\_definition\_references) | The Member Definition Reference Ids |
 | <a name="output_id"></a> [id](#output\_id) | The Policy Assignment Id |
-| <a name="output_identity_id"></a> [identity\_id](#output\_identity\_id) | The Managed Identity block containing Principal Id & Tenant Id of this Policy Assignment if type is SystemAssigned |
+| <a name="output_principal_id"></a> [principal\_id](#output\_principal\_id) | The Principal Id of this Policy Assignment's Managed Identity if type is SystemAssigned |
 | <a name="output_remediation_tasks"></a> [remediation\_tasks](#output\_remediation\_tasks) | The Remediation Task Ids and related Policy Definition Ids |

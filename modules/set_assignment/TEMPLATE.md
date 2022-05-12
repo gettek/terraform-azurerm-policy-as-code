@@ -4,8 +4,6 @@ Assignments can be scoped from overarching management groups right down to indiv
 
 > 💡 To automate Role Assignment and Remediation you must explicitly parse a list of required `role_definition_ids` to this module as seen below. You may choose to assign roles at a different scope to that of the policy assignment (default) using `role_assignment_scope`.
 
-> ⚠️ **Warning:** You may experience plan/apply issues when running an initial deployment of a `set_assignment`. This is because `azurerm_role_assignment.rem_role` and `azurerm_*_policy_remediation.rem` depend on resources to exist before producing a successful deployment. To overcome this, set the flag `skip_remediation=true` and omit for consecutive builds. This may also be required for destroy tasks.
-
 ## Examples
 
 ### Custom Policy Initiative Assignment with Not-Scope
@@ -15,7 +13,7 @@ module org_mg_configure_asc_initiative {
   initiative           = module.configure_asc_initiative.initiative
   assignment_scope     = data.azurerm_management_group.org.id
   assignment_effect    = "DeployIfNotExists"
-  skip_remediation     = var.skip_remediation
+  skip_remediation     = false
   skip_role_assignment = false
   role_definition_ids  = module.configure_asc_initiative.role_definition_ids
 
@@ -66,7 +64,7 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
   source           = "gettek/policy-as-code/azurerm//modules/set_assignment"
   initiative       = data.azurerm_policy_set_definition.configure_az_monitor_linux_vm_initiative
   assignment_scope = data.azurerm_management_group.org.id
-  skip_remediation = var.skip_remediation
+  skip_remediation = false
 
   role_definition_ids = [
     data.azurerm_role_definition.vm_contributor.id
@@ -74,7 +72,7 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
 
   assignment_parameters = {
     listOfLinuxImageIdToInclude = []
-    dcrResourceId                 = "/Data/Collection/Rule/Resource/Id"
+    dcrResourceId               = "/Data/Collection/Rule/Resource/Id"
   }
 }
 ```

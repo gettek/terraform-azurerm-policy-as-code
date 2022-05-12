@@ -31,7 +31,7 @@ jobs:
       - name: Terraform Apply
         id: apply
         if: ${{ success() }}
-        run: terraform apply -var="skip_remediation=true" && terraform apply
+        run: terraform apply
         working-directory: examples
 
       - name: Log in with Azure

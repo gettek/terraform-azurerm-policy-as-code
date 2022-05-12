@@ -1,6 +1,6 @@
 output id {
   description = "The Id of the Policy Set Definition"
-  value       = azurerm_policy_set_definition.set.id
+  value       = local.initiative_id
 }
 
 output name {
@@ -18,12 +18,21 @@ output metadata {
   value       = local.metadata
 }
 
-output initiative {
-  description = "The complete Policy Initiative resource node"
-  value       = azurerm_policy_set_definition.set
-}
-
 output role_definition_ids {
   description = "Role definition IDs for remediation"
   value       = local.all_role_definition_ids
+}
+
+output initiative {
+  description = "The combined Policy Initiative resource node"
+  value = {
+    id                          = local.initiative_id
+    name                        = var.initiative_name
+    display_name                = var.initiative_display_name
+    description                 = var.initiative_description
+    management_group_id         = var.management_group_id
+    parameters                  = local.all_parameters
+    metadata                    = local.metadata
+    policy_definition_reference = azurerm_policy_set_definition.set.policy_definition_reference
+  }
 }

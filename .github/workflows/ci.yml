@@ -39,7 +39,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -var="skip_remediation=true"
+        run: terraform plan -no-color
         working-directory: ${{ env.TF_WORKING_DIR }}
         continue-on-error: true
 

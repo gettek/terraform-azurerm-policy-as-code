@@ -31,9 +31,6 @@
   - [🎯Definition and Assignment Scopes](#definition-and-assignment-scopes)
 - [📘Useful Resources](#useful-resources)
 - [Limitations](#limitations)
-- [Known Issues](#known-issues)
-  - [Error: Invalid for_each argument](#error-invalid-for_each-argument)
-  - [Updating Initiative Member Definitions](#updating-initiative-member-definitions)
 
 ## Repo Folder Structure
 
@@ -83,7 +80,7 @@ This module depends on populating `var.policy_name` and `var.policy_category` to
 ```hcl
 module whitelist_regions {
   source              = "gettek/policy-as-code/azurerm//modules/definition"
-  version             = "2.5.0"
+  version             = "2.5.1"
   policy_name         = "whitelist_regions"
   display_name        = "Allow resources only in whitelisted regions"
   policy_category     = "General"
@@ -102,7 +99,7 @@ Policy Initiatives are used to combine sets of definitions in order to simplify 
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "2.5.0"
+  version                 = "2.5.1"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -123,7 +120,7 @@ module platform_baseline_initiative {
 ```hcl
 module org_mg_whitelist_regions {
   source                = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version               = "2.5.0"
+  version               = "2.5.1"
   definition            = module.whitelist_regions.definition
   assignment_scope      = data.azurerm_management_group.org.id
   assignment_effect     = "Deny"
@@ -142,12 +139,12 @@ module org_mg_whitelist_regions {
 ```hcl
 module org_mg_platform_diagnostics_initiative {
   source               = "gettek/policy-as-code/azurerm//modules/set_assignment"
-  version              = "2.5.0"
+  version              = "2.5.1"
   initiative           = module.platform_diagnostics_initiative.initiative
   assignment_scope     = data.azurerm_management_group.org.id
   assignment_effect    = "DeployIfNotExists"
   skip_remediation     = var.skip_remediation
-  skip_role_assignment = false
+  skip_role_assignment = var.skip_role_assignment
   role_definition_ids  = module.platform_diagnostics_initiative.role_definition_ids
   assignment_parameters = {
     workspaceId                 = azurerm_log_analytics_workspace.workspace.id
@@ -275,12 +272,3 @@ To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure
 | Remediation task                                          | Resources                        | 50,000        |
 | Policy definition, initiative, or assignment request body | Bytes                            | 1,048,576     |
 
-## Known Issues
-
-### Error: Invalid for_each argument
-
-You may experience plan/apply issues when running an initial deployment of the `set_assignment` module. This is because `azurerm_role_assignment.rem_role` and `azurerm_*_policy_remediation.rem` depend on resources to exist before producing a successful continuos deployment. To overcome this, set `skip_remediation=true` and omit for consecutive builds. This may also be required for destroy tasks.
-
-### Updating Initiative Member Definitions
-
-Updating Initiatives can become tricky when parameter counts are increased or decreased when `member_definitions` are added or removed, in most cases you will need to recreate the initiative before a successful `set_assignment` e.g:  `terraform apply -var "skip_remediation=true" -target module.example_initiative`
