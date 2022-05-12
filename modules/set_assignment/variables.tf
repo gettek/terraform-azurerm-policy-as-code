@@ -80,8 +80,8 @@ variable location_filters {
 }
 
 variable role_definition_ids {
-  type        = list(any)
-  description = "List of Role definition ID's for the System Assigned Identity. Omit this to skip creating role assignments. Changing this forces a new resource to be created"
+  type        = list(string)
+  description = "List of Role definition ID's for the System Assigned Identity. Omit this to use those located in policy definitions. Changing this forces a new resource to be created"
   default     = []
 }
 
@@ -133,10 +133,10 @@ locals {
   # create the optional non-compliance message contents block if present
   non_compliance_message = var.non_compliance_message != "" ? { content = var.non_compliance_message } : {}
 
-  # try to use policy definition roles if ommitted
-  role_definition_ids = var.skip_remediation == false ? var.skip_role_assignment == false ? toset(try(var.role_definition_ids, [])) : [] : []
+  # try to use policy definition roles if input is ommitted
+  role_definition_ids = var.skip_role_assignment == false ? toset(try(var.role_definition_ids, [])) : []
 
-  # policy assignment scope will be used if omitted
+  # policy assignment scope will be used if input is omitted
   role_assignment_scope = coalesce(var.role_assignment_scope, var.assignment_scope)
 
   # determine managed identity type
@@ -152,17 +152,11 @@ locals {
   })
 
   # evaluate assignment outputs
-  assignment_id = try(
-    azurerm_management_group_policy_assignment.set[0].id,
-    azurerm_subscription_policy_assignment.set[0].id,
-    azurerm_resource_group_policy_assignment.set[0].id,
-    azurerm_resource_policy_assignment.set[0].id,
-  "")
-  principal_id = try(
-    azurerm_management_group_policy_assignment.set[0].identity[0].principal_id,
-    azurerm_subscription_policy_assignment.set[0].identity[0].principal_id,
-    azurerm_resource_group_policy_assignment.set[0].identity[0].principal_id,
-    azurerm_resource_policy_assignment.set[0].identity[0].principal_id,
+  assignment = try(
+    azurerm_management_group_policy_assignment.set[0],
+    azurerm_subscription_policy_assignment.set[0],
+    azurerm_resource_group_policy_assignment.set[0],
+    azurerm_resource_policy_assignment.set[0],
   "")
   remediation_tasks = try(
     azurerm_management_group_policy_remediation.rem,

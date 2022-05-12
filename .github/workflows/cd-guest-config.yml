@@ -38,7 +38,7 @@ jobs:
       - name: Terraform Apply
         id: apply
         if: ${{ success() }}
-        run: terraform apply -var="skip_remediation=true" && terraform apply -var="build_packages=false"
+        run: terraform apply && terraform apply -var="build_packages=false"
         working-directory: examples-guest-config
 
       - name: Terraform Destroy

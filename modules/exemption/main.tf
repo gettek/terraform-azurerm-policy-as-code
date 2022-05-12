@@ -7,7 +7,7 @@ resource "azurerm_management_group_policy_exemption" "management_group_exemption
   policy_assignment_id            = var.policy_assignment_id
   exemption_category              = var.exemption_category
   expires_on                      = local.expires_on
-  policy_definition_reference_ids = var.policy_definition_reference_ids
+  policy_definition_reference_ids = local.policy_definition_reference_ids
   metadata                        = jsonencode(var.metadata)
 }
 
@@ -20,7 +20,7 @@ resource "azurerm_subscription_policy_exemption" "subscription_exemption" {
   policy_assignment_id            = var.policy_assignment_id
   exemption_category              = var.exemption_category
   expires_on                      = local.expires_on
-  policy_definition_reference_ids = var.policy_definition_reference_ids
+  policy_definition_reference_ids = local.policy_definition_reference_ids
   metadata                        = jsonencode(var.metadata)
 }
 
@@ -33,7 +33,7 @@ resource "azurerm_resource_group_policy_exemption" "resource_group_exemption" {
   policy_assignment_id            = var.policy_assignment_id
   exemption_category              = var.exemption_category
   expires_on                      = local.expires_on
-  policy_definition_reference_ids = var.policy_definition_reference_ids
+  policy_definition_reference_ids = local.policy_definition_reference_ids
   metadata                        = jsonencode(var.metadata)
 }
 
@@ -46,6 +46,6 @@ resource "azurerm_resource_policy_exemption" "resource_exemption" {
   policy_assignment_id            = var.policy_assignment_id
   exemption_category              = var.exemption_category
   expires_on                      = local.expires_on
-  policy_definition_reference_ids = var.policy_definition_reference_ids
+  policy_definition_reference_ids = local.policy_definition_reference_ids
   metadata                        = jsonencode(var.metadata)
 }

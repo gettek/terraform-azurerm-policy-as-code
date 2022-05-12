@@ -1,11 +1,11 @@
 output id {
   description = "The Policy Assignment Id"
-  value       = local.assignment_id
+  value       = local.assignment.id
 }
 
-output identity_id {
-  description = "The Managed Identity block containing Principal Id & Tenant Id of this Policy Assignment if type is SystemAssigned"
-  value       = local.principal_id
+output principal_id {
+  description = "The Principal Id of this Policy Assignment's Managed Identity if type is SystemAssigned"
+  value       = local.assignment.identity[0].principal_id
 }
 
 output remediation_tasks {
@@ -17,4 +17,9 @@ output remediation_tasks {
       "policy_definition_id" = rem.policy_definition_id
     })
   ]
+}
+
+output definition_references {
+  description = "The Member Definition Reference Ids"
+  value       = try(var.initiative.policy_definition_reference, [])
 }

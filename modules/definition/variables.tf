@@ -91,4 +91,7 @@ locals {
     { category = try((local.policy_object).properties.metadata.category, var.policy_category) },
     { version = try((local.policy_object).properties.metadata.version, var.policy_version) },
   )) : var.policy_metadata
+
+  # manually generate the definition Id to prevent "Invalid for_each argument" on set_assignment plan/apply
+  definition_id = var.management_group_id != null ? "${var.management_group_id}/providers/Microsoft.Authorization/policyDefinitions/${var.policy_name}" : azurerm_policy_definition.def.id
 }

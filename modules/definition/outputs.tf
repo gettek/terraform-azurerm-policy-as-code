@@ -1,6 +1,6 @@
 output id {
   description = "The Id of the Policy Definition"
-  value       = azurerm_policy_definition.def.id
+  value       = local.definition_id
 }
 
 output name {
@@ -24,6 +24,16 @@ output metadata {
 }
 
 output definition {
-  description = "The complete resource node of the Policy Definition"
-  value       = azurerm_policy_definition.def
+  description = "The combined Policy Definition resource node"
+  value = {
+    id                  = local.definition_id
+    name                = var.policy_name
+    display_name        = local.display_name
+    description         = local.description
+    mode                = var.policy_mode
+    management_group_id = var.management_group_id
+    policy_rule         = jsonencode(local.policy_rule)
+    parameters          = jsonencode(local.parameters)
+    metadata            = local.metadata
+  }
 }

@@ -25,7 +25,7 @@ No requirements.
 | <a name="module_deny_resources_types"></a> [deny\_resources\_types](#module\_deny\_resources\_types) | ..//modules/definition | n/a |
 | <a name="module_deploy_resource_diagnostic_setting"></a> [deploy\_resource\_diagnostic\_setting](#module\_deploy\_resource\_diagnostic\_setting) | ..//modules/definition | n/a |
 | <a name="module_deploy_subscription_diagnostic_setting"></a> [deploy\_subscription\_diagnostic\_setting](#module\_deploy\_subscription\_diagnostic\_setting) | ..//modules/definition | n/a |
-| <a name="module_exemption_configure_asc_initiative"></a> [exemption\_configure\_asc\_initiative](#module\_exemption\_configure\_asc\_initiative) | ..//modules/exemption | n/a |
+| <a name="module_exemption_subscription_diagnostics_settings"></a> [exemption\_subscription\_diagnostics\_settings](#module\_exemption\_subscription\_diagnostics\_settings) | ..//modules/exemption | n/a |
 | <a name="module_inherit_resource_group_tags_modify"></a> [inherit\_resource\_group\_tags\_modify](#module\_inherit\_resource\_group\_tags\_modify) | ..//modules/definition | n/a |
 | <a name="module_org_mg_configure_asc_initiative"></a> [org\_mg\_configure\_asc\_initiative](#module\_org\_mg\_configure\_asc\_initiative) | ..//modules/set_assignment | n/a |
 | <a name="module_org_mg_configure_az_monitor_linux_vm_initiative"></a> [org\_mg\_configure\_az\_monitor\_linux\_vm\_initiative](#module\_org\_mg\_configure\_az\_monitor\_linux\_vm\_initiative) | ..//modules/set_assignment | n/a |

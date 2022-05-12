@@ -2,6 +2,8 @@
 
 Exemptions can be used where `not_scopes` become time sensitive or require alternative methods of approval for audit trails. Learn more about Azure Policy [exemption structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure).
 
+> 💡**Note:** This module also allows you to exempt multiple scope types at once (e.g. resource group and individual resource) when using a `for_each` loop as in the example below.
+
 ## Examples
 
 ### At Management Group Scope with Optional Metadata
@@ -27,6 +29,25 @@ module exemption_team_a_mg_deny_nic_public_ip {
 }
 ```
 
+### Exempt multiple scope types in a for_each loop
+
+```hcl
+module exemption_team_a_mg_deny_nic_public_ip {
+  source = "gettek/policy-as-code/azurerm//modules/exemption"
+  for_each = toset([
+    data.azurerm_management_group.team_a.id,
+    data.azurerm_subscription.current.id,
+    data.azurerm_resource_group.example.id
+    data.azurerm_network_interface.example.id
+  ])
+  name                 = "Deny NIC Public IP Exemption"
+  display_name         = "Exempted while testing"
+  description          = "Allows NIC Public IPs for testing"
+  scope                = each.value
+  policy_assignment_id = module.team_a_mg_deny_nic_public_ip.id
+}
+```
+
 ### Exempt a subset of definitions within an Initiative at Subscription Scope
 
 ```hcl
@@ -35,11 +56,11 @@ module "exemption_configure_asc_initiative" {
   name                            = "Onboard subscription to ASC Exemption"
   display_name                    = "Exempted while testing"
   description                     = "Excludes subscription from ASC onboarding during development"
-  scope                           = "/subscriptions/${var.team_a_subscription_id}"
+  scope                           = data.azurerm_subscription.current.id
   policy_assignment_id            = module.org_mg_configure_asc_initiative.id
-  policy_definition_reference_ids = [
-    "6d237bfef483fbb3308d",
-    "652d1284813c442a7e95"
+  member_definition_names = [
+    "auto_provision_log_analytics_agent_custom_workspace",
+    "auto_set_contact_details"
   ]
 }
 ```
@@ -47,16 +68,12 @@ module "exemption_configure_asc_initiative" {
 ### Resource Group Exemption
 
 ```hcl
-data azurerm_resource_group vms {
-  name = "rg-dev-uks-vms"
-}
-
 module exemption_team_a_mg_deny_nic_public_ip {
   source               = "gettek/policy-as-code/azurerm//modules/exemption"
   name                 = "Deny NIC Public IP Exemption"
   display_name         = "Exempted while testing"
   description          = "Allows NIC Public IPs for testing"
-  scope                = data.azurerm_resource_group.vms.id
+  scope                = data.azurerm_resource_group.example.id
   policy_assignment_id = module.team_a_mg_deny_nic_public_ip.id
 }
 ```
@@ -119,10 +136,11 @@ No modules.
 | <a name="input_display_name"></a> [display\_name](#input\_display\_name) | Display name for the Policy Exemption | `string` | n/a | yes |
 | <a name="input_exemption_category"></a> [exemption\_category](#input\_exemption\_category) | The policy exemption category. Possible values are Waiver or Mitigated. Defaults to Waiver | `string` | `"Waiver"` | no |
 | <a name="input_expires_on"></a> [expires\_on](#input\_expires\_on) | Optional expiration date (format yyyy-mm-dd) of the policy exemption. Defaults to no expiry | `string` | `null` | no |
+| <a name="input_member_definition_names"></a> [member\_definition\_names](#input\_member\_definition\_names) | Generate the definition reference Ids from the member definition names when 'policy\_definition\_reference\_ids' are unknown. Ommit to exempt all member definitions | `list(string)` | `[]` | no |
 | <a name="input_metadata"></a> [metadata](#input\_metadata) | Optional policy exemption metadata. For example but not limited to; requestedBy, approvedBy, approvedOn, ticketRef, etc | `any` | `{}` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name for the Policy Exemption | `string` | n/a | yes |
 | <a name="input_policy_assignment_id"></a> [policy\_assignment\_id](#input\_policy\_assignment\_id) | The ID of the policy assignment that is being exempted | `string` | n/a | yes |
-| <a name="input_policy_definition_reference_ids"></a> [policy\_definition\_reference\_ids](#input\_policy\_definition\_reference\_ids) | The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition | `list(any)` | `[]` | no |
+| <a name="input_policy_definition_reference_ids"></a> [policy\_definition\_reference\_ids](#input\_policy\_definition\_reference\_ids) | The optional policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition. Ommit to exempt all member definitions | `list(string)` | `[]` | no |
 | <a name="input_scope"></a> [scope](#input\_scope) | Scope for the Policy Exemption | `string` | n/a | yes |
 
 ## Outputs

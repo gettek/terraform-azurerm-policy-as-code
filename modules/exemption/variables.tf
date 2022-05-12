@@ -24,8 +24,14 @@ variable policy_assignment_id {
 }
 
 variable policy_definition_reference_ids {
-  type        = list(any)
-  description = "The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition"
+  type        = list(string)
+  description = "The optional policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition. Ommit to exempt all member definitions"
+  default     = []
+}
+
+variable member_definition_names {
+  type        = list(string)
+  description = "Generate the definition reference Ids from the member definition names when 'policy_definition_reference_ids' are unknown. Ommit to exempt all member definitions"
   default     = []
 }
 
@@ -61,6 +67,11 @@ locals {
   })
 
   expires_on = var.expires_on != null ? "${var.expires_on}T23:00:00Z" : null
+
+  # generate reference Ids when unknown, assumes the set was created with the initiative module
+  policy_definition_reference_ids = length(var.member_definition_names) > 0 ? [for name in var.member_definition_names :
+    replace(substr(title(replace(name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")
+  ] : var.policy_definition_reference_ids
 
   exemption_id = try(
     azurerm_management_group_policy_exemption.management_group_exemption[0].id,

@@ -125,7 +125,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | The Id of the Policy Set Definition |
-| <a name="output_initiative"></a> [initiative](#output\_initiative) | The complete Policy Initiative resource node |
+| <a name="output_initiative"></a> [initiative](#output\_initiative) | The combined Policy Initiative resource node |
 | <a name="output_metadata"></a> [metadata](#output\_metadata) | The metadata of the Policy Set Definition |
 | <a name="output_name"></a> [name](#output\_name) | The name of the Policy Set Definition |
 | <a name="output_parameters"></a> [parameters](#output\_parameters) | The combined parameters of the Policy Set Definition |
