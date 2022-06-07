@@ -50,8 +50,6 @@ module "deploy_resource_diagnostic_setting" {
   source              = "..//modules/definition"
   for_each            = toset(local.resource_diagnostic_policies)
   policy_name         = each.value
-  display_name        = title(replace(each.value, "_", " "))
-  policy_description  = title(replace(each.value, "_", " "))
   policy_category     = "Monitoring"
   management_group_id = data.azurerm_management_group.org.id
 }
@@ -71,21 +69,19 @@ module "deny_nic_public_ip" {
 # Security Center
 ##################
 locals {
-  security_center_policies = {
-    auto_enroll_subscriptions                              = "Enable Azure Security Center on Subcriptions"
-    auto_provision_log_analytics_agent_custom_workspace    = "Enable Security Center's auto provisioning of the Log Analytics agent on your subscriptions with custom workspace"
-    auto_set_contact_details                               = "Automatically set the security contact email address and phone number should they be blank on the subscription"
-    export_asc_alerts_and_recommendations_to_eventhub      = "Export to Event Hub for Azure Security Center alerts and recommendations"
-    export_asc_alerts_and_recommendations_to_log_analytics = "Export to Log Analytics Workspace for Azure Security Center alerts and recommendations"
-  }
+  security_center_policies = [
+    "auto_enroll_subscriptions",
+    "auto_provision_log_analytics_agent_custom_workspace",
+    "auto_set_contact_details",
+    "export_asc_alerts_and_recommendations_to_eventhub",
+    "export_asc_alerts_and_recommendations_to_log_analytics",
+  ]
 }
 
 module "configure_asc" {
   source              = "..//modules/definition"
-  for_each            = local.security_center_policies
-  policy_name         = each.key
-  display_name        = title(replace(each.key, "_", " "))
-  policy_description  = each.value
+  for_each            = toset(local.security_center_policies)
+  policy_name         = each.value
   policy_category     = "Security Center"
   management_group_id = data.azurerm_management_group.org.id
 }

@@ -2,6 +2,8 @@
   "type": "Microsoft.Authorization/policyDefinitions",
   "name": "auto_enroll_subscriptions",
   "properties": {
+    "displayName": "Enroll Subscriptions to Azure Security Center",
+    "description": "Enroll Subscriptions to Azure Security Center",
     "metadata": {
       "category": "Security Center"
     },

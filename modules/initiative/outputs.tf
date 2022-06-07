@@ -10,7 +10,7 @@ output name {
 
 output parameters {
   description = "The combined parameters of the Policy Set Definition"
-  value       = local.all_parameters
+  value       = local.parameters
 }
 
 output metadata {
@@ -31,8 +31,9 @@ output initiative {
     display_name                = var.initiative_display_name
     description                 = var.initiative_description
     management_group_id         = var.management_group_id
-    parameters                  = local.all_parameters
+    parameters                  = local.parameters
     metadata                    = local.metadata
     policy_definition_reference = azurerm_policy_set_definition.set.policy_definition_reference
+    role_definition_ids         = local.all_role_definition_ids
   }
 }

@@ -147,4 +147,4 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_id"></a> [id](#output\_id) | The Id of the Policy Exemption |
+| <a name="output_exemption"></a> [exemption](#output\_exemption) | The Policy Exemption Details |

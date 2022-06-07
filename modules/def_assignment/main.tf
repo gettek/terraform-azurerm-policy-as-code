@@ -112,7 +112,7 @@ resource azurerm_role_assignment rem_role {
   for_each                         = toset(local.role_definition_ids)
   scope                            = local.role_assignment_scope
   role_definition_id               = each.value
-  principal_id                     = local.principal_id
+  principal_id                     = local.assignment.identity[0].principal_id
   skip_service_principal_aad_check = true
 }
 
@@ -122,12 +122,10 @@ resource azurerm_management_group_policy_remediation rem {
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   management_group_id     = var.assignment_scope
   policy_assignment_id    = lower(azurerm_management_group_policy_assignment.def[0].id)
-  resource_discovery_mode = var.resource_discovery_mode
   location_filters        = var.location_filters
 
   depends_on = [
-    azurerm_management_group_policy_assignment.def,
-    azurerm_role_assignment.rem_role
+    azurerm_management_group_policy_assignment.def
   ]
 }
 
@@ -140,8 +138,7 @@ resource azurerm_subscription_policy_remediation rem {
   location_filters        = var.location_filters
 
   depends_on = [
-    azurerm_subscription_policy_assignment.def,
-    azurerm_role_assignment.rem_role
+    azurerm_subscription_policy_assignment.def
   ]
 }
 
@@ -154,8 +151,7 @@ resource azurerm_resource_group_policy_remediation rem {
   location_filters        = var.location_filters
 
   depends_on = [
-    azurerm_resource_group_policy_assignment.def,
-    azurerm_role_assignment.rem_role
+    azurerm_resource_group_policy_assignment.def
   ]
 }
 
@@ -168,7 +164,6 @@ resource azurerm_resource_policy_remediation rem {
   location_filters        = var.location_filters
 
   depends_on = [
-    azurerm_resource_policy_assignment.def,
-    azurerm_role_assignment.rem_role
+    azurerm_resource_policy_assignment.def
   ]
 }

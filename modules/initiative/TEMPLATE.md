@@ -2,6 +2,7 @@
 
 Dynamically creates a policy set based on multiple policy definition references
 
+> ⚠️ **Warning:** If any two `member_definition_ids` contain the same parameters then they will be `merged()` by this module, in most cases this is beneficial but if unique values are required it may be best practice to set unique keys such as `[parameters('whitelist_resources_effect')]` instead of `[parameters('effect')]`.
 
 ## Examples
 

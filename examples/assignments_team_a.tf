@@ -33,7 +33,6 @@ module "team_a_mg_deny_nic_public_ip" {
 ##################
 # Tags
 ##################
-
 module "team_a_mg_inherit_resource_group_tags_modify" {
   source            = "..//modules/def_assignment"
   definition        = module.inherit_resource_group_tags_modify.definition

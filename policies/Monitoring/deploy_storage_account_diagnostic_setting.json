@@ -3,8 +3,8 @@
     "name": "deploy_storage_account_diagnostic_setting",
     "properties": {
         "displayName": "Deploy Diagnostic Settings for Azure Storage, including blobs, files, tables, and queues to a Log Analytics workspace",
-        "mode": "Indexed",
         "description": "Deploys the diagnostic settings for Azure Storage, including blobs, files, tables, and queues to stream to a regional Log Analytics workspace when any Azure Storage which is missing this diagnostic settings is created or updated.",
+        "mode": "Indexed",
         "metadata": {
             "category": "Monitoring"
         },
@@ -13,6 +13,7 @@
                 "type": "String",
                 "defaultValue": "DeployIfNotExists",
                 "allowedValues": [
+                    "AuditIfNotExists",
                     "DeployIfNotExists",
                     "Disabled"
                 ],

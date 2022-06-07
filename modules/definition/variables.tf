@@ -73,24 +73,23 @@ variable policy_parameters {
 
 variable policy_metadata {
   type        = any
-  description = "The metadata for the policy definition. This is a JSON object representing additional metadata that should be stored with the policy definition. Omitting this will merge var.policy_category and var.policy_version as the metadata"
+  description = "The metadata for the policy definition. This is a JSON object representing additional metadata that should be stored with the policy definition. Omitting this will fallback to meta in the definition or merge var.policy_category and var.policy_version"
   default     = null
 }
 
 locals {
+  # import the custom policy object from the library
   policy_object = jsondecode(file("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}.json"))
 
-  # use local library attributes if runtime vars omitted
-  display_name = var.display_name == "" ? try((local.policy_object).properties.displayName, "") : title(replace(var.policy_name, "_", " "))
-  description = var.policy_description == "" ? try((local.policy_object).properties.description, "") : var.policy_description
-  policy_rule = var.policy_rule == null ? (local.policy_object).properties.policyRule : var.policy_rule
-  parameters = var.policy_parameters == null ? (local.policy_object).properties.parameters : var.policy_parameters
+  # title case the policy name as a fallback for when display names and descriptions do not exist
+  policy_name = title(replace(var.policy_name, "/-|_|\\s/", " "))
 
-  # create metadata if var.policy_metadata is omitted
-  metadata = var.policy_metadata == null ? jsonencode(merge(
-    { category = try((local.policy_object).properties.metadata.category, var.policy_category) },
-    { version = try((local.policy_object).properties.metadata.version, var.policy_version) },
-  )) : var.policy_metadata
+  # use local library attributes if runtime vars omitted
+  display_name = coalesce(var.display_name, try((local.policy_object).properties.displayName, local.policy_name))
+  description = coalesce(var.policy_description, try((local.policy_object).properties.description, local.policy_name))
+  policy_rule = coalesce(var.policy_rule, try((local.policy_object).properties.policyRule, {}))
+  parameters = coalesce(var.policy_parameters, try((local.policy_object).properties.parameters, {}))
+  metadata = coalesce(var.policy_metadata, try((local.policy_object).properties.metadata, merge({ category = var.policy_category },{ version = var.policy_version })))
 
   # manually generate the definition Id to prevent "Invalid for_each argument" on set_assignment plan/apply
   definition_id = var.management_group_id != null ? "${var.management_group_id}/providers/Microsoft.Authorization/policyDefinitions/${var.policy_name}" : azurerm_policy_definition.def.id

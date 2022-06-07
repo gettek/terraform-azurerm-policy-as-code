@@ -9,7 +9,7 @@ resource azurerm_policy_definition def {
 
   policy_rule = jsonencode(local.policy_rule)
   parameters  = jsonencode(local.parameters)
-  metadata    = local.metadata
+  metadata    = jsonencode(local.metadata)
 
   lifecycle {
     create_before_destroy = true

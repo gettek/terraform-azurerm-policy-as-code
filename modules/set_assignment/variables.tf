@@ -64,7 +64,7 @@ variable non_compliance_message {
 
 variable resource_discovery_mode {
   type        = string
-  description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant"
+  description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant. Applies to subscription scope and below"
   default     = "ExistingNonCompliant"
 
   validation {
@@ -133,17 +133,14 @@ locals {
   # create the optional non-compliance message contents block if present
   non_compliance_message = var.non_compliance_message != "" ? { content = var.non_compliance_message } : {}
 
+  # determine if a managed identity should be created with this assignment
+  identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? { type = "SystemAssigned" } : {}
+
   # try to use policy definition roles if input is ommitted
-  role_definition_ids = var.skip_role_assignment == false ? toset(try(var.role_definition_ids, [])) : []
+  role_definition_ids = var.skip_role_assignment == false ? coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])) : []
 
-  # policy assignment scope will be used if input is omitted
-  role_assignment_scope = coalesce(var.role_assignment_scope, var.assignment_scope)
-
-  # determine managed identity type
-  identity_type = length(try(var.role_definition_ids, [])) > 0 ? { type = "SystemAssigned" } : {}
-
-  # if creating role assignments, retrieve definition references & create a remediation task for policies with DeployIfNotExists and Modify effects
-  definitions = length(local.role_definition_ids) > 0 ? try(var.initiative.policy_definition_reference, []) : []
+  # retrieve definition references & create a remediation task for policies with DeployIfNotExists and Modify effects
+  definitions = var.skip_remediation == false ? local.identity_type != {} ? try(var.initiative.policy_definition_reference, []) : [] : []
   definition_reference = try({
     mg       = local.assignment_scope.mg > 0 ? local.definitions : []
     sub      = local.assignment_scope.sub > 0 ? local.definitions : []
