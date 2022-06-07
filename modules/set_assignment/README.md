@@ -27,7 +27,7 @@ module org_mg_configure_asc_initiative {
     data.azurerm_management_group.team_a.id
   ]
 
-  non_compliance_message = "Example non-compliance message will be used as opposed to default policy error"
+  non_compliance_message = "Display this non-compliance message as opposed to a less informal policy error"
 }
 ```
 

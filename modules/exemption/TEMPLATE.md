@@ -52,12 +52,14 @@ module exemption_team_a_mg_deny_nic_public_ip {
 
 ```hcl
 module "exemption_configure_asc_initiative" {
-  source                          = "gettek/policy-as-code/azurerm//modules/exemption"
-  name                            = "Onboard subscription to ASC Exemption"
-  display_name                    = "Exempted while testing"
-  description                     = "Excludes subscription from ASC onboarding during development"
-  scope                           = data.azurerm_subscription.current.id
-  policy_assignment_id            = module.org_mg_configure_asc_initiative.id
+  source               = "gettek/policy-as-code/azurerm//modules/exemption"
+  name                 = "Onboard subscription to ASC Exemption"
+  display_name         = "Exempted while testing"
+  description          = "Excludes subscription from ASC onboarding during development"
+  scope                = data.azurerm_subscription.current.id
+  policy_assignment_id = module.org_mg_configure_asc_initiative.id
+
+  # use member_definition_names for simplicity when policy_definition_reference_ids are unknown
   member_definition_names = [
     "auto_provision_log_analytics_agent_custom_workspace",
     "auto_set_contact_details"

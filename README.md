@@ -80,7 +80,7 @@ This module depends on populating `var.policy_name` and `var.policy_category` to
 ```hcl
 module whitelist_regions {
   source              = "gettek/policy-as-code/azurerm//modules/definition"
-  version             = "2.5.1"
+  version             = "2.6.0"
   policy_name         = "whitelist_regions"
   display_name        = "Allow resources only in whitelisted regions"
   policy_category     = "General"
@@ -99,7 +99,7 @@ Policy Initiatives are used to combine sets of definitions in order to simplify 
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "2.5.1"
+  version                 = "2.6.0"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -121,11 +121,12 @@ module platform_baseline_initiative {
 
 ```hcl
 module org_mg_whitelist_regions {
-  source                = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version               = "2.5.1"
-  definition            = module.whitelist_regions.definition
-  assignment_scope      = data.azurerm_management_group.org.id
-  assignment_effect     = "Deny"
+  source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
+  version           = "2.6.0"
+  definition        = module.whitelist_regions.definition
+  assignment_scope  = data.azurerm_management_group.org.id
+  assignment_effect = "Deny"
+
   assignment_parameters = {
     "listOfRegionsAllowed" = [
       "UK South",
@@ -143,18 +144,18 @@ module org_mg_whitelist_regions {
 ```hcl
 module org_mg_platform_diagnostics_initiative {
   source               = "gettek/policy-as-code/azurerm//modules/set_assignment"
-  version              = "2.5.1"
+  version              = "2.6.0"
   initiative           = module.platform_diagnostics_initiative.initiative
   assignment_scope     = data.azurerm_management_group.org.id
   assignment_effect    = "DeployIfNotExists"
-  skip_remediation     = var.skip_remediation
-  skip_role_assignment = var.skip_role_assignment
-  role_definition_ids  = module.platform_diagnostics_initiative.role_definition_ids
+  skip_remediation     = false
+  skip_role_assignment = false
+
   assignment_parameters = {
-    workspaceId                 = azurerm_log_analytics_workspace.workspace.id
-    storageAccountId            = azurerm_storage_account.sa.id
-    eventHubName                = azurerm_eventhub_namespace.ehn.name
-    eventHubAuthorizationRuleId = azurerm_eventhub_namespace_authorization_rule.ehnar.id
+    workspaceId                 = data.azurerm_log_analytics_workspace.workspace.id
+    storageAccountId            = data.azurerm_storage_account.sa.id
+    eventHubName                = data.azurerm_eventhub_namespace.ehn.name
+    eventHubAuthorizationRuleId = data.azurerm_eventhub_namespace_authorization_rule.ehnar.id
     metricsEnabled              = "True"
     logsEnabled                 = "True"
   }
@@ -163,18 +164,13 @@ module org_mg_platform_diagnostics_initiative {
     data.azurerm_management_group.team_a.id
   ]
 
-  non_compliance_message = "example non-compliance message to display as opposed to default policy error"
-
-  depends_on = [
-    module.deploy_subscription_diagnostic_setting,
-    module.deploy_resource_diagnostic_setting
-  ]
+  non_compliance_message = "Display this non-compliance message as opposed to a less informal policy error"
 }
 ```
 
 ## Policy Exemption Module
 
-Use the [exemption module](modules/exemption) to create an auditable and time-sensitive Policy exemption:
+Use the [exemption module](modules/exemption) in favour of `not_scopes` to create an auditable time-sensitive Policy exemption
 
 ```hcl
 module exemption_team_a_mg_deny_nic_public_ip {
@@ -223,7 +219,7 @@ Unless you specify `skip_remediation=true`, the `*_assignment` modules will auto
 
 To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data) with terraform, set `resource_discovery_mode=ReEvaluateCompliance` on `*_assignment` modules, defaults to `ExistingNonCompliant`.
 
-> 💡 **Note:** `ReEvaluateCompliance` only applies to remediation at Subscription scope and below and will longer depending on the size of your environment.
+> 💡 **Note:** `ReEvaluateCompliance` only applies to remediation at Subscription scope and below and will take longer depending on the size of your environment.
 
 ### 🎯Definition and Assignment Scopes
 
