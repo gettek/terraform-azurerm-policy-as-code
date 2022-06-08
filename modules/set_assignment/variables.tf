@@ -140,7 +140,7 @@ locals {
   role_definition_ids = var.skip_role_assignment == false ? coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])) : []
 
   # retrieve definition references & create a remediation task for policies with DeployIfNotExists and Modify effects
-  definitions = var.skip_remediation == false ? local.identity_type != {} ? try(var.initiative.policy_definition_reference, []) : [] : []
+  definitions = var.skip_remediation == false && length(local.identity_type) > 0 ? try(var.initiative.policy_definition_reference, []) : []
   definition_reference = try({
     mg       = local.assignment_scope.mg > 0 ? local.definitions : []
     sub      = local.assignment_scope.sub > 0 ? local.definitions : []

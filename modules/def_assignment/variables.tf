@@ -143,7 +143,7 @@ locals {
   role_assignment_scope = try(coalesce(var.role_assignment_scope, var.assignment_scope), "")
 
   # if creating role assignments also create a remediation task for policies with DeployIfNotExists and Modify effects
-  create_remediation = var.skip_remediation == false ? local.identity_type != {} ? true : false : false
+  create_remediation = var.skip_remediation == false && length(local.identity_type) > 0 ? true : false
 
   # evaluate assignment outputs
   assignment = try(
