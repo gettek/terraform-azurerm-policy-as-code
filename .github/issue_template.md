@@ -14,6 +14,11 @@
 * Terraform Version:
 * AzureRM Provider Version:
 
+<!-- Please provide any code snippets related to the issue -->
+```hcl
+# add code here
+```
+
 ## Expected Behavior
 <!--- Tell us what should happen -->
 
