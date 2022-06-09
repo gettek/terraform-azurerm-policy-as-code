@@ -120,54 +120,38 @@ resource azurerm_role_assignment rem_role {
 resource azurerm_management_group_policy_remediation rem {
   for_each                = { for dr in local.definition_reference.mg : basename(dr.reference_id) => dr }
   name                    = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
-  management_group_id     = var.assignment_scope
-  policy_assignment_id    = lower(azurerm_management_group_policy_assignment.set[0].id)
+  management_group_id     = local.remediation_scope
+  policy_assignment_id    = local.assignment.id
   policy_definition_id    = lower(each.value.policy_definition_id)
   location_filters        = var.location_filters
-
-  depends_on = [
-    azurerm_management_group_policy_assignment.set
-  ]
 }
 
 resource azurerm_subscription_policy_remediation rem {
   for_each                = { for dr in local.definition_reference.sub : basename(dr.reference_id) => dr }
   name                    = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
-  subscription_id         = var.assignment_scope
-  policy_assignment_id    = lower(azurerm_subscription_policy_assignment.set[0].id)
+  subscription_id         = local.remediation_scope
+  policy_assignment_id    = local.assignment.id
   policy_definition_id    = lower(each.value.policy_definition_id)
   resource_discovery_mode = var.resource_discovery_mode
   location_filters        = var.location_filters
-
-  depends_on = [
-    azurerm_subscription_policy_assignment.set
-  ]
 }
 
 resource azurerm_resource_group_policy_remediation rem {
   for_each                = { for dr in local.definition_reference.rg : basename(dr.reference_id) => dr }
   name                    = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
-  resource_group_id       = var.assignment_scope
-  policy_assignment_id    = lower(azurerm_resource_group_policy_assignment.set[0].id)
+  resource_group_id       = local.remediation_scope
+  policy_assignment_id    = local.assignment.id
   policy_definition_id    = lower(each.value.policy_definition_id)
   resource_discovery_mode = var.resource_discovery_mode
   location_filters        = var.location_filters
-
-  depends_on = [
-    azurerm_resource_group_policy_assignment.set
-  ]
 }
 
 resource azurerm_resource_policy_remediation rem {
   for_each                = { for dr in local.definition_reference.resource : basename(dr.reference_id) => dr }
   name                    = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
-  resource_id             = var.assignment_scope
-  policy_assignment_id    = lower(azurerm_resource_policy_assignment.set[0].id)
+  resource_id             = local.remediation_scope
+  policy_assignment_id    = local.assignment.id
   policy_definition_id    = lower(each.value.policy_definition_id)
   resource_discovery_mode = var.resource_discovery_mode
   location_filters        = var.location_filters
-
-  depends_on = [
-    azurerm_resource_policy_assignment.set
-  ]
 }

@@ -118,52 +118,36 @@ resource azurerm_role_assignment rem_role {
 
 ## remediation tasks ##
 resource azurerm_management_group_policy_remediation rem {
-  count                   = local.assignment_scope.mg > 0 ? local.create_remediation ? 1 : 0 : 0
+  count                   = local.remediate.mg + local.create_remediation > 0 ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
-  management_group_id     = var.assignment_scope
-  policy_assignment_id    = lower(azurerm_management_group_policy_assignment.def[0].id)
+  management_group_id     = local.remediation_scope
+  policy_assignment_id    = local.assignment.id
   location_filters        = var.location_filters
-
-  depends_on = [
-    azurerm_management_group_policy_assignment.def
-  ]
 }
 
 resource azurerm_subscription_policy_remediation rem {
-  count                   = local.assignment_scope.sub > 0 ? local.create_remediation ? 1 : 0 : 0
+  count                   = local.remediate.sub + local.create_remediation > 0 ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
-  subscription_id         = var.assignment_scope
-  policy_assignment_id    = lower(azurerm_subscription_policy_assignment.def[0].id)
+  subscription_id         = local.remediation_scope
+  policy_assignment_id    = local.assignment.id
   resource_discovery_mode = var.resource_discovery_mode
   location_filters        = var.location_filters
-
-  depends_on = [
-    azurerm_subscription_policy_assignment.def
-  ]
 }
 
 resource azurerm_resource_group_policy_remediation rem {
-  count                   = local.assignment_scope.rg > 0 ? local.create_remediation ? 1 : 0 : 0
+  count                   = local.remediate.rg + local.create_remediation > 0 ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
-  resource_group_id       = var.assignment_scope
-  policy_assignment_id    = lower(azurerm_resource_group_policy_assignment.def[0].id)
+  resource_group_id       = local.remediation_scope
+  policy_assignment_id    = local.assignment.id
   resource_discovery_mode = var.resource_discovery_mode
   location_filters        = var.location_filters
-
-  depends_on = [
-    azurerm_resource_group_policy_assignment.def
-  ]
 }
 
 resource azurerm_resource_policy_remediation rem {
-  count                   = local.assignment_scope.resource > 0 ? local.create_remediation ? 1 : 0 : 0
+  count                   = local.remediate.resource + local.create_remediation > 0 ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
-  resource_id             = var.assignment_scope
-  policy_assignment_id    = lower(azurerm_resource_policy_assignment.def[0].id)
+  resource_id             = local.remediation_scope
+  policy_assignment_id    = local.assignment.id
   resource_discovery_mode = var.resource_discovery_mode
   location_filters        = var.location_filters
-
-  depends_on = [
-    azurerm_resource_policy_assignment.def
-  ]
 }

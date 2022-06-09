@@ -73,6 +73,12 @@ variable resource_discovery_mode {
   }
 }
 
+variable remediation_scope {
+  type        = string
+  description = "The scope at which the remediation tasks will be created. Must be full resource IDs. Defaults to the policy assignment scope. Changing this forces a new resource to be created"
+  default     = ""
+}
+
 variable location_filters {
   type        = list(any)
   description = "Optional list of the resource locations that will be remediated"
@@ -139,13 +145,22 @@ locals {
   # try to use policy definition roles if input is ommitted
   role_definition_ids = var.skip_role_assignment == false ? coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])) : []
 
+  # evaluate remediation scope from resource identifier
+  remediation_scope = try(coalesce(var.remediation_scope, var.assignment_scope), "")
+  remediate = try({
+    mg       = length(regexall("(\\/managementGroups\\/)", local.remediation_scope)) > 0 ? 1 : 0,
+    sub      = length(split("/", local.remediation_scope)) == 3 ? 1 : 0,
+    rg       = length(regexall("(\\/managementGroups\\/)", local.remediation_scope)) < 1 ? length(split("/", local.remediation_scope)) == 5 ? 1 : 0 : 0,
+    resource = length(split("/", local.remediation_scope)) >= 6 ? 1 : 0,
+  })
+
   # retrieve definition references & create a remediation task for policies with DeployIfNotExists and Modify effects
   definitions = var.skip_remediation == false && length(local.identity_type) > 0 ? try(var.initiative.policy_definition_reference, []) : []
   definition_reference = try({
-    mg       = local.assignment_scope.mg > 0 ? local.definitions : []
-    sub      = local.assignment_scope.sub > 0 ? local.definitions : []
-    rg       = local.assignment_scope.rg > 0 ? local.definitions : []
-    resource = local.assignment_scope.resource > 0 ? local.definitions : []
+    mg       = local.remediate.mg > 0 ? local.definitions : []
+    sub      = local.remediate.sub > 0 ? local.definitions : []
+    rg       = local.remediate.rg > 0 ? local.definitions : []
+    resource = local.remediate.resource > 0 ? local.definitions : []
   })
 
   # evaluate assignment outputs
