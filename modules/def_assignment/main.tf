@@ -118,7 +118,7 @@ resource azurerm_role_assignment rem_role {
 
 ## remediation tasks ##
 resource azurerm_management_group_policy_remediation rem {
-  count                   = local.remediate.mg + local.create_remediation > 0 ? 1 : 0
+  count                   = local.create_remediation + local.remediate.mg > 1 ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   management_group_id     = local.remediation_scope
   policy_assignment_id    = local.assignment.id
@@ -126,7 +126,7 @@ resource azurerm_management_group_policy_remediation rem {
 }
 
 resource azurerm_subscription_policy_remediation rem {
-  count                   = local.remediate.sub + local.create_remediation > 0 ? 1 : 0
+  count                   = local.create_remediation + local.remediate.sub > 1 ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   subscription_id         = local.remediation_scope
   policy_assignment_id    = local.assignment.id
@@ -135,7 +135,7 @@ resource azurerm_subscription_policy_remediation rem {
 }
 
 resource azurerm_resource_group_policy_remediation rem {
-  count                   = local.remediate.rg + local.create_remediation > 0 ? 1 : 0
+  count                   = local.create_remediation + local.remediate.rg > 1 ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   resource_group_id       = local.remediation_scope
   policy_assignment_id    = local.assignment.id
@@ -144,7 +144,7 @@ resource azurerm_resource_group_policy_remediation rem {
 }
 
 resource azurerm_resource_policy_remediation rem {
-  count                   = local.remediate.resource + local.create_remediation > 0 ? 1 : 0
+  count                   = local.create_remediation + local.remediate.resource > 1 ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   resource_id             = local.remediation_scope
   policy_assignment_id    = local.assignment.id
