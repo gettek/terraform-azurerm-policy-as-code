@@ -18,7 +18,7 @@
 <!-- markdownlint-enable MD033 -->
 
 - [Repo Folder Structure](#repo-folder-structure)
-- [Policy Definitions Module](#policy-definitions-module)
+- [Custom Policy Definitions Module](#custom-policy-definitions-module)
 - [Policy Initiative (Set Definitions) Module](#policy-initiative-set-definitions-module)
 - [Policy Definition Assignment Module](#policy-definition-assignment-module)
 - [Policy Initiative Assignment Module](#policy-initiative-assignment-module)
@@ -73,9 +73,9 @@
   └──📜convert_to_v2.ps1 (converts policies to version 2 of the repo library)
 ```
 
-## Policy Definitions Module
+## Custom Policy Definitions Module
 
-This module depends on populating `var.policy_name` and `var.policy_category` to correspond with the respective custom policy definition `json` file found in the [local library](policies).
+This module depends on populating `var.policy_name` and `var.policy_category` to correspond with the respective custom policy definition `json` file found in the [local library](policies). You can also parse in other template files and data sources at runtime, see the [definition module readme](modules/definition) for examples and acceptable inputs.
 
 ```hcl
 module whitelist_regions {
@@ -87,8 +87,6 @@ module whitelist_regions {
   management_group_id = data.azurerm_management_group.org.id
 }
 ```
-
-> 💡 **Note:** You can also parse in Template files and Data Sources at runtime, see the [definition module readme](modules/definition) for examples and acceptable inputs.
 
 > 📘 [Microsoft Docs: Azure Policy definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
 
