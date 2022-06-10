@@ -2,6 +2,7 @@
 
 Dynamically creates a policy set based on multiple policy definition references
 
+> ⚠️ **Warning:** If any two `member_definition_ids` contain the same parameters then they will be `merged()` by this module, in most cases this is beneficial but if unique values are required it may be best practice to set unique keys such as `[parameters('whitelist_resources_effect')]` instead of `[parameters('effect')]`.
 
 ## Examples
 
@@ -115,6 +116,7 @@ No modules.
 | <a name="input_initiative_category"></a> [initiative\_category](#input\_initiative\_category) | The category of the initiative | `string` | `"General"` | no |
 | <a name="input_initiative_description"></a> [initiative\_description](#input\_initiative\_description) | Policy initiative description | `string` | `""` | no |
 | <a name="input_initiative_display_name"></a> [initiative\_display\_name](#input\_initiative\_display\_name) | Policy initiative display name | `string` | n/a | yes |
+| <a name="input_initiative_metadata"></a> [initiative\_metadata](#input\_initiative\_metadata) | The metadata for the policy initiative. This is a JSON object representing additional metadata that should be stored with the policy initiative. Omitting this will default to merge var.initiative\_category and var.initiative\_version | `any` | `null` | no |
 | <a name="input_initiative_name"></a> [initiative\_name](#input\_initiative\_name) | Policy initiative name. Changing this forces a new resource to be created | `string` | n/a | yes |
 | <a name="input_initiative_version"></a> [initiative\_version](#input\_initiative\_version) | The version for this initiative, defaults to 1.0.0 | `string` | `"1.0.0"` | no |
 | <a name="input_management_group_id"></a> [management\_group\_id](#input\_management\_group\_id) | The management group scope at which the initiative will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. Note: if you are using azurerm\_management\_group to assign a value to management\_group\_id, be sure to use name or group\_id attribute, but not id. | `string` | `null` | no |

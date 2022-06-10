@@ -1,7 +1,6 @@
 ##################
 # General
 ##################
-
 module "org_mg_whitelist_regions" {
   source            = "..//modules/def_assignment"
   definition        = module.whitelist_regions.definition
@@ -21,7 +20,6 @@ module "org_mg_whitelist_regions" {
 ##################
 # Security Center
 ##################
-
 module "org_mg_configure_asc_initiative" {
   source               = "..//modules/set_assignment"
   initiative           = module.configure_asc_initiative.initiative
@@ -29,7 +27,11 @@ module "org_mg_configure_asc_initiative" {
   assignment_effect    = "DeployIfNotExists"
   skip_remediation     = var.skip_remediation
   skip_role_assignment = var.skip_role_assignment
-  role_definition_ids  = module.configure_asc_initiative.role_definition_ids
+
+  role_assignment_scope = data.azurerm_management_group.team_a.id # using explicit scopes
+  role_definition_ids = [
+    data.azurerm_role_definition.contributor.id # using explicit roles
+  ]
 
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
@@ -47,15 +49,10 @@ module "org_mg_platform_diagnostics_initiative" {
   source               = "..//modules/set_assignment"
   initiative           = module.platform_diagnostics_initiative.initiative
   assignment_scope     = data.azurerm_management_group.org.id
-  assignment_effect    = "DeployIfNotExists"
-  skip_remediation     = var.skip_remediation
-  skip_role_assignment = var.skip_role_assignment
-
-  role_definition_ids = [
-    data.azurerm_role_definition.contributor.id # using explicit roles
-  ]
-
-  role_assignment_scope = data.azurerm_management_group.team_a.id # using explicit scopes
+  assignment_effect    = "AuditIfNotExists"
+  # we do not need to create role assignments or remediations in audit effect hence:
+  skip_remediation     = true
+  skip_role_assignment = true
 
   assignment_parameters = {
     workspaceId                 = local.dummy_resource_ids.azurerm_log_analytics_workspace
@@ -71,7 +68,6 @@ module "org_mg_platform_diagnostics_initiative" {
 ##################
 # Storage
 ##################
-
 module "org_mg_storage_enforce_https" {
   source            = "..//modules/def_assignment"
   definition        = module.storage_enforce_https.definition

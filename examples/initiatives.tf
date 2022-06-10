@@ -10,11 +10,8 @@ module "configure_asc_initiative" {
   management_group_id     = data.azurerm_management_group.org.id
 
   member_definitions = [
-    module.configure_asc["auto_enroll_subscriptions"].definition,
-    module.configure_asc["auto_provision_log_analytics_agent_custom_workspace"].definition,
-    module.configure_asc["auto_set_contact_details"].definition,
-    module.configure_asc["export_asc_alerts_and_recommendations_to_eventhub"].definition,
-    module.configure_asc["export_asc_alerts_and_recommendations_to_log_analytics"].definition,
+    for asc in module.configure_asc :
+    asc.definition
   ]
 }
 

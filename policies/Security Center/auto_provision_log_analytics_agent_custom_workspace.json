@@ -2,6 +2,8 @@
   "type": "Microsoft.Authorization/policyDefinitions",
   "name": "auto_provision_log_analytics_agent_custom_workspace",
   "properties": {
+    "displayName": "Auto Provision Subscriptions to Log Analytics Custom to Workspace",
+    "description": "Enable Security Center's auto provisioning of the Log Analytics agent on your subscriptions with custom workspace",
     "metadata": {
       "category": "Security Center"
     },

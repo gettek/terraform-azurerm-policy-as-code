@@ -18,7 +18,7 @@
 <!-- markdownlint-enable MD033 -->
 
 - [Repo Folder Structure](#repo-folder-structure)
-- [Policy Definitions Module](#policy-definitions-module)
+- [Custom Policy Definitions Module](#custom-policy-definitions-module)
 - [Policy Initiative (Set Definitions) Module](#policy-initiative-set-definitions-module)
 - [Policy Definition Assignment Module](#policy-definition-assignment-module)
 - [Policy Initiative Assignment Module](#policy-initiative-assignment-module)
@@ -29,7 +29,7 @@
   - [✅Remediation Tasks](#remediation-tasks)
   - [⏱️On-demand evaluation scan](#️on-demand-evaluation-scan)
   - [🎯Definition and Assignment Scopes](#definition-and-assignment-scopes)
-- [📘Useful Resources](#useful-resources)
+- [📗Useful Resources](#useful-resources)
 - [Limitations](#limitations)
 
 ## Repo Folder Structure
@@ -73,14 +73,14 @@
   └──📜convert_to_v2.ps1 (converts policies to version 2 of the repo library)
 ```
 
-## Policy Definitions Module
+## Custom Policy Definitions Module
 
-This module depends on populating `var.policy_name` and `var.policy_category` to correspond with the respective custom policy definition `json` file found in the [local library](../../policies/).
+This module depends on populating `var.policy_name` and `var.policy_category` to correspond with the respective custom policy definition `json` file found in the [local library](policies). You can also parse in other template files and data sources at runtime, see the [definition module readme](modules/definition) for examples and acceptable inputs.
 
 ```hcl
 module whitelist_regions {
   source              = "gettek/policy-as-code/azurerm//modules/definition"
-  version             = "2.5.1"
+  version             = "2.6.0"
   policy_name         = "whitelist_regions"
   display_name        = "Allow resources only in whitelisted regions"
   policy_category     = "General"
@@ -88,9 +88,7 @@ module whitelist_regions {
 }
 ```
 
-> 💡 **Note:** You can also parse in Template files and Data Sources at runtime, see the [definition module readme](modules/definition/README.md) for examples and acceptable inputs.
-
-> ℹ️ [Microsoft Docs: Azure Policy definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
+> 📘 [Microsoft Docs: Azure Policy definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
 
 ## Policy Initiative (Set Definitions) Module
 
@@ -99,7 +97,7 @@ Policy Initiatives are used to combine sets of definitions in order to simplify 
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "2.5.1"
+  version                 = "2.6.0"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -113,17 +111,20 @@ module platform_baseline_initiative {
 }
 ```
 
-> ⚠️ **Warning:** If any two `member_definition_ids` contain the same parameters then they will be `merged()` by this module, in most cases this is beneficial but if unique values are required it may be best practice to set unique keys such as `[parameters('whitelist_resources_effect')]` instead of `[parameters('effect')]`.
+> ⚠️ **Warning:** If any two `member_definitions` contain the same parameter keys then they will be [merged](https://www.terraform.io/language/functions/merge) by this module [as seen here](modules/initiative/variables.tf#L63-L66), in most cases this is beneficial but if mixed values are required during assignment it may be best practice to change the parameter name within each definition, for example `"whitelist_resources_effect"` instead of `"effect"`.
+
+> 📘 [Microsoft Docs: Azure Policy initiative definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure)
 
 ## Policy Definition Assignment Module
 
 ```hcl
 module org_mg_whitelist_regions {
-  source                = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version               = "2.5.1"
-  definition            = module.whitelist_regions.definition
-  assignment_scope      = data.azurerm_management_group.org.id
-  assignment_effect     = "Deny"
+  source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
+  version           = "2.6.0"
+  definition        = module.whitelist_regions.definition
+  assignment_scope  = data.azurerm_management_group.org.id
+  assignment_effect = "Deny"
+
   assignment_parameters = {
     "listOfRegionsAllowed" = [
       "UK South",
@@ -134,23 +135,27 @@ module org_mg_whitelist_regions {
 }
 ```
 
+> 📘 [Microsoft Docs: Azure Policy assignment structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/assignment-structure)
+
 ## Policy Initiative Assignment Module
 
 ```hcl
 module org_mg_platform_diagnostics_initiative {
-  source               = "gettek/policy-as-code/azurerm//modules/set_assignment"
-  version              = "2.5.1"
-  initiative           = module.platform_diagnostics_initiative.initiative
-  assignment_scope     = data.azurerm_management_group.org.id
-  assignment_effect    = "DeployIfNotExists"
-  skip_remediation     = var.skip_remediation
-  skip_role_assignment = var.skip_role_assignment
-  role_definition_ids  = module.platform_diagnostics_initiative.role_definition_ids
+  source                  = "gettek/policy-as-code/azurerm//modules/set_assignment"
+  version                 = "2.6.0"
+  initiative              = module.platform_diagnostics_initiative.initiative
+  assignment_scope        = data.azurerm_management_group.org.id
+  assignment_effect       = "DeployIfNotExists"
+  skip_remediation        = false
+  skip_role_assignment    = false
+  remediation_scope       = data.azurerm_subscription.current.id
+  resource_discovery_mode = "ReEvaluateCompliance"
+
   assignment_parameters = {
-    workspaceId                 = azurerm_log_analytics_workspace.workspace.id
-    storageAccountId            = azurerm_storage_account.sa.id
-    eventHubName                = azurerm_eventhub_namespace.ehn.name
-    eventHubAuthorizationRuleId = azurerm_eventhub_namespace_authorization_rule.ehnar.id
+    workspaceId                 = data.azurerm_log_analytics_workspace.workspace.id
+    storageAccountId            = data.azurerm_storage_account.sa.id
+    eventHubName                = data.azurerm_eventhub_namespace.ehn.name
+    eventHubAuthorizationRuleId = data.azurerm_eventhub_namespace_authorization_rule.ehnar.id
     metricsEnabled              = "True"
     logsEnabled                 = "True"
   }
@@ -159,18 +164,13 @@ module org_mg_platform_diagnostics_initiative {
     data.azurerm_management_group.team_a.id
   ]
 
-  non_compliance_message = "example non-compliance message to display as opposed to default policy error"
-
-  depends_on = [
-    module.deploy_subscription_diagnostic_setting,
-    module.deploy_resource_diagnostic_setting
-  ]
+  non_compliance_message = "Display this non-compliance message as opposed to a less informal policy error"
 }
 ```
 
 ## Policy Exemption Module
 
-Use the [exemption module](modules/exemption/README.md) to create an auditable and time-sensitive Policy exemption:
+Use the [exemption module](modules/exemption) in favour of `not_scopes` to create an auditable time-sensitive Policy exemption
 
 ```hcl
 module exemption_team_a_mg_deny_nic_public_ip {
@@ -193,6 +193,8 @@ module exemption_team_a_mg_deny_nic_public_ip {
 }
 ```
 
+> 📘 [Microsoft Docs: Azure Policy exemption structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure)
+
 ## Achieving Continuous Compliance
 
 ### ⚙️Assignment Effects
@@ -203,7 +205,7 @@ Azure Policy supports the following types of effect:
 
 > 💡 **Note:** If you're managing tags, it's recommended to use `Modify` instead of `Append` as Modify provides additional operation types and the ability to remediate existing resources. However, Append is recommended if you aren't able to create a managed identity or Modify doesn't yet support the alias for the resource property.
 
-> ℹ️ [Microsoft Docs: Understand how effects work](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/effects)
+> 📘 [Microsoft Docs: Understand how effects work](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/effects)
 
 ### 👥Role Assignments
 
@@ -211,11 +213,13 @@ Role assignments and remediation tasks will be automatically created if the Poli
 
 ### ✅Remediation Tasks
 
-Unless you specify `skip_remediation=true`, the `*_assignment` modules will automatically create [remediation tasks](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_remediation) for policies containing effects of `DeployIfNotExists` and `Modify`. The task name is suffixed with a `timestamp()` to ensure a new one gets created on each `terraform apply`.
+Unless you specify `skip_remediation=true`, the `*_assignment` modules will automatically create [remediation tasks](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources) for policies containing effects of `DeployIfNotExists` and `Modify`. The task name is suffixed with a `timestamp()` to ensure a new one gets created on each `terraform apply`.
 
 ### ⏱️On-demand evaluation scan
 
-To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data) with terraform, set `resource_discovery_mode=ReEvaluateCompliance` on `*_assignment` modules, defaults to `ExistingNonCompliant`. Note this will take extra time depending on the size of your environment.
+To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data) with terraform, set `resource_discovery_mode=ReEvaluateCompliance` on `*_assignment` modules, defaults to `ExistingNonCompliant`.
+
+> 💡 **Note:** `ReEvaluateCompliance` only applies to remediation at Subscription scope and below and will take longer depending on the size of your environment.
 
 ### 🎯Definition and Assignment Scopes
 
@@ -226,9 +230,9 @@ To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure
 
 ![Policy Definition and Assignment Scopes](img/scopes.svg)
 
-> ⚠️ **Requirement:** Ensure the deployment account has at least [Resource Policy Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#resource-policy-contributor) role at the `definition_scope` and `assignment_scope`
+> ⚠️ **Requirement:** Ensure the deployment account has at least [Resource Policy Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#resource-policy-contributor) role at the `definition_scope` and `assignment_scope`. To successfully create Role-assignments (or group memberships) the same account may also require the [User Access Administrator](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role at the `assignment_scope` or preferably the `definition_scope` to simplify workflows.
 
-## 📘Useful Resources
+## 📗Useful Resources
 
 - [GitHub Repo: Azure Built-In Policies and Samples](https://github.com/Azure/azure-policy)
 - [GitHub Repo: Contribute to Community Policies](https://github.com/Azure/Community-Policy)

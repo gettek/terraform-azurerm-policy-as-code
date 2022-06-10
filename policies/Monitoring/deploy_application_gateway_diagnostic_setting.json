@@ -2,6 +2,8 @@
   "type": "Microsoft.Authorization/policyDefinitions",
   "name": "deploy_application_gateway_diagnostic_setting",
   "properties": {
+    "displayName": "Deploy Diagnostic Settings for Application Gateways to a Log Analytics workspace",
+    "description": "Deploys the diagnostic settings for Application Gateways to stream to a regional Log Analytics workspace when any Application Gateway which is missing this diagnostic settings is created or updated.",
     "metadata": {
       "category": "Monitoring"
     },
@@ -10,6 +12,7 @@
         "type": "String",
         "defaultValue": "DeployIfNotExists",
         "allowedValues": [
+          "AuditIfNotExists",
           "DeployIfNotExists",
           "Disabled"
         ],

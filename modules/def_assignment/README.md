@@ -2,7 +2,7 @@
 
 Assignments can be scoped from overarching management groups right down to individual resources.
 
-> 💡 A role assignment and remediation task will be automatically created if the Policy Definition contains a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment = true`, the scope can also be changed by setting `role_assignment_scope`.
+> 💡 A role assignment and remediation task will be automatically created if the Policy Definition contains a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment = true`, or to assign roles at a different scope to that of the policy assignment use: `role_assignment_scope`. To successfully create Role-assignments (or group memberships) the deployment account may require the [User Access Administrator](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role at the `assignment_scope` or preferably the `definition_scope` to simplify workflows.
 
 ## Examples
 
@@ -72,6 +72,35 @@ module team_a_mg_inherit_resource_group_tags_modify {
 }
 ```
 
+### Assign a definition with Modify effect but add identity to an AAD Group instead of role-assignment
+
+```hcl
+data "azuread_group" "policy_remediation" {
+  display_name     = "policy_remediation"
+  security_enabled = true
+}
+
+module team_a_mg_inherit_resource_group_tags_modify {
+  source               = "gettek/policy-as-code/azurerm//modules/def_assignment"
+  definition           = data.azurerm_policy_definition.deploy_law_on_linux_vms
+  assignment_scope     = data.azurerm_management_group.org.id
+  skip_remediation     = false
+  skip_role_assignment = true # <- set this to true to avoid role assignments
+
+  assignment_parameters = {
+    logAnalytics           = local.dummy_resource_ids.azurerm_log_analytics_workspace
+    listOfImageIdToInclude = [
+      local.dummy_resource_ids.custom_linux_image_id
+    ]
+  }
+}
+
+resource "azuread_group_member" "remediate_team_a_mg_inherit_resource_group_tags_modify" {
+  group_object_id  = data.azuread_group.policy_remediation.id
+  member_object_id = module.team_a_mg_inherit_resource_group_tags_modify.principal_id
+}
+```
+
 
 ## Requirements
 
@@ -120,7 +149,8 @@ No modules.
 | <a name="input_definition"></a> [definition](#input\_definition) | Policy Definition resource node | `any` | n/a | yes |
 | <a name="input_location_filters"></a> [location\_filters](#input\_location\_filters) | Optional list of the resource locations that will be remediated | `list(any)` | `[]` | no |
 | <a name="input_non_compliance_message"></a> [non\_compliance\_message](#input\_non\_compliance\_message) | The optional non-compliance message text. | `string` | `""` | no |
-| <a name="input_resource_discovery_mode"></a> [resource\_discovery\_mode](#input\_resource\_discovery\_mode) | The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant. | `string` | `"ExistingNonCompliant"` | no |
+| <a name="input_remediation_scope"></a> [remediation\_scope](#input\_remediation\_scope) | The scope at which the remediation tasks will be created. Must be full resource IDs. Defaults to the policy assignment scope. Changing this forces a new resource to be created | `string` | `""` | no |
+| <a name="input_resource_discovery_mode"></a> [resource\_discovery\_mode](#input\_resource\_discovery\_mode) | The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant. Applies to subscription scope and below | `string` | `"ExistingNonCompliant"` | no |
 | <a name="input_role_assignment_scope"></a> [role\_assignment\_scope](#input\_role\_assignment\_scope) | The scope at which role definition(s) will be assigned, defaults to Policy Assignment Scope. Must be full resource IDs. Changing this forces a new resource to be created | `string` | `null` | no |
 | <a name="input_role_definition_ids"></a> [role\_definition\_ids](#input\_role\_definition\_ids) | List of Role definition ID's for the System Assigned Identity, defaults to roles included in the definition. Specify a blank array to skip creating role assignments. Changing this forces a new resource to be created | `list(any)` | `[]` | no |
 | <a name="input_skip_remediation"></a> [skip\_remediation](#input\_skip\_remediation) | Should the module skip creation of a remediation task for policies that DeployIfNotExists and Modify | `bool` | `false` | no |

@@ -8,7 +8,7 @@ This module depends on populating `var.policy_category` and `var.policy_name` to
 
 ## Examples
 
-### Create a basic Policy Definition
+### Create a basic Policy Definition from a file located in the module library
 
 ```hcl
 module whitelist_regions {
@@ -43,6 +43,37 @@ module "configure_asc" {
 }
 ```
 
+### Use definition files located outside of the module library
+
+```hcl
+module "file_path_test" {
+  source              = "..//modules/definition"
+  file_path           = "../path/to/file/onboard_to_automation_dsc_linux.json"
+  management_group_id = data.azurerm_management_group.org.id
+}
+```
+
+You will also be able to supply object properties at runtime such as:
+```hcl
+locals {
+  policy_file = jsondecode(file("onboard_to_automation_dsc_linux.json"))
+}
+
+module "parameterised_test" {
+  source              = "..//modules/definition"
+  policy_name         = "Custom Name"
+  display_name        = "Custom Display Name"
+  policy_description  = "Custom Description"
+  policy_category     = "Custom Category"
+  policy_version      = "Custom Version"
+  management_group_id = data.azurerm_management_group.org.id
+
+  policy_rule       = (local.policy_file).properties.policyRule
+  policy_parameters = (local.policy_file).properties.parameters
+  policy_metadata   = (local.policy_file).properties.metadata
+}
+```
+
 
 ## Requirements
 
@@ -69,15 +100,16 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_display_name"></a> [display\_name](#input\_display\_name) | Display Name to be used for this policy | `string` | `""` | no |
+| <a name="input_file_path"></a> [file\_path](#input\_file\_path) | The filepath to the custom policy. Omitting this assumes the policy is located in the module library | `any` | `null` | no |
 | <a name="input_management_group_id"></a> [management\_group\_id](#input\_management\_group\_id) | The management group scope at which the policy will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. Note: if you are using azurerm\_management\_group to assign a value to management\_group\_id, be sure to use name or group\_id attribute, but not id. | `string` | `null` | no |
-| <a name="input_policy_category"></a> [policy\_category](#input\_policy\_category) | The category of the policy, should correspond to the correct category folder under /policies/var.policy\_category | `string` | `""` | no |
+| <a name="input_policy_category"></a> [policy\_category](#input\_policy\_category) | The category of the policy, when using the module library this should correspond to the correct category folder under /policies/var.policy\_category | `string` | `null` | no |
 | <a name="input_policy_description"></a> [policy\_description](#input\_policy\_description) | Policy definition description | `string` | `""` | no |
-| <a name="input_policy_metadata"></a> [policy\_metadata](#input\_policy\_metadata) | The metadata for the policy definition. This is a JSON object representing additional metadata that should be stored with the policy definition. Omitting this will merge var.policy\_category and var.policy\_version as the metadata | `any` | `null` | no |
+| <a name="input_policy_metadata"></a> [policy\_metadata](#input\_policy\_metadata) | The metadata for the policy definition. This is a JSON object representing additional metadata that should be stored with the policy definition. Omitting this will fallback to meta in the definition or merge var.policy\_category and var.policy\_version | `any` | `null` | no |
 | <a name="input_policy_mode"></a> [policy\_mode](#input\_policy\_mode) | The policy mode that allows you to specify which resource types will be evaluated, defaults to All. Possible values are All, Indexed, Microsoft.ContainerService.Data, Microsoft.CustomerLockbox.Data, Microsoft.DataCatalog.Data, Microsoft.KeyVault.Data, Microsoft.Kubernetes.Data, Microsoft.MachineLearningServices.Data, Microsoft.Network.Data and Microsoft.Synapse.Data | `string` | `"All"` | no |
-| <a name="input_policy_name"></a> [policy\_name](#input\_policy\_name) | Name to be used for this policy, this should correspond to the correct category folder under /policies/policy\_category/policy\_name. Changing this forces a new resource to be created. | `string` | n/a | yes |
+| <a name="input_policy_name"></a> [policy\_name](#input\_policy\_name) | Name to be used for this policy, when using the module library this should correspond to the correct category folder under /policies/policy\_category/policy\_name. Changing this forces a new resource to be created. | `string` | `""` | no |
 | <a name="input_policy_parameters"></a> [policy\_parameters](#input\_policy\_parameters) | Parameters for the policy definition. This field is a JSON object that allows you to parameterise your policy definition. Omitting this assumes the parameters are located in /policies/var.policy\_category/var.policy\_name.json | `any` | `null` | no |
 | <a name="input_policy_rule"></a> [policy\_rule](#input\_policy\_rule) | The policy rule for the policy definition. This is a JSON object representing the rule that contains an if and a then block. Omitting this assumes the rules are located in /policies/var.policy\_category/var.policy\_name.json | `any` | `null` | no |
-| <a name="input_policy_version"></a> [policy\_version](#input\_policy\_version) | The version for this policy, defaults to 1.0.0 | `string` | `"1.0.0"` | no |
+| <a name="input_policy_version"></a> [policy\_version](#input\_policy\_version) | The version for this policy, if different from the one stored in the definition metadata, defaults to 1.0.0 | `string` | `null` | no |
 
 ## Outputs
 

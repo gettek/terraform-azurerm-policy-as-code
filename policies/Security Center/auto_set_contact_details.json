@@ -2,6 +2,8 @@
   "type": "Microsoft.Authorization/policyDefinitions",
   "name": "auto_set_contact_details",
   "properties": {
+    "displayName": "Set Security Center contact email address and phone number on Subscriptions",
+    "description": "Automatically set the security contact email address and phone number should they be blank on the subscription",
     "metadata": {
       "category": "Security Center"
     },

@@ -2,6 +2,8 @@
   "type": "Microsoft.Authorization/policyDefinitions",
   "name": "export_asc_alerts_and_recommendations_to_log_analytics",
   "properties": {
+    "displayName": "Export ASC alerts and recommendations to Log Analytics",
+    "description": "Enable Export to Log Analytics Workspace for Azure Security Center alerts and recommendations",
     "metadata": {
       "category": "Security Center"
     },

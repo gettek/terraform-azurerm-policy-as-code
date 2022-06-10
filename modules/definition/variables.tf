@@ -6,7 +6,8 @@ variable management_group_id {
 
 variable policy_name {
   type        = string
-  description = "Name to be used for this policy, this should correspond to the correct category folder under /policies/policy_category/policy_name. Changing this forces a new resource to be created."
+  description = "Name to be used for this policy, when using the module library this should correspond to the correct category folder under /policies/policy_category/policy_name. Changing this forces a new resource to be created."
+  default     = ""
 
   validation {
     condition     = length(var.policy_name) <= 64
@@ -44,19 +45,14 @@ variable policy_mode {
 
 variable policy_category {
   type        = string
-  description = "The category of the policy, should correspond to the correct category folder under /policies/var.policy_category"
-  default     = ""
-
-  validation {
-    condition     = var.policy_category != ""
-    error_message = "The policy category is required and should match the folder name of the custom policy definition under /policies/policy_category."
-  }
+  description = "The category of the policy, when using the module library this should correspond to the correct category folder under /policies/var.policy_category"
+  default     = null
 }
 
 variable policy_version {
   type        = string
-  description = "The version for this policy, defaults to 1.0.0"
-  default     = "1.0.0"
+  description = "The version for this policy, if different from the one stored in the definition metadata, defaults to 1.0.0"
+  default     = null
 }
 
 variable policy_rule {
@@ -73,25 +69,36 @@ variable policy_parameters {
 
 variable policy_metadata {
   type        = any
-  description = "The metadata for the policy definition. This is a JSON object representing additional metadata that should be stored with the policy definition. Omitting this will merge var.policy_category and var.policy_version as the metadata"
+  description = "The metadata for the policy definition. This is a JSON object representing additional metadata that should be stored with the policy definition. Omitting this will fallback to meta in the definition or merge var.policy_category and var.policy_version"
+  default     = null
+}
+
+variable file_path {
+  type        = any
+  description = "The filepath to the custom policy. Omitting this assumes the policy is located in the module library"
   default     = null
 }
 
 locals {
-  policy_object = jsondecode(file("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}.json"))
+  # import the custom policy object from the library or specified file path
+  policy_object = coalesce(
+    try(jsondecode(file("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}.json")), null),
+    try(jsondecode(file(var.file_path)), null)
+  )
 
-  # use local library attributes if runtime vars omitted
-  display_name = var.display_name == "" ? try((local.policy_object).properties.displayName, "") : title(replace(var.policy_name, "_", " "))
-  description = var.policy_description == "" ? try((local.policy_object).properties.description, "") : var.policy_description
-  policy_rule = var.policy_rule == null ? (local.policy_object).properties.policyRule : var.policy_rule
-  parameters = var.policy_parameters == null ? (local.policy_object).properties.parameters : var.policy_parameters
+  # fallbacks
+  title = title(replace(local.policy_name, "/-|_|\\s/", " "))
+  category = coalesce(var.policy_category, try((local.policy_object).properties.metadata.category, null), "General")
+  version = coalesce(var.policy_version, try((local.policy_object).properties.metadata.version, null), "1.0.0")
 
-  # create metadata if var.policy_metadata is omitted
-  metadata = var.policy_metadata == null ? jsonencode(merge(
-    { category = try((local.policy_object).properties.metadata.category, var.policy_category) },
-    { version = try((local.policy_object).properties.metadata.version, var.policy_version) },
-  )) : var.policy_metadata
+  # use local library attributes if runtime inputs are omitted
+  policy_name = coalesce(var.policy_name, try((local.policy_object).name, null), null)
+  display_name = coalesce(var.display_name, try((local.policy_object).properties.displayName, local.title))
+  description = coalesce(var.policy_description, try((local.policy_object).properties.description, local.title))
+  policy_rule = coalesce(var.policy_rule, try((local.policy_object).properties.policyRule, null))
+  parameters = coalesce(var.policy_parameters, try((local.policy_object).properties.parameters, null))
+  metadata = coalesce(var.policy_metadata, merge({ category = local.category },{ version = local.version }), try((local.policy_object).properties.metadata))
 
   # manually generate the definition Id to prevent "Invalid for_each argument" on set_assignment plan/apply
-  definition_id = var.management_group_id != null ? "${var.management_group_id}/providers/Microsoft.Authorization/policyDefinitions/${var.policy_name}" : azurerm_policy_definition.def.id
+  definition_id = var.management_group_id != null ? "${var.management_group_id}/providers/Microsoft.Authorization/policyDefinitions/${local.policy_name}" : azurerm_policy_definition.def.id
 }

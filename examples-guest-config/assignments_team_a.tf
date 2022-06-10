@@ -8,7 +8,7 @@ module "team_a_mg_guest_config_prereqs_initiative" {
   initiative          = module.guest_config_prereqs_initiative.initiative
   assignment_scope    = data.azurerm_management_group.team_a.id
   skip_remediation    = var.skip_remediation
-  role_definition_ids = module.guest_config_prereqs_initiative.role_definition_ids
+
   assignment_parameters = {
     listOfImageIdToInclude_windows = []
     listOfImageIdToInclude_linux   = []
@@ -22,6 +22,7 @@ module "team_a_mg_vm_custom_guest_configs" {
   definition       = each.value
   assignment_scope = data.azurerm_management_group.team_a.id
   skip_remediation = var.skip_remediation
+
   role_definition_ids = [
     data.azurerm_role_definition.contributor.id
   ]

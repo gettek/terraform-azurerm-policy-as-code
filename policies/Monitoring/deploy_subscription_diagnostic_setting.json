@@ -2,6 +2,8 @@
   "type": "Microsoft.Authorization/policyDefinitions",
   "name": "deploy_subscription_diagnostic_setting",
   "properties": {
+    "displayName": "Deploy Diagnostic Settings for Subscriptions to a Log Analytics workspace",
+    "description": "Deploys the diagnostic settings for Subscriptions to stream to a regional Log Analytics workspace when any Subscription which is missing this diagnostic settings is created or updated.",
     "metadata": {
       "category": "Monitoring"
     },

@@ -64,13 +64,19 @@ variable non_compliance_message {
 
 variable resource_discovery_mode {
   type        = string
-  description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant"
+  description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant. Applies to subscription scope and below"
   default     = "ExistingNonCompliant"
 
   validation {
     condition     = var.resource_discovery_mode == "ExistingNonCompliant" || var.resource_discovery_mode == "ReEvaluateCompliance"
     error_message = "Resource Discovery Mode possible values are: ExistingNonCompliant or ReEvaluateCompliance."
   }
+}
+
+variable remediation_scope {
+  type        = string
+  description = "The scope at which the remediation tasks will be created. Must be full resource IDs. Defaults to the policy assignment scope. Changing this forces a new resource to be created"
+  default     = ""
 }
 
 variable location_filters {
@@ -133,22 +139,28 @@ locals {
   # create the optional non-compliance message contents block if present
   non_compliance_message = var.non_compliance_message != "" ? { content = var.non_compliance_message } : {}
 
+  # determine if a managed identity should be created with this assignment
+  identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? { type = "SystemAssigned" } : {}
+
   # try to use policy definition roles if input is ommitted
-  role_definition_ids = var.skip_role_assignment == false ? toset(try(var.role_definition_ids, [])) : []
+  role_definition_ids = var.skip_role_assignment == false ? coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])) : []
 
-  # policy assignment scope will be used if input is omitted
-  role_assignment_scope = coalesce(var.role_assignment_scope, var.assignment_scope)
+  # evaluate remediation scope from resource identifier
+  remediation_scope = try(coalesce(var.remediation_scope, var.assignment_scope), "")
+  remediate = try({
+    mg       = length(regexall("(\\/managementGroups\\/)", local.remediation_scope)) > 0 ? 1 : 0,
+    sub      = length(split("/", local.remediation_scope)) == 3 ? 1 : 0,
+    rg       = length(regexall("(\\/managementGroups\\/)", local.remediation_scope)) < 1 ? length(split("/", local.remediation_scope)) == 5 ? 1 : 0 : 0,
+    resource = length(split("/", local.remediation_scope)) >= 6 ? 1 : 0,
+  })
 
-  # determine managed identity type
-  identity_type = length(try(var.role_definition_ids, [])) > 0 ? { type = "SystemAssigned" } : {}
-
-  # if creating role assignments, retrieve definition references & create a remediation task for policies with DeployIfNotExists and Modify effects
-  definitions = length(local.role_definition_ids) > 0 ? try(var.initiative.policy_definition_reference, []) : []
+  # retrieve definition references & create a remediation task for policies with DeployIfNotExists and Modify effects
+  definitions = var.skip_remediation == false && length(local.identity_type) > 0 ? try(var.initiative.policy_definition_reference, []) : []
   definition_reference = try({
-    mg       = local.assignment_scope.mg > 0 ? local.definitions : []
-    sub      = local.assignment_scope.sub > 0 ? local.definitions : []
-    rg       = local.assignment_scope.rg > 0 ? local.definitions : []
-    resource = local.assignment_scope.resource > 0 ? local.definitions : []
+    mg       = local.remediate.mg > 0 ? local.definitions : []
+    sub      = local.remediate.sub > 0 ? local.definitions : []
+    rg       = local.remediate.rg > 0 ? local.definitions : []
+    resource = local.remediate.resource > 0 ? local.definitions : []
   })
 
   # evaluate assignment outputs

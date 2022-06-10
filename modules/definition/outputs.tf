@@ -27,7 +27,7 @@ output definition {
   description = "The combined Policy Definition resource node"
   value = {
     id                  = local.definition_id
-    name                = var.policy_name
+    name                = local.policy_name
     display_name        = local.display_name
     description         = local.description
     mode                = var.policy_mode

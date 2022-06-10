@@ -2,7 +2,7 @@
 
 Assignments can be scoped from overarching management groups right down to individual resources
 
-> 💡 To automate Role Assignment and Remediation you must explicitly parse a list of required `role_definition_ids` to this module as seen below. You may choose to assign roles at a different scope to that of the policy assignment (default) using `role_assignment_scope`.
+> 💡 A role assignment and remediation task will be automatically created if any member definitions contain a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment = true`, or to assign roles at a different scope to that of the policy assignment use: `role_assignment_scope`. To successfully create Role-assignments (or group memberships) the deployment account may require the [User Access Administrator](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role at the `assignment_scope` or preferably the `definition_scope` to simplify workflows.
 
 ## Examples
 
@@ -15,7 +15,6 @@ module org_mg_configure_asc_initiative {
   assignment_effect    = "DeployIfNotExists"
   skip_remediation     = false
   skip_role_assignment = false
-  role_definition_ids  = module.configure_asc_initiative.role_definition_ids
 
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
@@ -28,7 +27,7 @@ module org_mg_configure_asc_initiative {
     data.azurerm_management_group.team_a.id
   ]
 
-  non_compliance_message = "Example non-compliance message will be used as opposed to default policy error"
+  non_compliance_message = "Display this non-compliance message as opposed to a less informal policy error"
 }
 ```
 

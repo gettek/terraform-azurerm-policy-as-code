@@ -5,7 +5,7 @@ output id {
 
 output principal_id {
   description = "The Principal Id of this Policy Assignment's Managed Identity if type is SystemAssigned"
-  value       = local.assignment.identity[0].principal_id
+  value       = try(local.assignment.identity[0].principal_id, null)
 }
 
 output remediation_tasks {
