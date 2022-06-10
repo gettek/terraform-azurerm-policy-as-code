@@ -1,5 +1,5 @@
 resource azurerm_policy_definition def {
-  name         = var.policy_name
+  name         = local.policy_name
   display_name = local.display_name
   description  = local.description
   policy_type  = "Custom"
