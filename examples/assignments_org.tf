@@ -14,6 +14,13 @@ module "org_mg_whitelist_regions" {
       "Global"
     ]
   }
+
+  assignment_metadata = {
+    version   = "1.0.0"
+    category  = "Batch"
+    propertyA = "A"
+    propertyB = "B"
+  }
 }
 
 

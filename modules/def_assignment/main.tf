@@ -8,6 +8,7 @@ resource azurerm_management_group_policy_assignment def {
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
   parameters           = local.parameters
+  metadata             = jsonencode(var.assignment_metadata)
   location             = var.assignment_location
 
   dynamic "non_compliance_message" {
@@ -35,6 +36,7 @@ resource azurerm_subscription_policy_assignment def {
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
   parameters           = local.parameters
+  metadata             = jsonencode(var.assignment_metadata)
   location             = var.assignment_location
 
   dynamic "non_compliance_message" {
@@ -63,6 +65,7 @@ resource azurerm_resource_group_policy_assignment def {
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
   parameters           = local.parameters
+  metadata             = jsonencode(var.assignment_metadata)
   location             = var.assignment_location
 
   dynamic "non_compliance_message" {
@@ -90,6 +93,7 @@ resource azurerm_resource_policy_assignment def {
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
   parameters           = local.parameters
+  metadata             = jsonencode(var.assignment_metadata)
   location             = var.assignment_location
 
   dynamic "non_compliance_message" {

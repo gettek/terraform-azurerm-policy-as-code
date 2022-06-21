@@ -44,6 +44,12 @@ variable assignment_parameters {
   default     = null
 }
 
+variable assignment_metadata {
+  type        = any
+  description = "The optional metadata for the policy assignment."
+  default     = {}
+}
+
 variable assignment_enforcement_mode {
   type        = bool
   description = "Control whether the assignment is enforced"
