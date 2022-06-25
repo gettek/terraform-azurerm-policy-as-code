@@ -32,8 +32,8 @@ output definition {
     description         = local.description
     mode                = var.policy_mode
     management_group_id = var.management_group_id
-    policy_rule         = jsonencode(local.policy_rule)
-    parameters          = jsonencode(local.parameters)
     metadata            = local.metadata
+    parameters          = jsonencode(local.parameters)
+    policy_rule         = jsonencode(local.policy_rule)
   }
 }
