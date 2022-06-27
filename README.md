@@ -111,7 +111,7 @@ module platform_baseline_initiative {
 }
 ```
 
-> ⚠️ **Warning:** If any two `member_definitions` contain the same parameter keys then they will be [merged](https://www.terraform.io/language/functions/merge) by this module [as seen here](modules/initiative/variables.tf#L63-L66), in most cases this is beneficial but if mixed values are required during assignment it may be best practice to change the parameter name within each definition, for example `"whitelist_resources_effect"` instead of `"effect"`.
+> ⚠️ **Warning:** If any two `member_definition_ids` contain the same parameters then they will be [merged](https://www.terraform.io/language/functions/merge) by this module (except for `"effect"` when setting `merge_effects = false`) [as seen here](modules/initiative/variables.tf#L74-L81). In most cases this is beneficial but if unique values are required it may be best practice to set unique keys directly within your custom definition.json files such as `[parameters('listOfResourceTypesAllowed_WhitelistResources')]` instead of `[parameters('listOfResourceTypesAllowed')]`.
 
 > 📘 [Microsoft Docs: Azure Policy initiative definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure)
 
