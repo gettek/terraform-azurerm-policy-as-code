@@ -27,7 +27,10 @@ module org_mg_configure_asc_initiative {
     data.azurerm_management_group.team_a.id
   ]
 
-  non_compliance_message = "Display this non-compliance message as opposed to a less informal policy error"
+  non_compliance_messages = {
+    null                      = "The Default non-compliance message for all member definitions"
+    "AutoEnrollSubscriptions" = "The non-compliance message for the auto_enroll_subscriptions definition"
+  }
 }
 ```
 

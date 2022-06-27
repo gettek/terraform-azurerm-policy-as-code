@@ -63,6 +63,11 @@ module "org_mg_platform_diagnostics_initiative" {
     data.azurerm_role_definition.contributor.id # using explicit roles
   ]
 
+  non_compliance_messages = {
+    null                                        = "The Default non-compliance message for all member definitions"
+    "DeployApplicationGatewayDiagnosticSetting" = "The non-compliance message for the deploy_application_gateway_diagnostic_setting definition"
+  }
+
   assignment_parameters = {
     workspaceId                                        = local.dummy_resource_ids.azurerm_log_analytics_workspace
     storageAccountId                                   = local.dummy_resource_ids.azurerm_storage_account

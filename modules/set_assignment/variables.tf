@@ -62,10 +62,10 @@ variable assignment_location {
   default     = "uksouth"
 }
 
-variable non_compliance_message {
-  type        = string
-  description = "The optional non-compliance message text. This message will be the default for all member definitions in the set."
-  default     = ""
+variable non_compliance_messages {
+  type        = any
+  description = "The optional non-compliance message(s). Key/Value pairs map as policy_definition_reference_id = 'content', use null = 'content' to specify the Default non-compliance message for all member definitions."
+  default     = {}
 }
 
 variable resource_discovery_mode {
@@ -142,8 +142,11 @@ locals {
   # merge effect and parameter_values if specified, will use definition default effects if omitted
   parameters = var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values)
 
-  # create the optional non-compliance message contents block if present
-  non_compliance_message = var.non_compliance_message != "" ? { content = var.non_compliance_message } : {}
+  # create the optional non-compliance message content block(s) if present
+  non_compliance_message = var.non_compliance_messages != {} ? {
+    for reference_id, message in var.non_compliance_messages :
+    reference_id => message
+  } : {}
 
   # determine if a managed identity should be created with this assignment
   identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? { type = "SystemAssigned" } : {}
