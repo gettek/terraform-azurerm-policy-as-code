@@ -12,17 +12,17 @@ resource azurerm_policy_set_definition set {
   dynamic policy_definition_reference {
     for_each = [for d in var.member_definitions : {
       id         = d.id
-      ref_id     = substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 64)
+      ref_id     = replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")
       parameters = jsondecode(d.parameters)
       groups     = []
     }]
 
     content {
       policy_definition_id = policy_definition_reference.value.id
-      reference_id         = replace(policy_definition_reference.value.ref_id, "/\\s/", "")
+      reference_id         = policy_definition_reference.value.ref_id
       parameter_values = jsonencode({
         for k in keys(policy_definition_reference.value.parameters) :
-        k => { value = "[parameters('${k}')]" }
+        k => { value = k == "effect" && var.merge_effects == false ? "[parameters('${format("%s_%s", k, policy_definition_reference.value.ref_id)}')]" : "[parameters('${k}')]" }
       })
       policy_group_names = policy_definition_reference.value.groups
     }
