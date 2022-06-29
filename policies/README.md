@@ -1,6 +1,7 @@
 
-# Local Policy Definitions
-Compile time: 06/07/2022 12:43:59 UTC
+# Custom Policy Definition Library
+Compile time: 06/29/2022 11:46:56 UTC
+Example custom definitions located in the local library
 
 ## Categories
 - [Automation](#Automation)
@@ -1076,14 +1077,14 @@ Compile time: 06/07/2022 12:43:59 UTC
 | ----- | ----------- |
 | Name                | auto_enroll_subscriptions |
 | DisplayName         | Enroll Subscriptions to Azure Security Center |
-| Description         | Enroll Subscriptions to Azure Security Center |
+| Description         | Enroll Subscriptions to Azure Security Center Standard Pricing Tier, Note: the new Containers Plan will be replacing Container Registries and Kubernetes |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
 | Name | Description | Default Value | Allowed Values |
 | ---- | ----------- | ------------- | -------------- |
 | effect | Enable or disable the execution of the policy | DeployIfNotExists | DeployIfNotExists Disabled |
-| pricingTier | ASC Pricing Tier | standard |  |
+| pricingTier | ASC Pricing Tier | Standard | Free Standard |
 
 <br>
 
