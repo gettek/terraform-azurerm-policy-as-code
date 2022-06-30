@@ -58,12 +58,29 @@ variable initiative_metadata {
   default     = null
 }
 
+variable merge_effects {
+  type        = bool
+  description = "Should the module merge definition effects. Defauls to true"
+  default     = true
+}
+
 locals {
-  # colate and merge all definition parameters into a single object using interpolation
-  parameters = merge(values({
+  # colate all definition parameters into a single object
+  member_parameters = {
     for d in var.member_definitions :
     d.name => try(jsondecode(d.parameters), null)
+  }
+
+  # combine all discovered definition parameters using interpolation and suffix effects with definition references
+  parameters = merge(values({
+    for definition, params in local.member_parameters :
+    definition => {
+      for parameter_name, parameter_value in params :
+      parameter_name == "effect" && var.merge_effects == false ? format("%s_%s", parameter_name, replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")) : parameter_name => parameter_value
+    }
   })...)
+
+  #TODO: parameter_value.metadata.displayName should also contain definition reference if merge_effects == false
 
   # get role definition IDs
   role_definition_ids = {

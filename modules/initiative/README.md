@@ -2,7 +2,8 @@
 
 Dynamically creates a policy set based on multiple policy definition references
 
-> ⚠️ **Warning:** If any two `member_definition_ids` contain the same parameters then they will be `merged()` by this module, in most cases this is beneficial but if unique values are required it may be best practice to set unique keys such as `[parameters('whitelist_resources_effect')]` instead of `[parameters('effect')]`.
+> ⚠️ **Warning:** If any two `member_definition_ids` contain the same parameters then they will be [merged](https://www.terraform.io/language/functions/merge) by this module (except for `"effect"` when setting `merge_effects = false`) [as seen here](modules/initiative/variables.tf#L74-L81). In most cases this is beneficial but if unique values are required it may be best practice to set unique keys directly within your custom definition.json files such as `[parameters('listOfResourceTypesAllowed_WhitelistResources')]` instead of `[parameters('listOfResourceTypesAllowed')]`.
+
 
 ## Examples
 
@@ -27,7 +28,9 @@ module configure_asc_initiative {
 }
 ```
 
-### Create an Initiative with a mix of custom & built-in Policy definitions
+### Create an Initiative with a mix of custom & built-in Policy definitions without merging effects
+
+When setting `merge_effects = false` the module will suffix each definition effect parameter with its respective policy definition reference Id e.g. `"effect_AutoEnrollSubscriptions"`.
 
 ```hcl
 data azurerm_policy_definition deploy_law_on_linux_vms {
@@ -41,6 +44,7 @@ module configure_asc_initiative {
   initiative_description  = "Deploys and configures Azure Security Center settings and defines exports"
   initiative_category     = "Security Center"
   management_group_id     = data.azurerm_management_group.org.id
+  merge_effects           = false
 
   member_definitions = [
     module.configure_asc["auto_enroll_subscriptions"].definition,
@@ -121,6 +125,7 @@ No modules.
 | <a name="input_initiative_version"></a> [initiative\_version](#input\_initiative\_version) | The version for this initiative, defaults to 1.0.0 | `string` | `"1.0.0"` | no |
 | <a name="input_management_group_id"></a> [management\_group\_id](#input\_management\_group\_id) | The management group scope at which the initiative will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. Note: if you are using azurerm\_management\_group to assign a value to management\_group\_id, be sure to use name or group\_id attribute, but not id. | `string` | `null` | no |
 | <a name="input_member_definitions"></a> [member\_definitions](#input\_member\_definitions) | Policy Defenition resource nodes that will be members of this initiative | `any` | n/a | yes |
+| <a name="input_merge_effects"></a> [merge\_effects](#input\_merge\_effects) | Should the module merge definition effects. Defauls to true | `bool` | `true` | no |
 
 ## Outputs
 

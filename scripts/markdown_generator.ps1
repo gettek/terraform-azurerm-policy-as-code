@@ -68,7 +68,7 @@ foreach ($child in $definitionChildren) {
 }
 
 # Output to Mardown
-$heading = "`n# Local Policy Definitions"
+$heading = "`n# Custom Policy Definition Library"
 $file = "README.md"
 
 Write-Output "$heading" | Out-File -FilePath $file -Force
@@ -78,6 +78,7 @@ $append = @{
 }
 
 Write-Output "Compile time: $(Get-Date) UTC" | Out-File @append
+Write-Output "Example custom definitions located in the local library" | Out-File @append
 
 Write-Output "`n## Categories" | Out-File @append
 foreach ($definition in $definitionList.Keys) {

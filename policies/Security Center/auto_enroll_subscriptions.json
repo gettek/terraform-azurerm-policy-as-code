@@ -3,7 +3,7 @@
   "name": "auto_enroll_subscriptions",
   "properties": {
     "displayName": "Enroll Subscriptions to Azure Security Center",
-    "description": "Enroll Subscriptions to Azure Security Center",
+    "description": "Enroll Subscriptions to Azure Security Center Standard Pricing Tier, Note: the new Containers Plan will be replacing Container Registries and Kubernetes",
     "metadata": {
       "category": "Security Center"
     },
@@ -22,7 +22,11 @@
       },
       "pricingTier": {
         "type": "String",
-        "defaultValue": "standard",
+        "defaultValue": "Standard",
+        "allowedValues": [
+          "Free",
+          "Standard"
+        ],
         "metadata": {
           "displayName": "Pricing Tier",
           "description": "ASC Pricing Tier"
@@ -102,7 +106,7 @@
                   },
                   {
                     "type": "Microsoft.Security/pricings",
-                    "apiVersion": "2018-06-01",
+                    "apiVersion": "2022-03-01",
                     "name": "VirtualMachines",
                     "properties": {
                       "pricingTier": "[parameters('pricingTier')]"
@@ -110,7 +114,7 @@
                   },
                   {
                     "type": "Microsoft.Security/pricings",
-                    "apiVersion": "2018-06-01",
+                    "apiVersion": "2022-03-01",
                     "name": "StorageAccounts",
                     "dependsOn": [
                       "[concat('Microsoft.Security/pricings/VirtualMachines')]"
@@ -121,7 +125,7 @@
                   },
                   {
                     "type": "Microsoft.Security/pricings",
-                    "apiVersion": "2018-06-01",
+                    "apiVersion": "2022-03-01",
                     "name": "AppServices",
                     "dependsOn": [
                       "[concat('Microsoft.Security/pricings/StorageAccounts')]"
@@ -132,7 +136,7 @@
                   },
                   {
                     "type": "Microsoft.Security/pricings",
-                    "apiVersion": "2018-06-01",
+                    "apiVersion": "2022-03-01",
                     "name": "SqlServers",
                     "dependsOn": [
                       "[concat('Microsoft.Security/pricings/AppServices')]"
@@ -143,7 +147,7 @@
                   },
                   {
                     "type": "Microsoft.Security/pricings",
-                    "apiVersion": "2018-06-01",
+                    "apiVersion": "2022-03-01",
                     "name": "SqlServerVirtualMachines",
                     "dependsOn": [
                       "[concat('Microsoft.Security/pricings/SqlServers')]"
@@ -154,7 +158,7 @@
                   },
                   {
                     "type": "Microsoft.Security/pricings",
-                    "apiVersion": "2018-06-01",
+                    "apiVersion": "2022-03-01",
                     "name": "KeyVaults",
                     "dependsOn": [
                       "[concat('Microsoft.Security/pricings/SqlServerVirtualMachines')]"
@@ -165,29 +169,29 @@
                   },
                   {
                     "type": "Microsoft.Security/pricings",
-                    "apiVersion": "2018-06-01",
+                    "apiVersion": "2022-03-01",
                     "name": "KubernetesService",
                     "dependsOn": [
                       "[concat('Microsoft.Security/pricings/KeyVaults')]"
                     ],
                     "properties": {
-                      "pricingTier": "[parameters('pricingTier')]"
+                      "pricingTier": "Free"
                     }
                   },
                   {
                     "type": "Microsoft.Security/pricings",
-                    "apiVersion": "2018-06-01",
+                    "apiVersion": "2022-03-01",
                     "name": "ContainerRegistry",
                     "dependsOn": [
                       "[concat('Microsoft.Security/pricings/KubernetesService')]"
                     ],
                     "properties": {
-                      "pricingTier": "[parameters('pricingTier')]"
+                      "pricingTier": "Free"
                     }
                   },
                   {
                     "type": "Microsoft.Security/pricings",
-                    "apiVersion": "2018-06-01",
+                    "apiVersion": "2022-03-01",
                     "name": "Dns",
                     "dependsOn": [
                       "[concat('Microsoft.Security/pricings/ContainerRegistry')]"
@@ -198,10 +202,43 @@
                   },
                   {
                     "type": "Microsoft.Security/pricings",
-                    "apiVersion": "2018-06-01",
+                    "apiVersion": "2022-03-01",
                     "name": "Arm",
                     "dependsOn": [
                       "[concat('Microsoft.Security/pricings/Dns')]"
+                    ],
+                    "properties": {
+                      "pricingTier": "[parameters('pricingTier')]"
+                    }
+                  },
+                  {
+                    "type": "Microsoft.Security/pricings",
+                    "apiVersion": "2022-03-01",
+                    "name": "OpenSourceRelationalDatabases",
+                    "dependsOn": [
+                      "[concat('Microsoft.Security/pricings/Arm')]"
+                    ],
+                    "properties": {
+                      "pricingTier": "[parameters('pricingTier')]"
+                    }
+                  },
+                  {
+                    "type": "Microsoft.Security/pricings",
+                    "apiVersion": "2022-03-01",
+                    "name": "CosmosDbs",
+                    "dependsOn": [
+                      "[concat('Microsoft.Security/pricings/OpenSourceRelationalDatabases')]"
+                    ],
+                    "properties": {
+                      "pricingTier": "[parameters('pricingTier')]"
+                    }
+                  },
+                  {
+                    "type": "Microsoft.Security/pricings",
+                    "apiVersion": "2022-03-01",
+                    "name": "Containers",
+                    "dependsOn": [
+                      "[concat('Microsoft.Security/pricings/CosmosDbs')]"
                     ],
                     "properties": {
                       "pricingTier": "[parameters('pricingTier')]"

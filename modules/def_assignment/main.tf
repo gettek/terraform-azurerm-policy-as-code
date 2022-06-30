@@ -3,11 +3,12 @@ resource azurerm_management_group_policy_assignment def {
   name                 = local.assignment_name
   display_name         = local.display_name
   description          = local.description
+  metadata             = local.metadata
+  parameters           = local.parameters
   management_group_id  = var.assignment_scope
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  parameters           = local.parameters
   location             = var.assignment_location
 
   dynamic "non_compliance_message" {
@@ -20,7 +21,8 @@ resource azurerm_management_group_policy_assignment def {
   dynamic "identity" {
     for_each = local.identity_type
     content {
-      type = identity.value
+      type         = identity.value
+      identity_ids = []
     }
   }
 }
@@ -30,11 +32,12 @@ resource azurerm_subscription_policy_assignment def {
   name                 = local.assignment_name
   display_name         = local.display_name
   description          = local.description
+  metadata             = local.metadata
+  parameters           = local.parameters
   subscription_id      = var.assignment_scope
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  parameters           = local.parameters
   location             = var.assignment_location
 
   dynamic "non_compliance_message" {
@@ -47,7 +50,8 @@ resource azurerm_subscription_policy_assignment def {
   dynamic "identity" {
     for_each = local.identity_type
     content {
-      type = identity.value
+      type         = identity.value
+      identity_ids = []
     }
   }
 }
@@ -58,11 +62,12 @@ resource azurerm_resource_group_policy_assignment def {
   name                 = local.assignment_name
   display_name         = local.display_name
   description          = local.description
+  metadata             = local.metadata
+  parameters           = local.parameters
   resource_group_id    = var.assignment_scope
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  parameters           = local.parameters
   location             = var.assignment_location
 
   dynamic "non_compliance_message" {
@@ -75,7 +80,8 @@ resource azurerm_resource_group_policy_assignment def {
   dynamic "identity" {
     for_each = local.identity_type
     content {
-      type = identity.value
+      type         = identity.value
+      identity_ids = []
     }
   }
 }
@@ -85,11 +91,12 @@ resource azurerm_resource_policy_assignment def {
   name                 = local.assignment_name
   display_name         = local.display_name
   description          = local.description
+  metadata             = local.metadata
+  parameters           = local.parameters
   resource_id          = var.assignment_scope
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  parameters           = local.parameters
   location             = var.assignment_location
 
   dynamic "non_compliance_message" {
@@ -102,7 +109,8 @@ resource azurerm_resource_policy_assignment def {
   dynamic "identity" {
     for_each = local.identity_type
     content {
-      type = identity.value
+      type         = identity.value
+      identity_ids = []
     }
   }
 }

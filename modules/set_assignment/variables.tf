@@ -44,6 +44,12 @@ variable assignment_parameters {
   default     = null
 }
 
+variable assignment_metadata {
+  type        = any
+  description = "The optional metadata for the policy assignment."
+  default     = null
+}
+
 variable assignment_enforcement_mode {
   type        = bool
   description = "Control whether the assignment is enforced"
@@ -56,10 +62,10 @@ variable assignment_location {
   default     = "uksouth"
 }
 
-variable non_compliance_message {
-  type        = string
-  description = "The optional non-compliance message text. This message will be the default for all member definitions in the set."
-  default     = ""
+variable non_compliance_messages {
+  type        = any
+  description = "The optional non-compliance message(s). Key/Value pairs map as policy_definition_reference_id = 'content', use null = 'content' to specify the Default non-compliance message for all member definitions."
+  default     = {}
 }
 
 variable resource_discovery_mode {
@@ -110,22 +116,11 @@ variable skip_role_assignment {
 }
 
 locals {
-  # evaluate policy assignment scope from resource identifier
-  assignment_scope = try({
-    mg       = length(regexall("(\\/managementGroups\\/)", var.assignment_scope)) > 0 ? 1 : 0,
-    sub      = length(split("/", var.assignment_scope)) == 3 ? 1 : 0,
-    rg       = length(regexall("(\\/managementGroups\\/)", var.assignment_scope)) < 1 ? length(split("/", var.assignment_scope)) == 5 ? 1 : 0 : 0,
-    resource = length(split("/", var.assignment_scope)) >= 6 ? 1 : 0,
-  })
-
   # assignment_name will be trimmed if exceeds 24 characters
   assignment_name = try(lower(substr(coalesce(var.assignment_name, var.initiative.name), 0, 24)), "")
-
-  # initiative display_name will be used if omitted
   display_name = try(coalesce(var.assignment_display_name, var.initiative.display_name), "")
-
-  # initiative discription will be used if omitted
   description = try(coalesce(var.assignment_description, var.initiative.description), "")
+  metadata = jsonencode(try(coalesce(var.assignment_metadata, jsondecode(var.initiative.metadata)), {}))
 
   # convert assignment parameters to the required assignment structure
   parameter_values = var.assignment_parameters != null ? {
@@ -136,14 +131,25 @@ locals {
   # merge effect and parameter_values if specified, will use definition default effects if omitted
   parameters = var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values)
 
-  # create the optional non-compliance message contents block if present
-  non_compliance_message = var.non_compliance_message != "" ? { content = var.non_compliance_message } : {}
+  # create the optional non-compliance message content block(s) if present
+  non_compliance_message = var.non_compliance_messages != {} ? {
+    for reference_id, message in var.non_compliance_messages :
+    reference_id => message
+  } : {}
 
   # determine if a managed identity should be created with this assignment
   identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? { type = "SystemAssigned" } : {}
 
-  # try to use policy definition roles if input is ommitted
+  # try to use policy definition roles if explicit roles are ommitted
   role_definition_ids = var.skip_role_assignment == false ? coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])) : []
+
+  # evaluate policy assignment scope from resource identifier
+  assignment_scope = try({
+    mg       = length(regexall("(\\/managementGroups\\/)", var.assignment_scope)) > 0 ? 1 : 0,
+    sub      = length(split("/", var.assignment_scope)) == 3 ? 1 : 0,
+    rg       = length(regexall("(\\/managementGroups\\/)", var.assignment_scope)) < 1 ? length(split("/", var.assignment_scope)) == 5 ? 1 : 0 : 0,
+    resource = length(split("/", var.assignment_scope)) >= 6 ? 1 : 0,
+  })
 
   # evaluate remediation scope from resource identifier
   remediation_scope = try(coalesce(var.remediation_scope, var.assignment_scope), "")
@@ -163,7 +169,7 @@ locals {
     resource = local.remediate.resource > 0 ? local.definitions : []
   })
 
-  # evaluate assignment outputs
+  # evaluate outputs
   assignment = try(
     azurerm_management_group_policy_assignment.set[0],
     azurerm_subscription_policy_assignment.set[0],

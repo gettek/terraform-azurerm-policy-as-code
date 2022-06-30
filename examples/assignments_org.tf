@@ -14,6 +14,13 @@ module "org_mg_whitelist_regions" {
       "Global"
     ]
   }
+
+  assignment_metadata = {
+    version   = "1.0.0"
+    category  = "Batch"
+    propertyA = "A"
+    propertyB = "B"
+  }
 }
 
 
@@ -49,18 +56,37 @@ module "org_mg_platform_diagnostics_initiative" {
   source               = "..//modules/set_assignment"
   initiative           = module.platform_diagnostics_initiative.initiative
   assignment_scope     = data.azurerm_management_group.org.id
-  assignment_effect    = "AuditIfNotExists"
-  # we do not need to create role assignments or remediations in audit effect hence:
   skip_remediation     = true
-  skip_role_assignment = true
+  skip_role_assignment = false
+
+  role_definition_ids = [
+    data.azurerm_role_definition.contributor.id # using explicit roles
+  ]
+
+  non_compliance_messages = {
+    null                                        = "The Default non-compliance message for all member definitions"
+    "DeployApplicationGatewayDiagnosticSetting" = "The non-compliance message for the deploy_application_gateway_diagnostic_setting definition"
+  }
 
   assignment_parameters = {
-    workspaceId                 = local.dummy_resource_ids.azurerm_log_analytics_workspace
-    storageAccountId            = local.dummy_resource_ids.azurerm_storage_account
-    eventHubName                = local.dummy_resource_ids.azurerm_eventhub_namespace
-    eventHubAuthorizationRuleId = local.dummy_resource_ids.azurerm_eventhub_namespace_authorization_rule
-    metricsEnabled              = "True"
-    logsEnabled                 = "True"
+    workspaceId                                        = local.dummy_resource_ids.azurerm_log_analytics_workspace
+    storageAccountId                                   = local.dummy_resource_ids.azurerm_storage_account
+    eventHubName                                       = local.dummy_resource_ids.azurerm_eventhub_namespace
+    eventHubAuthorizationRuleId                        = local.dummy_resource_ids.azurerm_eventhub_namespace_authorization_rule
+    metricsEnabled                                     = "True"
+    logsEnabled                                        = "True"
+    effect_DeployApplicationGatewayDiagnosticSetting   = "DeployIfNotExists"
+    effect_DeployEventhubDiagnosticSetting             = "DeployIfNotExists"
+    effect_DeployFirewallDiagnosticSetting             = "DeployIfNotExists"
+    effect_DeployKeyvaultDiagnosticSetting             = "AuditIfNotExists"
+    effect_DeployLoadbalancerDiagnosticSetting         = "AuditIfNotExists"
+    effect_DeployNetworkInterfaceDiagnosticSetting     = "AuditIfNotExists"
+    effect_DeployNetworkSecurityGroupDiagnosticSetting = "AuditIfNotExists"
+    effect_DeployPublicIpDiagnosticSetting             = "AuditIfNotExists"
+    effect_DeployStorageAccountDiagnosticSetting       = "DeployIfNotExists"
+    effect_DeploySubscriptionDiagnosticSetting         = "DeployIfNotExists"
+    effect_DeployVnetDiagnosticSetting                 = "AuditIfNotExists"
+    effect_DeployVnetGatewayDiagnosticSetting          = "AuditIfNotExists"
   }
 }
 

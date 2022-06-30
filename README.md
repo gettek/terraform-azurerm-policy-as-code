@@ -80,7 +80,7 @@ This module depends on populating `var.policy_name` and `var.policy_category` to
 ```hcl
 module whitelist_regions {
   source              = "gettek/policy-as-code/azurerm//modules/definition"
-  version             = "2.6.0"
+  version             = "2.6.1"
   policy_name         = "whitelist_regions"
   display_name        = "Allow resources only in whitelisted regions"
   policy_category     = "General"
@@ -97,7 +97,7 @@ Policy Initiatives are used to combine sets of definitions in order to simplify 
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "2.6.0"
+  version                 = "2.6.1"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -111,7 +111,7 @@ module platform_baseline_initiative {
 }
 ```
 
-> ⚠️ **Warning:** If any two `member_definitions` contain the same parameter keys then they will be [merged](https://www.terraform.io/language/functions/merge) by this module [as seen here](modules/initiative/variables.tf#L63-L66), in most cases this is beneficial but if mixed values are required during assignment it may be best practice to change the parameter name within each definition, for example `"whitelist_resources_effect"` instead of `"effect"`.
+> ⚠️ **Warning:** If any two `member_definition_ids` contain the same parameters then they will be [merged](https://www.terraform.io/language/functions/merge) by this module (except for `"effect"` when setting `merge_effects = false`) [as seen here](modules/initiative/variables.tf#L74-L81). In most cases this is beneficial but if unique values are required it may be best practice to set unique keys directly within your custom definition.json files such as `[parameters('listOfResourceTypesAllowed_WhitelistResources')]` instead of `[parameters('listOfResourceTypesAllowed')]`.
 
 > 📘 [Microsoft Docs: Azure Policy initiative definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure)
 
@@ -120,7 +120,7 @@ module platform_baseline_initiative {
 ```hcl
 module org_mg_whitelist_regions {
   source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version           = "2.6.0"
+  version           = "2.6.1"
   definition        = module.whitelist_regions.definition
   assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
@@ -142,7 +142,7 @@ module org_mg_whitelist_regions {
 ```hcl
 module org_mg_platform_diagnostics_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/set_assignment"
-  version                 = "2.6.0"
+  version                 = "2.6.1"
   initiative              = module.platform_diagnostics_initiative.initiative
   assignment_scope        = data.azurerm_management_group.org.id
   assignment_effect       = "DeployIfNotExists"
@@ -164,7 +164,10 @@ module org_mg_platform_diagnostics_initiative {
     data.azurerm_management_group.team_a.id
   ]
 
-  non_compliance_message = "Display this non-compliance message as opposed to a less informal policy error"
+  non_compliance_messages = {
+    null                                        = "The Default non-compliance message for all member definitions"
+    "DeployApplicationGatewayDiagnosticSetting" = "The non-compliance message for the deploy_application_gateway_diagnostic_setting definition"
+  }
 }
 ```
 
@@ -249,6 +252,7 @@ To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure
 - [Microsoft Tutorial: Security Center - Working with security policies](https://docs.microsoft.com/en-us/azure/security-center/tutorial-security-policy)
 - [VSCode Marketplace: Azure Policy Extension](https://marketplace.visualstudio.com/items?itemName=AzurePolicy.azurepolicyextension)
 - [AzAdvertizer: Release and change tracking on Azure Governance capabilities](https://www.azadvertizer.net/index.html)
+- [Azure Citadel: Creating Custom Policies](https://www.azurecitadel.com/policy/custom/)
 - [Terraform Provider: azurerm_policy_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_definition)
 - [Terraform Provider: azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
 - [Terraform Provider: multiple assignment resources: azurerm_*_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment)
