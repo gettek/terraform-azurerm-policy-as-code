@@ -47,7 +47,7 @@ variable assignment_parameters {
 variable assignment_metadata {
   type        = any
   description = "The optional metadata for the policy assignment."
-  default     = {}
+  default     = null
 }
 
 variable assignment_enforcement_mode {
@@ -116,22 +116,11 @@ variable skip_role_assignment {
 }
 
 locals {
-  # evaluate policy assignment scope from resource identifier
-  assignment_scope = try({
-    mg       = length(regexall("(\\/managementGroups\\/)", var.assignment_scope)) > 0 ? 1 : 0,
-    sub      = length(split("/", var.assignment_scope)) == 3 ? 1 : 0,
-    rg       = length(regexall("(\\/managementGroups\\/)", var.assignment_scope)) < 1 ? length(split("/", var.assignment_scope)) == 5 ? 1 : 0 : 0,
-    resource = length(split("/", var.assignment_scope)) >= 6 ? 1 : 0,
-  })
-
   # assignment_name will be trimmed if exceeds 24 characters
   assignment_name = try(lower(substr(coalesce(var.assignment_name, var.initiative.name), 0, 24)), "")
-
-  # initiative display_name will be used if omitted
   display_name = try(coalesce(var.assignment_display_name, var.initiative.display_name), "")
-
-  # initiative discription will be used if omitted
   description = try(coalesce(var.assignment_description, var.initiative.description), "")
+  metadata = jsonencode(try(coalesce(var.assignment_metadata, var.initiative.metadata), {}))
 
   # convert assignment parameters to the required assignment structure
   parameter_values = var.assignment_parameters != null ? {
@@ -151,8 +140,16 @@ locals {
   # determine if a managed identity should be created with this assignment
   identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? { type = "SystemAssigned" } : {}
 
-  # try to use policy definition roles if input is ommitted
+  # try to use policy definition roles if explicit roles are ommitted
   role_definition_ids = var.skip_role_assignment == false ? coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])) : []
+
+  # evaluate policy assignment scope from resource identifier
+  assignment_scope = try({
+    mg       = length(regexall("(\\/managementGroups\\/)", var.assignment_scope)) > 0 ? 1 : 0,
+    sub      = length(split("/", var.assignment_scope)) == 3 ? 1 : 0,
+    rg       = length(regexall("(\\/managementGroups\\/)", var.assignment_scope)) < 1 ? length(split("/", var.assignment_scope)) == 5 ? 1 : 0 : 0,
+    resource = length(split("/", var.assignment_scope)) >= 6 ? 1 : 0,
+  })
 
   # evaluate remediation scope from resource identifier
   remediation_scope = try(coalesce(var.remediation_scope, var.assignment_scope), "")
@@ -172,7 +169,7 @@ locals {
     resource = local.remediate.resource > 0 ? local.definitions : []
   })
 
-  # evaluate assignment outputs
+  # evaluate outputs
   assignment = try(
     azurerm_management_group_policy_assignment.set[0],
     azurerm_subscription_policy_assignment.set[0],
