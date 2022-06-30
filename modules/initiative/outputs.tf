@@ -32,7 +32,7 @@ output initiative {
     description                 = var.initiative_description
     management_group_id         = var.management_group_id
     parameters                  = local.parameters
-    metadata                    = local.metadata
+    metadata                    = jsonencode(local.metadata)
     policy_definition_reference = azurerm_policy_set_definition.set.policy_definition_reference
     role_definition_ids         = local.all_role_definition_ids
   }
