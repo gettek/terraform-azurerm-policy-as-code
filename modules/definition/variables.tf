@@ -39,8 +39,13 @@ variable policy_description {
 
 variable policy_mode {
   type        = string
-  description = "The policy mode that allows you to specify which resource types will be evaluated, defaults to All. Possible values are All, Indexed, Microsoft.ContainerService.Data, Microsoft.CustomerLockbox.Data, Microsoft.DataCatalog.Data, Microsoft.KeyVault.Data, Microsoft.Kubernetes.Data, Microsoft.MachineLearningServices.Data, Microsoft.Network.Data and Microsoft.Synapse.Data"
+  description = "The policy mode that allows you to specify which resource types will be evaluated, defaults to All. Possible values are All and Indexed"
   default     = "All"
+
+  validation {
+    condition     = var.policy_mode == "All" || var.policy_mode == "Indexed"
+    error_message = "Policy mode possible values are: All or Indexed. Other modes are only allowed in built-in policy definitions, these include Microsoft.ContainerService.Data, Microsoft.CustomerLockbox.Data, Microsoft.DataCatalog.Data, Microsoft.KeyVault.Data, Microsoft.Kubernetes.Data, Microsoft.MachineLearningServices.Data, Microsoft.Network.Data and Microsoft.Synapse.Data"
+  }
 }
 
 variable policy_category {
