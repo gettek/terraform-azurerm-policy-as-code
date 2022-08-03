@@ -1,6 +1,6 @@
 # POLICY INITIATIVE MODULE
 
-Dynamically creates a policy set based on multiple policy definition references
+Dynamically creates a policy set based on multiple custom or built-in policy definition references
 
 > ⚠️ **Warning:** If any two `member_definition_ids` contain the same parameters then they will be [merged](https://www.terraform.io/language/functions/merge) by this module (except for `"effect"` when setting `merge_effects = false`) [as seen here](variables.tf#L74-L81). In most cases this is beneficial but if unique values are required it may be best practice to set unique keys directly within your custom definition.json files such as `[parameters('listOfResourceTypesAllowed_WhitelistResources')]` instead of `[parameters('listOfResourceTypesAllowed')]`.
 
@@ -125,7 +125,8 @@ No modules.
 | <a name="input_initiative_version"></a> [initiative\_version](#input\_initiative\_version) | The version for this initiative, defaults to 1.0.0 | `string` | `"1.0.0"` | no |
 | <a name="input_management_group_id"></a> [management\_group\_id](#input\_management\_group\_id) | The management group scope at which the initiative will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. Note: if you are using azurerm\_management\_group to assign a value to management\_group\_id, be sure to use name or group\_id attribute, but not id. | `string` | `null` | no |
 | <a name="input_member_definitions"></a> [member\_definitions](#input\_member\_definitions) | Policy Defenition resource nodes that will be members of this initiative | `any` | n/a | yes |
-| <a name="input_merge_effects"></a> [merge\_effects](#input\_merge\_effects) | Should the module merge definition effects. Defauls to true | `bool` | `true` | no |
+| <a name="input_merge_effects"></a> [merge\_effects](#input\_merge\_effects) | Should the module merge all definition effects? Defauls to true | `bool` | `true` | no |
+| <a name="input_merge_parameters"></a> [merge\_parameters](#input\_merge\_parameters) | Should the module merge all definition parameters? Defauls to true | `bool` | `true` | no |
 
 ## Outputs
 

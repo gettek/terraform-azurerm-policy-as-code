@@ -22,7 +22,9 @@ resource azurerm_policy_set_definition set {
       reference_id         = policy_definition_reference.value.ref_id
       parameter_values = jsonencode({
         for k in keys(policy_definition_reference.value.parameters) :
-        k => { value = k == "effect" && var.merge_effects == false ? "[parameters('${format("%s_%s", k, policy_definition_reference.value.ref_id)}')]" : "[parameters('${k}')]" }
+        k => {
+          value = k == "effect" && var.merge_effects == false ? "[parameters('${format("%s_%s", k, policy_definition_reference.value.ref_id)}')]" : var.merge_parameters == false ? "[parameters('${format("%s_%s", k, policy_definition_reference.value.ref_id)}')]" :"[parameters('${k}')]"
+        }
       })
       policy_group_names = policy_definition_reference.value.groups
     }

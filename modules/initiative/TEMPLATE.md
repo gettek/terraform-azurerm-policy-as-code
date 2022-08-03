@@ -1,6 +1,6 @@
 # POLICY INITIATIVE MODULE
 
-Dynamically creates a policy set based on multiple policy definition references
+Dynamically creates a policy set based on multiple custom or built-in policy definition references
 
 > ⚠️ **Warning:** If any two `member_definition_ids` contain the same parameters then they will be [merged](https://www.terraform.io/language/functions/merge) by this module (except for `"effect"` when setting `merge_effects = false`) [as seen here](variables.tf#L74-L81). In most cases this is beneficial but if unique values are required it may be best practice to set unique keys directly within your custom definition.json files such as `[parameters('listOfResourceTypesAllowed_WhitelistResources')]` instead of `[parameters('listOfResourceTypesAllowed')]`.
 

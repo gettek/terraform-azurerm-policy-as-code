@@ -60,7 +60,13 @@ variable initiative_metadata {
 
 variable merge_effects {
   type        = bool
-  description = "Should the module merge definition effects. Defauls to true"
+  description = "Should the module merge all definition effects? Defauls to true"
+  default     = true
+}
+
+variable merge_parameters {
+  type        = bool
+  description = "Should the module merge all definition parameters? Defauls to true"
   default     = true
 }
 
@@ -71,12 +77,17 @@ locals {
     d.name => try(jsondecode(d.parameters), null)
   }
 
-  # combine all discovered definition parameters using interpolation and suffix effects with definition references
+  # combine all discovered definition parameters using interpolation
   parameters = merge(values({
     for definition, params in local.member_parameters :
     definition => {
       for parameter_name, parameter_value in params :
-      parameter_name == "effect" && var.merge_effects == false ? format("%s_%s", parameter_name, replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")) : parameter_name => parameter_value
+      # if do not merge effects -> suffix only effects with definition references
+      parameter_name == "effect" && var.merge_effects == false ? format("%s_%s", parameter_name, replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")) :
+      # if do not merge parameters -> suffix all parameters with definition references
+      var.merge_parameters == false ? format("%s_%s", parameter_name, replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")) :
+      # default merge all for assignment simplicity
+      parameter_name => parameter_value
     }
   })...)
 
