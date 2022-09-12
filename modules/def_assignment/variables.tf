@@ -91,6 +91,24 @@ variable location_filters {
   default     = []
 }
 
+variable failure_percentage {
+  type        = number
+  description = "(Optional) A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold."
+  default     = null
+}
+
+variable parallel_deployments {
+  type        = number
+  description = "(Optional) Determines how many resources to remediate at any given time. Can be used to increase or reduce the pace of the remediation. If not provided, the default parallel deployments value is used."
+  default     = null
+}
+
+variable resource_count {
+  type        = number
+  description = "(Optional) Determines the max number of resources that can be remediated by the remediation job. If not provided, the default resource count is used."
+  default     = null
+}
+
 variable role_definition_ids {
   type        = list(any)
   description = "List of Role definition ID's for the System Assigned Identity, defaults to roles included in the definition. Specify a blank array to skip creating role assignments. Changing this forces a new resource to be created"

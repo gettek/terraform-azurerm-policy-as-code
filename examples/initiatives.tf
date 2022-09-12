@@ -9,6 +9,7 @@ module "configure_asc_initiative" {
   initiative_category     = "Security Center"
   management_group_id     = data.azurerm_management_group.org.id
 
+  # Populate member_definitions with a for loop (explicit)
   member_definitions = [
     module.configure_asc["auto_enroll_subscriptions"].definition,
     module.configure_asc["auto_provision_log_analytics_agent_custom_workspace"].definition,
