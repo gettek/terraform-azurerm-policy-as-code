@@ -3,10 +3,11 @@
 **/.terraform/*
 *.tfstate
 *.tfstate.*
+*.tfrc
+*.plan
 *.auto.tfvars
 lock.json
 .terraform.lock.hcl
-*.tfvars
 override.tf
 override.tf.json
 *_override.tf

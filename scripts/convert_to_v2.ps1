@@ -7,7 +7,7 @@
 
 [CmdletBinding()]
 Param(
-    [bool] [Parameter(Mandatory = $false)] $clean = $true
+    [switch] [Parameter(Mandatory = $false)] $clean
 )
 
 $ErrorActionPreference = "Stop"
@@ -28,18 +28,18 @@ try {
 
     $categories = (Get-ChildItem -Directory).BaseName
     $categories | Foreach-Object {
-        
+
         $category = $_
         Push-Location -Path $_
-        
+
         $policies = (Get-ChildItem -Directory).BaseName
         $policies | Foreach-Object {
             Push-Location -Path $_
 
             # get old policy files
-            $params = Get-Content "parameters.json" | ConvertFrom-Json 
+            $params = Get-Content "parameters.json" | ConvertFrom-Json
             $rules = Get-Content "rules.json" | ConvertFrom-Json
-            
+
             # build a custom policy object
             $policy_oject = [ordered]@{
                 type       = "Microsoft.Authorization/policyDefinitions"
@@ -52,12 +52,12 @@ try {
                     policyRule = $rules
                 }
             }
-            
+
             # Create new policy file
             Pop-Location
             Write-Host "Creating new file $category/$_.json"
             $policy_oject | ConvertTo-Json -Depth 100 | Out-File "$_.json" -Force
-            
+
             # remove old directories
             if ($clean) {
                 Remove-Item -Path $_ -Recurse -Verbose

@@ -5,8 +5,18 @@
 		}
 	],
 	"settings": {
+		// List of extensions which should be recommended for users of this workspace.
+		"recommendations": [
+			"azurepolicy.azurepolicyextension",
+			"hashicorp.terraform",
+			"oderwat.indent-rainbow"
+		],
 		// When enabled, will trim trailing whitespace when you save a file.
 		"files.trimTrailingWhitespace": true,
+		// enable bracket pair colorization.
+		"editor.bracketPairColorization.enabled": true,
+		"editor.guides.bracketPairs": "active",
+		// azure policy definition schemas
 		"json.schemas": [
 			{
 				"fileMatch": [
@@ -15,6 +25,7 @@
 				"url": "https://schema.management.azure.com/schemas/2020-10-01/policyDefinition.json"
 			}
 		],
+		// github workflows
 		"github-actions.workflows.pinned.workflows": [
 			".github/workflows/cd.yml",
 			".github/workflows/ci.yml"
