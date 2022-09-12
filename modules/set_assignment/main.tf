@@ -136,6 +136,9 @@ resource azurerm_management_group_policy_remediation rem {
   policy_assignment_id    = local.assignment.id
   policy_definition_id    = lower(each.value.policy_definition_id)
   location_filters        = var.location_filters
+  failure_percentage      = var.failure_percentage
+  parallel_deployments    = var.parallel_deployments
+  resource_count          = var.resource_count
 }
 
 resource azurerm_subscription_policy_remediation rem {
@@ -146,6 +149,9 @@ resource azurerm_subscription_policy_remediation rem {
   policy_definition_id    = lower(each.value.policy_definition_id)
   resource_discovery_mode = var.resource_discovery_mode
   location_filters        = var.location_filters
+  failure_percentage      = var.failure_percentage
+  parallel_deployments    = var.parallel_deployments
+  resource_count          = var.resource_count
 }
 
 resource azurerm_resource_group_policy_remediation rem {
@@ -156,6 +162,9 @@ resource azurerm_resource_group_policy_remediation rem {
   policy_definition_id    = lower(each.value.policy_definition_id)
   resource_discovery_mode = var.resource_discovery_mode
   location_filters        = var.location_filters
+  failure_percentage      = var.failure_percentage
+  parallel_deployments    = var.parallel_deployments
+  resource_count          = var.resource_count
 }
 
 resource azurerm_resource_policy_remediation rem {
@@ -166,4 +175,7 @@ resource azurerm_resource_policy_remediation rem {
   policy_definition_id    = lower(each.value.policy_definition_id)
   resource_discovery_mode = var.resource_discovery_mode
   location_filters        = var.location_filters
+  failure_percentage      = var.failure_percentage
+  parallel_deployments    = var.parallel_deployments
+  resource_count          = var.resource_count
 }

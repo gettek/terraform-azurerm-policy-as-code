@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: ~1.1.0
+          terraform_version: ~1.2.6
 
       - name: Terraform Format
         id: fmt

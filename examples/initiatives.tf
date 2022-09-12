@@ -9,9 +9,13 @@ module "configure_asc_initiative" {
   initiative_category     = "Security Center"
   management_group_id     = data.azurerm_management_group.org.id
 
+  # Populate member_definitions with a for loop (explicit)
   member_definitions = [
-    for asc in module.configure_asc :
-    asc.definition
+    module.configure_asc["auto_enroll_subscriptions"].definition,
+    module.configure_asc["auto_provision_log_analytics_agent_custom_workspace"].definition,
+    module.configure_asc["auto_set_contact_details"].definition,
+    module.configure_asc["export_asc_alerts_and_recommendations_to_eventhub"].definition,
+    module.configure_asc["export_asc_alerts_and_recommendations_to_log_analytics"].definition,
   ]
 }
 
@@ -27,18 +31,9 @@ module "platform_diagnostics_initiative" {
   merge_effects           = false # will not merge "effect" parameters
   management_group_id     = data.azurerm_management_group.org.id
 
+  # Populate member_definitions with a for loop (not explicit)
   member_definitions = [
-    module.deploy_subscription_diagnostic_setting.definition,
-    module.deploy_resource_diagnostic_setting["deploy_eventhub_diagnostic_setting"].definition,
-    module.deploy_resource_diagnostic_setting["deploy_firewall_diagnostic_setting"].definition,
-    module.deploy_resource_diagnostic_setting["deploy_keyvault_diagnostic_setting"].definition,
-    module.deploy_resource_diagnostic_setting["deploy_loadbalancer_diagnostic_setting"].definition,
-    module.deploy_resource_diagnostic_setting["deploy_network_interface_diagnostic_setting"].definition,
-    module.deploy_resource_diagnostic_setting["deploy_network_security_group_diagnostic_setting"].definition,
-    module.deploy_resource_diagnostic_setting["deploy_public_ip_diagnostic_setting"].definition,
-    module.deploy_resource_diagnostic_setting["deploy_vnet_diagnostic_setting"].definition,
-    module.deploy_resource_diagnostic_setting["deploy_vnet_gateway_diagnostic_setting"].definition,
-    module.deploy_resource_diagnostic_setting["deploy_application_gateway_diagnostic_setting"].definition,
-    module.deploy_resource_diagnostic_setting["deploy_storage_account_diagnostic_setting"].definition,
+    for mon in module.deploy_resource_diagnostic_setting :
+    mon.definition
   ]
 }

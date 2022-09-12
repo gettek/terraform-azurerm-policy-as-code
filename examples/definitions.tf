@@ -20,36 +20,12 @@ module "whitelist_regions" {
 ##################
 # Monitoring
 ##################
-module "deploy_subscription_diagnostic_setting" {
-  source              = "..//modules/definition"
-  policy_name         = "deploy_subscription_diagnostic_setting"
-  display_name        = "Deploy Subscription Diagnostic Setting Forwarders"
-  policy_category     = "Monitoring"
-  management_group_id = data.azurerm_management_group.org.id
-}
 
-locals {
-  resource_diagnostic_policies = [
-    "deploy_application_gateway_diagnostic_setting",
-    "deploy_eventhub_diagnostic_setting",
-    "deploy_expressroute_connection_diagnostic_setting",
-    "deploy_expressroute_diagnostic_setting",
-    "deploy_firewall_diagnostic_setting",
-    "deploy_keyvault_diagnostic_setting",
-    "deploy_loadbalancer_diagnostic_setting",
-    "deploy_network_interface_diagnostic_setting",
-    "deploy_network_security_group_diagnostic_setting",
-    "deploy_public_ip_diagnostic_setting",
-    "deploy_storage_account_diagnostic_setting",
-    "deploy_vnet_diagnostic_setting",
-    "deploy_vnet_gateway_diagnostic_setting"
-  ]
-}
-
+# create definitions by looping around all files found under the Monitoring category folder
 module "deploy_resource_diagnostic_setting" {
   source              = "..//modules/definition"
-  for_each            = toset(local.resource_diagnostic_policies)
-  policy_name         = each.value
+  for_each            = toset([for p in fileset(path.cwd, "../policies/Monitoring/*.json") : trimsuffix(basename(p), ".json")])
+  policy_name         = each.key
   policy_category     = "Monitoring"
   management_group_id = data.azurerm_management_group.org.id
 }
@@ -68,19 +44,17 @@ module "deny_nic_public_ip" {
 ##################
 # Security Center
 ##################
-locals {
-  security_center_policies = [
+
+# create definitions by calling them explicitly from a local (as above)
+module "configure_asc" {
+  source              = "..//modules/definition"
+  for_each            = toset([
     "auto_enroll_subscriptions",
     "auto_provision_log_analytics_agent_custom_workspace",
     "auto_set_contact_details",
     "export_asc_alerts_and_recommendations_to_eventhub",
     "export_asc_alerts_and_recommendations_to_log_analytics",
-  ]
-}
-
-module "configure_asc" {
-  source              = "..//modules/definition"
-  for_each            = toset(local.security_center_policies)
+  ])
   policy_name         = each.value
   policy_category     = "Security Center"
   management_group_id = data.azurerm_management_group.org.id

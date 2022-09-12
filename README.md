@@ -80,7 +80,7 @@ This module depends on populating `var.policy_name` and `var.policy_category` to
 ```hcl
 module whitelist_regions {
   source              = "gettek/policy-as-code/azurerm//modules/definition"
-  version             = "2.6.1"
+  version             = "2.6.2"
   policy_name         = "whitelist_regions"
   display_name        = "Allow resources only in whitelisted regions"
   policy_category     = "General"
@@ -92,12 +92,13 @@ module whitelist_regions {
 
 ## Policy Initiative (Set Definitions) Module
 
-Policy Initiatives are used to combine sets of definitions in order to simplify their assignment
+Dynamically create a policy set based on multiple custom or built-in policy definition references to simplify assignments.
+
 
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "2.6.1"
+  version                 = "2.6.2"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -111,8 +112,6 @@ module platform_baseline_initiative {
 }
 ```
 
-> ⚠️ **Warning:** If any two `member_definition_ids` contain the same parameters then they will be [merged](https://www.terraform.io/language/functions/merge) by this module (except for `"effect"` when setting `merge_effects = false`) [as seen here](modules/initiative/variables.tf#L74-L81). In most cases this is beneficial but if unique values are required it may be best practice to set unique keys directly within your custom definition.json files such as `[parameters('listOfResourceTypesAllowed_WhitelistResources')]` instead of `[parameters('listOfResourceTypesAllowed')]`.
-
 > 📘 [Microsoft Docs: Azure Policy initiative definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure)
 
 ## Policy Definition Assignment Module
@@ -120,7 +119,7 @@ module platform_baseline_initiative {
 ```hcl
 module org_mg_whitelist_regions {
   source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version           = "2.6.1"
+  version           = "2.6.2"
   definition        = module.whitelist_regions.definition
   assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
@@ -142,7 +141,7 @@ module org_mg_whitelist_regions {
 ```hcl
 module org_mg_platform_diagnostics_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/set_assignment"
-  version                 = "2.6.1"
+  version                 = "2.6.2"
   initiative              = module.platform_diagnostics_initiative.initiative
   assignment_scope        = data.azurerm_management_group.org.id
   assignment_effect       = "DeployIfNotExists"

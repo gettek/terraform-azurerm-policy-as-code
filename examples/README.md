@@ -7,13 +7,15 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.22.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.8.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.22.0 |
 
 ## Modules
 
@@ -24,7 +26,6 @@ No requirements.
 | <a name="module_deny_nic_public_ip"></a> [deny\_nic\_public\_ip](#module\_deny\_nic\_public\_ip) | ..//modules/definition | n/a |
 | <a name="module_deny_resources_types"></a> [deny\_resources\_types](#module\_deny\_resources\_types) | ..//modules/definition | n/a |
 | <a name="module_deploy_resource_diagnostic_setting"></a> [deploy\_resource\_diagnostic\_setting](#module\_deploy\_resource\_diagnostic\_setting) | ..//modules/definition | n/a |
-| <a name="module_deploy_subscription_diagnostic_setting"></a> [deploy\_subscription\_diagnostic\_setting](#module\_deploy\_subscription\_diagnostic\_setting) | ..//modules/definition | n/a |
 | <a name="module_exemption_subscription_diagnostics_settings"></a> [exemption\_subscription\_diagnostics\_settings](#module\_exemption\_subscription\_diagnostics\_settings) | ..//modules/exemption | n/a |
 | <a name="module_inherit_resource_group_tags_modify"></a> [inherit\_resource\_group\_tags\_modify](#module\_inherit\_resource\_group\_tags\_modify) | ..//modules/definition | n/a |
 | <a name="module_org_mg_configure_asc_initiative"></a> [org\_mg\_configure\_asc\_initiative](#module\_org\_mg\_configure\_asc\_initiative) | ..//modules/set_assignment | n/a |
