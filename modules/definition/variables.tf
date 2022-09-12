@@ -43,8 +43,8 @@ variable policy_mode {
   default     = "All"
 
   validation {
-    condition     = var.policy_mode == "All" || var.policy_mode == "Indexed"
-    error_message = "Policy mode possible values are: All or Indexed. Other modes are only allowed in built-in policy definitions, these include Microsoft.ContainerService.Data, Microsoft.CustomerLockbox.Data, Microsoft.DataCatalog.Data, Microsoft.KeyVault.Data, Microsoft.Kubernetes.Data, Microsoft.MachineLearningServices.Data, Microsoft.Network.Data and Microsoft.Synapse.Data"
+    condition     = var.policy_mode == "All" || var.policy_mode == "Indexed" || var.policy_mode == "Microsoft.Kubernetes.Data"
+    error_message = "Policy mode possible values are: All, Indexed or Microsoft.Kubernetes.Data (In Preview). Other modes are only allowed in built-in policy definitions, these include Microsoft.ContainerService.Data, Microsoft.CustomerLockbox.Data, Microsoft.DataCatalog.Data, Microsoft.KeyVault.Data, Microsoft.MachineLearningServices.Data, Microsoft.Network.Data and Microsoft.Synapse.Data"
   }
 }
 
