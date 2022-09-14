@@ -94,7 +94,6 @@ module whitelist_regions {
 
 Dynamically create a policy set based on multiple custom or built-in policy definition references to simplify assignments.
 
-
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
@@ -225,10 +224,10 @@ To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure
 
 ### 🎯Definition and Assignment Scopes
 
-  - Should be Defined as **high up** in the hierarchy as possible.
-  - Should be Assigned as **low down** in the hierarchy as possible.
-  - `assignment_not_scopes` such as child resource groups, individual resources or entire subscriptions, can be specified as enforcement exemptions.
-  - Policy **overrides RBAC** so even Subscription owners fall under the same compliance enforcements assigned at a higher scope (unless assigned at subscription scope).
+- Should be Defined as **high up** in the hierarchy as possible.
+- Should be Assigned as **low down** in the hierarchy as possible.
+- `assignment_not_scopes` such as child resource groups, individual resources or entire subscriptions, can be specified as enforcement exemptions.
+- Policy **overrides RBAC** so even Subscription owners fall under the same compliance enforcements assigned at a higher scope (unless assigned at subscription scope).
 
 ![Policy Definition and Assignment Scopes](img/scopes.svg)
 
@@ -254,9 +253,9 @@ To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure
 - [Azure Citadel: Creating Custom Policies](https://www.azurecitadel.com/policy/custom/)
 - [Terraform Provider: azurerm_policy_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_definition)
 - [Terraform Provider: azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
-- [Terraform Provider: multiple assignment resources: azurerm_*_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment)
-- [Terraform Provider: multiple remediation resources: azurerm_*_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_remediation)
-- [Terraform Provider: multiple exemption resources: azurerm_*_policy_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_exemption)
+- [Terraform Provider: multiple assignment resources: azurerm\_\*\_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment)
+- [Terraform Provider: multiple remediation resources: azurerm\_\*\_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_remediation)
+- [Terraform Provider: multiple exemption resources: azurerm\_\*\_policy_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_exemption)
 
 ## Limitations
 
@@ -265,7 +264,7 @@ To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure
 - There's a [maximum count](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-policy-limits) for each object type for Azure Policy. For definitions, an entry of Scope means the management group or subscription. For assignments and exemptions, an entry of Scope means the management group, subscription, resource group, or individual resource:
 
 | Where                                                     | What                             | Maximum count |
-|-----------------------------------------------------------|----------------------------------|---------------|
+| --------------------------------------------------------- | -------------------------------- | ------------- |
 | Scope                                                     | Policy definitions               | 500           |
 | Scope                                                     | Initiative definitions           | 200           |
 | Tenant                                                    | Initiative definitions           | 2,500         |
@@ -279,3 +278,4 @@ To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure
 | Remediation task                                          | Resources                        | 50,000        |
 | Policy definition, initiative, or assignment request body | Bytes                            | 1,048,576     |
 
+.
