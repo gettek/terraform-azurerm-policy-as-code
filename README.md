@@ -69,8 +69,7 @@
       └──📜policy_name.json (e.g. whitelist_regions, should correspond to [var.policy_name])
 📦scripts
   ├──📂dsc_examples
-  ├──📜build_guest_config_packages.ps1 (build and publish azure policy guest configuration packages)
-  └──📜convert_to_v2.ps1 (converts policies to version 2 of the repo library)
+  └──📜build_guest_config_packages.ps1 (build and publish azure policy guest configuration packages)
 ```
 
 ## Custom Policy Definitions Module
@@ -227,8 +226,8 @@ To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure
 
   - Should be Defined as **high up** in the hierarchy as possible.
   - Should be Assigned as **low down** in the hierarchy as possible.
-  - `assignment_not_scopes` such as child resource groups, individual resources or entire subscriptions, can be specified as enforcement exemptions.
-  - Policy **overrides RBAC** so even Subscription owners fall under the same compliance enforcements assigned at a higher scope (unless assigned at subscription scope).
+  - Multiple scopes can be exempt from policy inheritance by specifying `assignment_not_scopes`.
+  - Policy **overrides RBAC** so even resource owners and contributors fall under compliance enforcements assigned at a higher scope (unless the policy is assigned at the ownership scope).
 
 ![Policy Definition and Assignment Scopes](img/scopes.svg)
 
