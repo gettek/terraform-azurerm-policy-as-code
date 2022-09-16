@@ -29,7 +29,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 | <a name="module_exemption_subscription_diagnostics_settings"></a> [exemption\_subscription\_diagnostics\_settings](#module\_exemption\_subscription\_diagnostics\_settings) | ..//modules/exemption | n/a |
 | <a name="module_inherit_resource_group_tags_modify"></a> [inherit\_resource\_group\_tags\_modify](#module\_inherit\_resource\_group\_tags\_modify) | ..//modules/definition | n/a |
 | <a name="module_org_mg_configure_asc_initiative"></a> [org\_mg\_configure\_asc\_initiative](#module\_org\_mg\_configure\_asc\_initiative) | ..//modules/set_assignment | n/a |
-| <a name="module_org_mg_configure_az_monitor_linux_vm_initiative"></a> [org\_mg\_configure\_az\_monitor\_linux\_vm\_initiative](#module\_org\_mg\_configure\_az\_monitor\_linux\_vm\_initiative) | ..//modules/set_assignment | n/a |
+| <a name="module_org_mg_configure_az_monitor_and_security_vm_initiative"></a> [org\_mg\_configure\_az\_monitor\_and\_security\_vm\_initiative](#module\_org\_mg\_configure\_az\_monitor\_and\_security\_vm\_initiative) | ..//modules/set_assignment | n/a |
 | <a name="module_org_mg_platform_diagnostics_initiative"></a> [org\_mg\_platform\_diagnostics\_initiative](#module\_org\_mg\_platform\_diagnostics\_initiative) | ..//modules/set_assignment | n/a |
 | <a name="module_org_mg_storage_enforce_https"></a> [org\_mg\_storage\_enforce\_https](#module\_org\_mg\_storage\_enforce\_https) | ..//modules/def_assignment | n/a |
 | <a name="module_org_mg_storage_enforce_minimum_tls1_2"></a> [org\_mg\_storage\_enforce\_minimum\_tls1\_2](#module\_org\_mg\_storage\_enforce\_minimum\_tls1\_2) | ..//modules/def_assignment | n/a |
@@ -49,7 +49,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_management_group.org](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/management_group) | data source |
 | [azurerm_management_group.team_a](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/management_group) | data source |
-| [azurerm_policy_set_definition.configure_az_monitor_linux_vm_initiative](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/policy_set_definition) | data source |
+| [azurerm_policy_set_definition.configure_az_monitor_and_security_vm_initiative](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/policy_set_definition) | data source |
 | [azurerm_role_definition.contributor](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) | data source |
 | [azurerm_role_definition.vm_contributor](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) | data source |
 | [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
