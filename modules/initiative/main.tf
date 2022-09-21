@@ -13,7 +13,7 @@ resource azurerm_policy_set_definition set {
     for_each = [for d in var.member_definitions : {
       id         = d.id
       ref_id     = replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")
-      parameters = jsondecode(d.parameters)
+      parameters = try(jsondecode(d.parameters), {})
       groups     = []
     }]
 
