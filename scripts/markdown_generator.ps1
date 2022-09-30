@@ -18,23 +18,22 @@ foreach ($category in $definitionChildrenDir.Name) {
 foreach ($child in $definitionChildren) {
     $content = Get-Content -Path $child.FullName | ConvertFrom-Json
 
+    $BaseName = try { $child.BaseName } catch { "" }
+    $Name = try { $content.name } catch { "" }
+    $Description = try { $content.properties.description.Replace("\n", " ") } catch { "" }
+    $DisplayName = try { $content.properties.displayName } catch { "" }
+    $Version = try { $content.properties.metadata.version } catch { @{} }
+    $Effect = try { $content.properties.policyRule.then.effect } catch { "" }
+
     if ($child.BaseName -notin $definitionList[$child.Directory.Name].BaseName) {
 
-        try {
-            [PSObject]$object = [ordered]@{
-                "BaseName"    = $child.BaseName
-                "Name"        = $content.name
-                "Description" = $content.properties.description.Replace("\n", " ")
-                "DisplayName" = $content.properties.displayName
-                "Effect"      = $content.properties.policyRule.then.effect
-            }
-        }
-        catch {
-            [PSObject]$object = [ordered]@{
-                "BaseName" = $child.BaseName
-                "Name"     = $content.name
-                "Effect"   = $content.properties.policyRule.then.effect
-            }
+        [PSObject]$object = [ordered]@{
+            "BaseName"    = $BaseName
+            "Name"        = $Name
+            "Description" = $Description
+            "DisplayName" = $DisplayName
+            "Version"     = $Version
+            "Effect"      = $Effect
         }
 
         $definitionList[$child.Directory.Name] += $object
@@ -97,11 +96,12 @@ foreach ($definition in $definitionList.Keys) {
         Write-Output "| Name                | $($item.Name) |"                           | Out-File @append
         Write-Output "| DisplayName         | $($item.DisplayName) |"                    | Out-File @append
         Write-Output "| Description         | $($item.Description.Replace("`n", " ")) |" | Out-File @append
+        Write-Output "| Version             | $($item.Version) |"                        | Out-File @append
         Write-Output "| Effect              | $($item.Effect) |"                         | Out-File @append
 
 
         if ($item | Get-Member -MemberType "NoteProperty") {
-            Write-Output "`n#### 🧮 ~ Parameters"                  | Out-File @append
+            Write-Output "`n#### 🧮 ~ Parameters" | Out-File @append
             Write-Output "| Name | Description | Default Value | Allowed Values |"   | Out-File @append
             Write-Output "| ---- | ----------- | ------------- | -------------- |"   | Out-File @append
 
