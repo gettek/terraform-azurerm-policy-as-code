@@ -13,6 +13,7 @@
         "defaultValue": "DeployIfNotExists",
         "allowedValues": [
           "DeployIfNotExists",
+          "AuditIfNotExists",
           "Disabled"
         ],
         "metadata": {

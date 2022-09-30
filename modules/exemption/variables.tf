@@ -55,7 +55,7 @@ variable expires_on {
 variable metadata {
   type        = any
   description = "Optional policy exemption metadata. For example but not limited to; requestedBy, approvedBy, approvedOn, ticketRef, etc"
-  default     = {}
+  default     = null
 }
 
 locals {
@@ -67,6 +67,8 @@ locals {
   })
 
   expires_on = var.expires_on != null ? "${var.expires_on}T23:00:00Z" : null
+
+  metadata = var.metadata != null ? jsonencode(var.metadata) : null
 
   # generate reference Ids when unknown, assumes the set was created with the initiative module
   policy_definition_reference_ids = length(var.member_definition_names) > 0 ? [for name in var.member_definition_names :

@@ -8,7 +8,7 @@ resource azurerm_policy_definition def {
   management_group_id = var.management_group_id
 
   metadata    = jsonencode(local.metadata)
-  parameters  = jsonencode(local.parameters)
+  parameters  = length(local.parameters) > 0 ? jsonencode(local.parameters) : null
   policy_rule = jsonencode(local.policy_rule)
 
   lifecycle {

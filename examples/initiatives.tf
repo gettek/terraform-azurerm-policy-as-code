@@ -32,8 +32,5 @@ module "platform_diagnostics_initiative" {
   management_group_id     = data.azurerm_management_group.org.id
 
   # Populate member_definitions with a for loop (not explicit)
-  member_definitions = [
-    for mon in module.deploy_resource_diagnostic_setting :
-    mon.definition
-  ]
+  member_definitions = [for mon in module.deploy_resource_diagnostic_setting : mon.definition]
 }

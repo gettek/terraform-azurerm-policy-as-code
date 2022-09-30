@@ -1,6 +1,6 @@
 
 # Custom Policy Definition Library
-Compile time: 06/29/2022 11:46:56 UTC
+Compile time: 09/30/2022 15:20:06 UTC
 Example custom definitions located in the local library
 
 ## Categories
@@ -24,6 +24,7 @@ Example custom definitions located in the local library
 | Name                | onboard_to_automation_dsc_linux |
 | DisplayName         | Onboard Azure VM and Arc connected Linux machines to Azure Automation DSC |
 | Description         | Deploys the DSC extension to onboard Linux nodes to Azure Automation DSC. Assigns a configuration. |
+| Version             | 2.0.0 |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -45,6 +46,7 @@ Example custom definitions located in the local library
 | Name                | onboard_to_automation_dsc_windows |
 | DisplayName         | Onboard Azure VM and Arc connected Windows machines to Azure Automation DSC |
 | Description         | Deploys the DSC extension to onboard Windows nodes to Azure Automation DSC. Assigns a configuration. |
+| Version             | 2.0.0 |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -70,6 +72,7 @@ Example custom definitions located in the local library
 | Name                | deploy_linux_lad_vm_agent |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -90,6 +93,7 @@ Example custom definitions located in the local library
 | Name                | deploy_linux_lad_vmss_agent |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -112,6 +116,7 @@ Example custom definitions located in the local library
 | Name                | deploy_linux_log_analytics_vm_agent |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -131,6 +136,7 @@ Example custom definitions located in the local library
 | Name                | deploy_linux_log_analytics_vmss_agent |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -150,6 +156,7 @@ Example custom definitions located in the local library
 | Name                | deploy_windows_log_analytics_vm_agent |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -169,6 +176,7 @@ Example custom definitions located in the local library
 | Name                | deploy_windows_log_analytics_vmss_agent |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -188,6 +196,7 @@ Example custom definitions located in the local library
 | Name                | deploy_windows_wad_vm_agent |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -211,6 +220,7 @@ Example custom definitions located in the local library
 | Name                | deploy_windows_wad_vmss_agent |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -234,6 +244,7 @@ Example custom definitions located in the local library
 | Name                | preview_deploy_linux_azure_monitor_vm_agent |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | deployIfNotExists |
 
 #### 🧮 ~ Parameters
@@ -252,6 +263,7 @@ Example custom definitions located in the local library
 | Name                | preview_deploy_windows_azure_monitor_vm_agent |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -274,6 +286,7 @@ Example custom definitions located in the local library
 | Name                | deny_resources_types |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -292,6 +305,7 @@ Example custom definitions located in the local library
 | Name                | whitelist_regions |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -310,6 +324,7 @@ Example custom definitions located in the local library
 | Name                | whitelist_resources |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -332,6 +347,7 @@ Example custom definitions located in the local library
 | Name                | Add_System_Identity_When_User |
 | DisplayName         | Add system-assigned managed identity when User-Assigned is present to enable Guest Configuration assignments on VMs |
 | Description         | This policy adds a system-assigned managed identity to virtual machines hosted in Azure that are supported by Guest Configuration and have at least one user-assigned identity but do not have a system-assigned managed identity. A system-assigned managed identity is a prerequisite for all Guest Configuration assignments and must be added to machines before using any Guest Configuration policy definitions. For more information on Guest Configuration, visit https://aka.ms/gcpol. |
+| Version             | 1.0.0 |
 | Effect              | modify |
 
 #### 🧮 ~ Parameters
@@ -350,6 +366,7 @@ Example custom definitions located in the local library
 | Name                | CGC_nxLAMPServer |
 | DisplayName         | nxLAMPServer |
 | Description         | VM Custom Guest Configuration: nxLAMPServer |
+| Version             | 1.0.0 |
 | Effect              | deployIfNotExists |
 
 #### 🧮 ~ Parameters
@@ -367,6 +384,7 @@ Example custom definitions located in the local library
 | Name                | CGC_SecurityBaselineConfigurationWS2016 |
 | DisplayName         | SecurityBaselineConfigurationWS2016 |
 | Description         | VM Custom Guest Configuration: SecurityBaselineConfigurationWS2016 |
+| Version             | 1.0.0 |
 | Effect              | deployIfNotExists |
 
 #### 🧮 ~ Parameters
@@ -384,6 +402,7 @@ Example custom definitions located in the local library
 | Name                | CGC_WindowsIISServerConfig |
 | DisplayName         | WindowsIISServerConfig |
 | Description         | VM Custom Guest Configuration: WindowsIISServerConfig |
+| Version             | 1.0.0 |
 | Effect              | deployIfNotExists |
 
 #### 🧮 ~ Parameters
@@ -401,6 +420,7 @@ Example custom definitions located in the local library
 | Name                | Deploy_the_Linux_Guest_Configuration_extension |
 | DisplayName         | Deploy the Linux Guest Configuration extension to enable Guest Configuration assignments on Linux VMs |
 | Description         | This policy deploys the Linux Guest Configuration extension to Linux virtual machines hosted in Azure that are supported by Guest Configuration. The Linux Guest Configuration extension is a prerequisite for all Linux Guest Configuration assignments and must be deployed to machines before using any Linux Guest Configuration policy definition. For more information on Guest Configuration, visit https://aka.ms/gcpol. |
+| Version             | 1.0.1 |
 | Effect              | deployIfNotExists |
 
 #### 🧮 ~ Parameters
@@ -418,6 +438,7 @@ Example custom definitions located in the local library
 | Name                | Deploy_the_Windows_Guest_Configuration_extension |
 | DisplayName         | Deploy the Windows Guest Configuration extension to enable Guest Configuration assignments on Windows VMs |
 | Description         | This policy deploys the Windows Guest Configuration extension to Windows virtual machines hosted in Azure that are supported by Guest Configuration. The Windows Guest Configuration extension is a prerequisite for all Windows Guest Configuration assignments and must be deployed to machines before using any Windows Guest Configuration policy definition. For more information on Guest Configuration, visit https://aka.ms/gcpol. |
+| Version             | 1.0.1 |
 | Effect              | deployIfNotExists |
 
 #### 🧮 ~ Parameters
@@ -435,6 +456,7 @@ Example custom definitions located in the local library
 | Name                | Add_System_Identity_When_None |
 | DisplayName         | Add system-assigned managed identity when none present to enable Guest Configuration assignments on virtual machines |
 | Description         | This policy adds a system-assigned managed identity to virtual machines hosted in Azure that are supported by Guest Configuration but do not have any managed identities. A system-assigned managed identity is a prerequisite for all Guest Configuration assignments and must be added to machines before using any Guest Configuration policy definitions. For more information on Guest Configuration, visit https://aka.ms/gcpol. |
+| Version             | 1.0.0 |
 | Effect              | modify |
 
 #### 🧮 ~ Parameters
@@ -457,6 +479,7 @@ Example custom definitions located in the local library
 | Name                | deploy_public_ip_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Public IPs to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Public IPs to stream to a regional Log Analytics workspace when any Public IP which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -481,6 +504,7 @@ Example custom definitions located in the local library
 | Name                | deploy_storage_account_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Azure Storage, including blobs, files, tables, and queues to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Azure Storage, including blobs, files, tables, and queues to stream to a regional Log Analytics workspace when any Azure Storage which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -505,6 +529,7 @@ Example custom definitions located in the local library
 | Name                | deploy_subscription_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Subscriptions to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Subscriptions to stream to a regional Log Analytics workspace when any Subscription which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -528,6 +553,7 @@ Example custom definitions located in the local library
 | Name                | deploy_virtual_machine_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Virtual Machines to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Virtual Machines to stream to a regional Log Analytics workspace when any Virtual Machine which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -552,6 +578,7 @@ Example custom definitions located in the local library
 | Name                | deploy_vnet_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Virtual Networks to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Virtual Networks to stream to a regional Log Analytics workspace when any Virtual Network which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -576,6 +603,7 @@ Example custom definitions located in the local library
 | Name                | deploy_vnet_gateway_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Virtual Network Gateways to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Virtual Network Gateways to stream to a regional Log Analytics workspace when any Virtual Network Gateway which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -600,6 +628,7 @@ Example custom definitions located in the local library
 | Name                | deploy_network_security_group_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Network Security Groups to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Network Security Groups to stream to a regional Log Analytics workspace when any Network Security Group which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -623,6 +652,7 @@ Example custom definitions located in the local library
 | Name                | deploy_network_interface_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Network Interfaces to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Network Interfaces to stream to a regional Log Analytics workspace when any Network Interface which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -646,6 +676,7 @@ Example custom definitions located in the local library
 | Name                | deploy_keyvault_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for KeyVaults to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for KeyVaults to stream to a regional Log Analytics workspace when any KeyVault which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -670,6 +701,7 @@ Example custom definitions located in the local library
 | Name                | deploy_loadbalancer_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Load Balancers to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Load Balancers to stream to a regional Log Analytics workspace when any Load Balancer which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -694,6 +726,7 @@ Example custom definitions located in the local library
 | Name                | audit_log_analytics_workspace_retention |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -712,6 +745,7 @@ Example custom definitions located in the local library
 | Name                | audit_subscription_diagnostic_setting_should_exist |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -729,6 +763,7 @@ Example custom definitions located in the local library
 | Name                | deploy_application_gateway_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Application Gateways to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Application Gateways to stream to a regional Log Analytics workspace when any Application Gateway which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -753,6 +788,7 @@ Example custom definitions located in the local library
 | Name                | deploy_eventhub_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Event Hubs to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Event Hubs to stream to a regional Log Analytics workspace when any Event Hub which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -777,6 +813,7 @@ Example custom definitions located in the local library
 | Name                | deploy_expressroute_connection_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for ExpressRoute Connections to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for ExpressRoute Connections to stream to a regional Log Analytics workspace when any ExpressRoute Connection which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -801,6 +838,7 @@ Example custom definitions located in the local library
 | Name                | deploy_expressroute_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for ExpressRoutes to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for ExpressRoutes to stream to a regional Log Analytics workspace when any ExpressRoute which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -825,6 +863,7 @@ Example custom definitions located in the local library
 | Name                | deploy_firewall_diagnostic_setting |
 | DisplayName         | Deploy Diagnostic Settings for Firewalls to a Log Analytics workspace |
 | Description         | Deploys the diagnostic settings for Firewalls to stream to a regional Log Analytics workspace when any Firewall which is missing this diagnostic settings is created or updated. |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -853,6 +892,7 @@ Example custom definitions located in the local library
 | Name                | create_nsg_rule_append |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -879,6 +919,7 @@ Example custom definitions located in the local library
 | Name                | deny_nat_rules_firewalls |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -896,6 +937,7 @@ Example custom definitions located in the local library
 | Name                | deny_nic_on_unapproved_vnet |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -914,6 +956,7 @@ Example custom definitions located in the local library
 | Name                | deny_nic_public_ip_on_specific_subnets |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -932,6 +975,7 @@ Example custom definitions located in the local library
 | Name                | deny_nic_public_ip |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -949,6 +993,7 @@ Example custom definitions located in the local library
 | Name                | deny_nsg_outbound_allow_all |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -966,6 +1011,7 @@ Example custom definitions located in the local library
 | Name                | deny_nsgs_with_rules_with_source_inbound_any |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -983,6 +1029,7 @@ Example custom definitions located in the local library
 | Name                | deny_pip_if_not_associated_authorised_resource |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1000,6 +1047,7 @@ Example custom definitions located in the local library
 | Name                | deny_unapproved_udr |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1018,6 +1066,7 @@ Example custom definitions located in the local library
 | Name                | require_nsg_on_vnet |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1036,6 +1085,7 @@ Example custom definitions located in the local library
 | Name                | restrict_vnet_peering |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1054,6 +1104,7 @@ Example custom definitions located in the local library
 | Name                | deny_unapproved_udr_hop_type |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1078,12 +1129,13 @@ Example custom definitions located in the local library
 | Name                | auto_enroll_subscriptions |
 | DisplayName         | Enroll Subscriptions to Azure Security Center |
 | Description         | Enroll Subscriptions to Azure Security Center Standard Pricing Tier, Note: the new Containers Plan will be replacing Container Registries and Kubernetes |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
 | Name | Description | Default Value | Allowed Values |
 | ---- | ----------- | ------------- | -------------- |
-| effect | Enable or disable the execution of the policy | DeployIfNotExists | DeployIfNotExists Disabled |
+| effect | Enable or disable the execution of the policy | DeployIfNotExists | DeployIfNotExists AuditIfNotExists Disabled |
 | pricingTier | ASC Pricing Tier | Standard | Free Standard |
 
 <br>
@@ -1096,12 +1148,13 @@ Example custom definitions located in the local library
 | Name                | auto_provision_log_analytics_agent_custom_workspace |
 | DisplayName         | Auto Provision Subscriptions to Log Analytics Custom to Workspace |
 | Description         | Enable Security Center's auto provisioning of the Log Analytics agent on your subscriptions with custom workspace |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
 | Name | Description | Default Value | Allowed Values |
 | ---- | ----------- | ------------- | -------------- |
-| effect | Enable or disable the execution of the policy | DeployIfNotExists | DeployIfNotExists Disabled |
+| effect | Enable or disable the execution of the policy | DeployIfNotExists | DeployIfNotExists AuditIfNotExists Disabled |
 | workspaceId | Auto provision the Log Analytics agent on your subscriptions to monitor and collect security data using a custom workspace. |  |  |
 
 <br>
@@ -1114,12 +1167,13 @@ Example custom definitions located in the local library
 | Name                | auto_set_contact_details |
 | DisplayName         | Set Security Center contact email address and phone number on Subscriptions |
 | Description         | Automatically set the security contact email address and phone number should they be blank on the subscription |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
 | Name | Description | Default Value | Allowed Values |
 | ---- | ----------- | ------------- | -------------- |
-| effect | Enable or disable the execution of the policy | DeployIfNotExists | DeployIfNotExists Disabled |
+| effect | Enable or disable the execution of the policy | DeployIfNotExists | DeployIfNotExists AuditIfNotExists Disabled |
 | securityContactsEmail | The email of the Security Center Contact. |  |  |
 | securityContactsPhone | The phone number of the Security Center Contact. |  |  |
 
@@ -1133,12 +1187,13 @@ Example custom definitions located in the local library
 | Name                | enable_vulnerability_vm_assessments |
 | DisplayName         | Enable Security Center VM Vulnerability Assessments |
 | Description         | Enable Security Center VM Vulnerability Assessments |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
 | Name | Description | Default Value | Allowed Values |
 | ---- | ----------- | ------------- | -------------- |
-| effect | Enable or disable the execution of the policy | DeployIfNotExists | DeployIfNotExists Disabled |
+| effect | Enable or disable the execution of the policy | DeployIfNotExists | DeployIfNotExists AuditIfNotExists Disabled |
 
 <br>
 
@@ -1150,6 +1205,7 @@ Example custom definitions located in the local library
 | Name                | export_asc_alerts_and_recommendations_to_eventhub |
 | DisplayName         | Export ASC alerts and recommendations to eventhub |
 | Description         | Enable Export to Event Hub for Azure Security Center alerts and recommendations |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1176,6 +1232,7 @@ Example custom definitions located in the local library
 | Name                | export_asc_alerts_and_recommendations_to_log_analytics |
 | DisplayName         | Export ASC alerts and recommendations to Log Analytics |
 | Description         | Enable Export to Log Analytics Workspace for Azure Security Center alerts and recommendations |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1206,6 +1263,7 @@ Example custom definitions located in the local library
 | Name                | storage_enforce_https |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1223,6 +1281,7 @@ Example custom definitions located in the local library
 | Name                | storage_enforce_minimum_tls1_2 |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1244,6 +1303,7 @@ Example custom definitions located in the local library
 | Name                | add_replace_resource_group_tag_key_modify |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1261,6 +1321,7 @@ Example custom definitions located in the local library
 | Name                | inherit_resource_group_tags_append |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1279,6 +1340,7 @@ Example custom definitions located in the local library
 | Name                | inherit_resource_group_tags_modify |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
@@ -1297,6 +1359,7 @@ Example custom definitions located in the local library
 | Name                | require_resource_group_tags |
 | DisplayName         |  |
 | Description         |  |
+| Version             |  |
 | Effect              | [parameters('effect')] |
 
 #### 🧮 ~ Parameters
