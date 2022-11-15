@@ -83,15 +83,26 @@ locals {
     definition => {
       for parameter_name, parameter_value in params :
       # if do not merge effects -> suffix only effects with definition references
-      parameter_name == "effect" && var.merge_effects == false ? format("%s_%s", parameter_name, replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")) :
+      parameter_name == "effect" && var.merge_effects == false ?
+        "${parameter_name}_${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" :
       # if do not merge parameters -> suffix all parameters with definition references
-      var.merge_parameters == false ? format("%s_%s", parameter_name, replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")) :
-      # default merge all for assignment simplicity
-      parameter_name => parameter_value
+      var.merge_parameters == false ?
+        "${parameter_name}_${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" :
+
+      parameter_name => {
+        for k, v in parameter_value :
+          k => (
+            # if do not merge effects -> suffix only effect displayNames with definition references
+            k == "metadata" && var.merge_effects == false && try(v.displayName,"") == "Effect" ?
+              merge(v, { displayName = "${v.displayName} For Policy: ${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" }) :
+            # if do not merge parameters -> suffix all displayNames with definition references
+            k == "metadata" && var.merge_parameters == false ?
+              merge(v, { displayName = "${v.displayName} For Policy: ${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" }) :
+            v
+          )
+      }
     }
   })...)
-
-  #TODO: parameter_value.metadata.displayName should also contain definition reference if merge_effects == false
 
   # get role definition IDs
   role_definition_ids = {
