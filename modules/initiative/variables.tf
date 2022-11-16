@@ -60,13 +60,13 @@ variable initiative_metadata {
 
 variable merge_effects {
   type        = bool
-  description = "Should the module merge all definition effects? Defauls to true"
+  description = "Should the module merge all member definition effects? Defauls to true"
   default     = true
 }
 
 variable merge_parameters {
   type        = bool
-  description = "Should the module merge all definition parameters? Defauls to true"
+  description = "Should the module merge all member definition parameters? Defauls to true"
   default     = true
 }
 
@@ -82,21 +82,15 @@ locals {
     for definition, params in local.member_parameters :
     definition => {
       for parameter_name, parameter_value in params :
-      # if do not merge effects -> suffix only effects with definition references
-      parameter_name == "effect" && var.merge_effects == false ?
-        "${parameter_name}_${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" :
-      # if do not merge parameters -> suffix all parameters with definition references
-      var.merge_parameters == false ?
+      # if do not merge parameters (or only effects) then suffix parameters with definition references
+      var.merge_parameters == false || parameter_name == "effect" && var.merge_effects == false ?
         "${parameter_name}_${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" :
 
       parameter_name => {
         for k, v in parameter_value :
           k => (
-            # if do not merge effects -> suffix only effect displayNames with definition references
-            k == "metadata" && var.merge_effects == false && try(v.displayName,"") == "Effect" ?
-              merge(v, { displayName = "${v.displayName} For Policy: ${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" }) :
-            # if do not merge parameters -> suffix all displayNames with definition references
-            k == "metadata" && var.merge_parameters == false ?
+            # if do not merge parameters (or only effects) then suffix displayNames with definition references
+            k == "metadata" && var.merge_parameters == false || var.merge_effects == false && try(v.displayName,"") == "Effect" ?
               merge(v, { displayName = "${v.displayName} For Policy: ${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" }) :
             v
           )

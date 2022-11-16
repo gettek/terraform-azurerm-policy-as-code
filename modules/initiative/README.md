@@ -1,9 +1,10 @@
 # POLICY INITIATIVE MODULE
 
-Dynamically creates a policy set based on multiple custom or built-in policy definition references
+Dynamically creates a policy set based on multiple custom or built-in policy definitions
 
-> ⚠️ **Warning:** If any `member_definitions` contain the same parameter names then they will be [merged](https://www.terraform.io/language/functions/merge) by this module unless you specify `merge_effects = false` or `merge_parameters = false` [as seen here](variables.tf#L80-L92).
+> ⚠️ **Warning:** To simplify assignments, if any `member_definitions` contain the same parameter names they will be [merged](https://www.terraform.io/language/functions/merge) unless you specify `merge_effects = false` or `merge_parameters = false` as described in the second example below.
 
+> 💡 **Note:** Multiple entries of the same `member_definitions` are not currently supported, if you require the same definition to be present more than once you may use this module to create the initiative json which you can then edit to add unique parameter and definition references.
 
 ## Examples
 
@@ -30,7 +31,7 @@ module configure_asc_initiative {
 
 ### Create an Initiative with a mix of custom & built-in Policy definitions without merging effects
 
-When setting `merge_effects = false` the module will suffix each definition effect parameter with its respective policy definition reference Id e.g. `"effect_AutoEnrollSubscriptions"`.
+When setting `merge_effects = false` each definition effect parameter will be suffixed with its respective policy definition reference Id e.g. `"effect_AutoEnrollSubscriptions"`.
 
 ```hcl
 data azurerm_policy_definition deploy_law_on_linux_vms {
@@ -69,7 +70,7 @@ locals {
   ]
 }
 
-module "guest_config_prereqs" {
+module guest_config_prereqs {
   source                = "..//modules/definition"
   for_each              = toset(local.guest_config_prereqs)
   policy_name           = each.value
@@ -77,7 +78,7 @@ module "guest_config_prereqs" {
   management_group_id   = data.azurerm_management_group.org.id
 }
 
-module "guest_config_prereqs_initiative" {
+module guest_config_prereqs_initiative {
   source                  = "..//modules/initiative"
   initiative_name         = "guest_config_prereqs_initiative"
   initiative_display_name = "[GC]: Deploys Guest Config Prerequisites"
@@ -125,8 +126,8 @@ No modules.
 | <a name="input_initiative_version"></a> [initiative\_version](#input\_initiative\_version) | The version for this initiative, defaults to 1.0.0 | `string` | `"1.0.0"` | no |
 | <a name="input_management_group_id"></a> [management\_group\_id](#input\_management\_group\_id) | The management group scope at which the initiative will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. Note: if you are using azurerm\_management\_group to assign a value to management\_group\_id, be sure to use name or group\_id attribute, but not id. | `string` | `null` | no |
 | <a name="input_member_definitions"></a> [member\_definitions](#input\_member\_definitions) | Policy Defenition resource nodes that will be members of this initiative | `any` | n/a | yes |
-| <a name="input_merge_effects"></a> [merge\_effects](#input\_merge\_effects) | Should the module merge all definition effects? Defauls to true | `bool` | `true` | no |
-| <a name="input_merge_parameters"></a> [merge\_parameters](#input\_merge\_parameters) | Should the module merge all definition parameters? Defauls to true | `bool` | `true` | no |
+| <a name="input_merge_effects"></a> [merge\_effects](#input\_merge\_effects) | Should the module merge all member definition effects? Defauls to true | `bool` | `true` | no |
+| <a name="input_merge_parameters"></a> [merge\_parameters](#input\_merge\_parameters) | Should the module merge all member definition parameters? Defauls to true | `bool` | `true` | no |
 
 ## Outputs
 
