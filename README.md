@@ -79,7 +79,7 @@ This module depends on populating `var.policy_name` and `var.policy_category` to
 ```hcl
 module whitelist_regions {
   source              = "gettek/policy-as-code/azurerm//modules/definition"
-  version             = "2.6.4"
+  version             = "2.6.5"
   policy_name         = "whitelist_regions"
   display_name        = "Allow resources only in whitelisted regions"
   policy_category     = "General"
@@ -97,7 +97,7 @@ Dynamically create a policy set based on multiple custom or built-in policy defi
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "2.6.4"
+  version                 = "2.6.5"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -118,7 +118,7 @@ module platform_baseline_initiative {
 ```hcl
 module org_mg_whitelist_regions {
   source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version           = "2.6.4"
+  version           = "2.6.5"
   definition        = module.whitelist_regions.definition
   assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
@@ -140,7 +140,7 @@ module org_mg_whitelist_regions {
 ```hcl
 module org_mg_platform_diagnostics_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/set_assignment"
-  version                 = "2.6.4"
+  version                 = "2.6.5"
   initiative              = module.platform_diagnostics_initiative.initiative
   assignment_scope        = data.azurerm_management_group.org.id
   assignment_effect       = "DeployIfNotExists"
@@ -277,4 +277,6 @@ To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure
 | Policy rule                                               | Nested conditionals              | 512           |
 | Remediation task                                          | Resources                        | 50,000        |
 | Policy definition, initiative, or assignment request body | Bytes                            | 1,048,576     |
+
+Policy rules have additional limits to the number of conditions and their complexity. See [Policy rule limits](https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/governance/policy/concepts/definition-structure.md#policy-rule-limits) for more details.
 
