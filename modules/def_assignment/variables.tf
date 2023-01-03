@@ -147,7 +147,7 @@ locals {
   } : null
 
   # merge effect with parameter_values if specified, will use definition defaults if omitted
-  parameters = var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values)
+  parameters = local.parameter_values != null ? var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values) : null
 
   # create the optional non-compliance message contents block if present
   non_compliance_message = var.non_compliance_message != "" ? { content = var.non_compliance_message } : {}
