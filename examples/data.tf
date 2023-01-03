@@ -22,9 +22,14 @@ data azurerm_role_definition vm_contributor {
   name = "Virtual Machine Contributor"
 }
 
+# User Assigned Managed Identity
+data azurerm_user_assigned_identity policy_rem {
+  name                = "policy-remediator"
+  resource_group_name = "cgc-cd"
+}
 
 locals {
-  # existing resources would typically be referenced up with a datasource
+  # existing resources would typically be referenced with a datasource
   dummy_resource_ids = {
     azurerm_log_analytics_workspace               = "/uri/log-analytics-workspace-diagnostics"
     azurerm_storage_account                       = "/uri/storage-account-archive"

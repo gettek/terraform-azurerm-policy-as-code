@@ -15,7 +15,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.23.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.37.0 |
 
 ## Modules
 
@@ -53,6 +53,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 | [azurerm_role_definition.contributor](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) | data source |
 | [azurerm_role_definition.vm_contributor](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) | data source |
 | [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
+| [azurerm_user_assigned_identity.policy_rem](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/user_assigned_identity) | data source |
 
 ## Inputs
 

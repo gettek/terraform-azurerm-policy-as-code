@@ -40,6 +40,7 @@ module "team_a_mg_inherit_resource_group_tags_modify" {
   assignment_effect = "Modify"
   skip_remediation  = var.skip_remediation
   remediation_scope = data.azurerm_subscription.current.id # change the scope of remediation tasks, defaults to assignment_scope
+  identity_ids      = [data.azurerm_user_assigned_identity.policy_rem.id]
 
   assignment_parameters = {
     tagName = "environment"

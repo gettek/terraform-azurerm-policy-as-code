@@ -68,6 +68,12 @@ variable non_compliance_messages {
   default     = {}
 }
 
+variable "identity_ids" {
+  type        = list(any)
+  description = "Optional list of User Managed Identity IDs which should be assigned to the Policy Initiative"
+  default     = []
+}
+
 variable resource_discovery_mode {
   type        = string
   description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant. Applies to subscription scope and below"
@@ -156,10 +162,10 @@ locals {
   } : {}
 
   # determine if a managed identity should be created with this assignment
-  identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? { type = "SystemAssigned" } : {}
+  identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? length(var.identity_ids) > 0 ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
 
   # try to use policy definition roles if explicit roles are ommitted
-  role_definition_ids = var.skip_role_assignment == false ? try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), []) : []
+  role_definition_ids = var.skip_role_assignment == false && local.identity_type.type != "UserAssigned" ? try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), []) : []
 
   # evaluate policy assignment scope from resource identifier
   assignment_scope = try({

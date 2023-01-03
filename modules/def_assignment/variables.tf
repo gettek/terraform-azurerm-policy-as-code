@@ -68,6 +68,12 @@ variable non_compliance_message {
   default     = ""
 }
 
+variable "identity_ids" {
+  type        = list(any)
+  description = "Optional list of User Managed Identity IDs which should be assigned to the Policy Definition"
+  default     = []
+}
+
 variable resource_discovery_mode {
   type        = string
   description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant. Applies to subscription scope and below"
@@ -111,7 +117,7 @@ variable resource_count {
 
 variable role_definition_ids {
   type        = list(any)
-  description = "List of Role definition ID's for the System Assigned Identity, defaults to roles included in the definition. Specify a blank array to skip creating role assignments. Changing this forces a new resource to be created"
+  description = "List of Role definition ID's for the System Assigned Identity, defaults to roles included in the definition. Changing this forces a new resource to be created"
   default     = []
 }
 
@@ -153,10 +159,10 @@ locals {
   non_compliance_message = var.non_compliance_message != "" ? { content = var.non_compliance_message } : {}
 
   # determine if a managed identity should be created with this assignment
-  identity_type = length(try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), [])) > 0 ? { type = "SystemAssigned" } : {}
+  identity_type = length(try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), [])) > 0 ? length(var.identity_ids) > 0 ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
 
   # try to use policy definition roles if explicit roles are ommitted
-  role_definition_ids = var.skip_role_assignment == false ? try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), []) : []
+  role_definition_ids = var.skip_role_assignment == false && local.identity_type.type != "UserAssigned" ? try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), []) : []
 
   # policy assignment scope will be used if omitted
   role_assignment_scope = try(coalesce(var.role_assignment_scope, var.assignment_scope), "")

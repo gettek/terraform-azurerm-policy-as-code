@@ -79,7 +79,6 @@ This module depends on populating `var.policy_name` and `var.policy_category` to
 ```hcl
 module whitelist_regions {
   source              = "gettek/policy-as-code/azurerm//modules/definition"
-  version             = "2.6.5"
   policy_name         = "whitelist_regions"
   display_name        = "Allow resources only in whitelisted regions"
   policy_category     = "General"
@@ -97,7 +96,6 @@ Dynamically create a policy set based on multiple custom or built-in policy defi
 ```hcl
 module platform_baseline_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "2.6.5"
   initiative_name         = "platform_baseline_initiative"
   initiative_display_name = "[Platform]: Baseline Policy Set"
   initiative_description  = "Collection of policies representing the baseline platform requirements"
@@ -118,13 +116,12 @@ module platform_baseline_initiative {
 ```hcl
 module org_mg_whitelist_regions {
   source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version           = "2.6.5"
   definition        = module.whitelist_regions.definition
   assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
 
   assignment_parameters = {
-    "listOfRegionsAllowed" = [
+    listOfRegionsAllowed = [
       "UK South",
       "UK West",
       "Global"
@@ -140,7 +137,6 @@ module org_mg_whitelist_regions {
 ```hcl
 module org_mg_platform_diagnostics_initiative {
   source                  = "gettek/policy-as-code/azurerm//modules/set_assignment"
-  version                 = "2.6.5"
   initiative              = module.platform_diagnostics_initiative.initiative
   assignment_scope        = data.azurerm_management_group.org.id
   assignment_effect       = "DeployIfNotExists"
@@ -166,6 +162,19 @@ module org_mg_platform_diagnostics_initiative {
     null                                        = "The Default non-compliance message for all member definitions"
     "DeployApplicationGatewayDiagnosticSetting" = "The non-compliance message for the deploy_application_gateway_diagnostic_setting definition"
   }
+
+  # specify a list of user assigned managed identities as below or omit this to use SystemAssigned
+  identity_ids = [
+    data.azurerm_user_assigned_identity.policy_rem.id
+  ]
+
+  # specify a list of role definitions or omit to use those defined in the policies
+  role_definition_ids = [
+    data.azurerm_role_definition.contributor.id
+  ]
+
+  # specify a different role assignment scope or omit to use the policy assignment scope
+  role_assignment_scope = data.azurerm_management_group.team_a.id
 }
 ```
 
