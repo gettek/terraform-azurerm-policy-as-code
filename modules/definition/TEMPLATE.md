@@ -1,10 +1,10 @@
 # POLICY DEFINITION MODULE
 
-This module depends on populating `var.policy_category` and `var.policy_name` to correspond with the respective custom policy definition `json` file found in the [local library](../../policies/).
+This module depends on populating `var.policy_name` and `var.policy_category` to correspond with the respective custom policy definition `json` file found in the [local library](../../policies). You can also parse in other template files and data sources at runtime, see below for examples and acceptable inputs.
 
-> 💡 **Note:** More information on Policy Definition Structure [can be found here](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
+> 💡 **Note:** More information on Policy Definition Structure [can be found here](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
 
-> 💡 **Note:** Specify the `policy_mode` variable if you wish to [change the mode](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#mode) which defaults to `All`. Possible values below.
+> 💡 **Note:** Specify the `policy_mode` variable if you wish to [change the mode](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#mode) which defaults to `All`. Possible values below.
 
 ## Examples
 

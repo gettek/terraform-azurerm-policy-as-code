@@ -1,7 +1,7 @@
 <!-- markdownlint-configure-file { "MD004": { "style": "consistent" } } -->
 <!-- markdownlint-disable MD033 -->
 <p align="center">
-  <a href="https://docs.microsoft.com/en-us/azure/governance/policy/">
+  <a href="https://learn.microsoft.com/en-us/azure/governance/policy/">
       <img src="img/logo.svg" width="600" alt="Terraform-Azure-Policy-as-Code">
   </a>
   <br>
@@ -86,7 +86,7 @@ module whitelist_regions {
 }
 ```
 
-> 📘 [Microsoft Docs: Azure Policy definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
+> 📘 [Microsoft Docs: Azure Policy definition structure](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
 
 ## Policy Initiative (Set Definitions) Module
 
@@ -109,7 +109,7 @@ module platform_baseline_initiative {
 }
 ```
 
-> 📘 [Microsoft Docs: Azure Policy initiative definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure)
+> 📘 [Microsoft Docs: Azure Policy initiative definition structure](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure)
 
 ## Policy Definition Assignment Module
 
@@ -130,7 +130,7 @@ module org_mg_whitelist_regions {
 }
 ```
 
-> 📘 [Microsoft Docs: Azure Policy assignment structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/assignment-structure)
+> 📘 [Microsoft Docs: Azure Policy assignment structure](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/assignment-structure)
 
 ## Policy Initiative Assignment Module
 
@@ -162,11 +162,6 @@ module org_mg_platform_diagnostics_initiative {
     null                                        = "The Default non-compliance message for all member definitions"
     "DeployApplicationGatewayDiagnosticSetting" = "The non-compliance message for the deploy_application_gateway_diagnostic_setting definition"
   }
-
-  # specify a list of user assigned managed identities as below or omit this to use SystemAssigned
-  identity_ids = [
-    data.azurerm_user_assigned_identity.policy_rem.id
-  ]
 
   # specify a list of role definitions or omit to use those defined in the policies
   role_definition_ids = [
@@ -203,7 +198,7 @@ module exemption_team_a_mg_deny_nic_public_ip {
 }
 ```
 
-> 📘 [Microsoft Docs: Azure Policy exemption structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure)
+> 📘 [Microsoft Docs: Azure Policy exemption structure](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure)
 
 ## Achieving Continuous Compliance
 
@@ -215,19 +210,19 @@ Azure Policy supports the following types of effect:
 
 > 💡 **Note:** If you're managing tags, it's recommended to use `Modify` instead of `Append` as Modify provides additional operation types and the ability to remediate existing resources. However, Append is recommended if you aren't able to create a managed identity or Modify doesn't yet support the alias for the resource property.
 
-> 📘 [Microsoft Docs: Understand how effects work](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/effects)
+> 📘 [Microsoft Docs: Understand how effects work](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects)
 
 ### 👥Role Assignments
 
-Role assignments and remediation tasks will be automatically created if the Policy Definition contains a list of [Role Definitions](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#configure-policy-definition). You can override these with explicit ones, [as seen here](examples/assignments_org.tf#L52-L58), or specify `skip_role_assignment=true` to omit creation. By default these will scope at the policy assignment but can be changed by setting `role_assignment_scope`.
+Role assignments and remediation tasks will be automatically created if the Policy Definition contains a list of [Role Definitions](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#configure-policy-definition). You can override these with explicit ones, [as seen here](examples/assignments_org.tf#L52-L58), or specify `skip_role_assignment=true` to omit creation. By default these will scope at the policy assignment but can be changed by setting `role_assignment_scope`.
 
 ### ✅Remediation Tasks
 
-Unless you specify `skip_remediation=true`, the `*_assignment` modules will automatically create [remediation tasks](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources) for policies containing effects of `DeployIfNotExists` and `Modify`. The task name is suffixed with a `timestamp()` to ensure a new one gets created on each `terraform apply`.
+Unless you specify `skip_remediation=true`, the `*_assignment` modules will automatically create [remediation tasks](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources) for policies containing effects of `DeployIfNotExists` and `Modify`. The task name is suffixed with a `timestamp()` to ensure a new one gets created on each `terraform apply`.
 
 ### ⏱️On-demand evaluation scan
 
-To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data) with terraform, set `resource_discovery_mode=ReEvaluateCompliance` on `*_assignment` modules, defaults to `ExistingNonCompliant`.
+To trigger an on-demand [compliance scan](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data) with terraform, set `resource_discovery_mode=ReEvaluateCompliance` on `*_assignment` modules, defaults to `ExistingNonCompliant`.
 
 > 💡 **Note:** `ReEvaluateCompliance` only applies to remediation at Subscription scope and below and will take longer depending on the size of your environment.
 
@@ -240,23 +235,23 @@ To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure
 
 ![Policy Definition and Assignment Scopes](img/scopes.svg)
 
-> ⚠️ **Requirement:** Ensure the deployment account has at least [Resource Policy Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#resource-policy-contributor) role at the `definition_scope` and `assignment_scope`. To successfully create Role-assignments (or group memberships) the same account may also require the [User Access Administrator](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role at the `assignment_scope` or preferably the `definition_scope` to simplify workflows.
+> ⚠️ **Requirement:** Ensure the deployment account has at least [Resource Policy Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#resource-policy-contributor) role at the `definition_scope` and `assignment_scope`. To successfully create Role-assignments (or group memberships) the same account may also require the [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role at the `assignment_scope` or preferably the `definition_scope` to simplify workflows.
 
 ## 📗Useful Resources
 
 - [GitHub Repo: Azure Built-In Policies and Samples](https://github.com/Azure/azure-policy)
 - [GitHub Repo: Contribute to Community Policies](https://github.com/Azure/Community-Policy)
 - [GitHub Repo: AWESOME-Azure-Policy - a collection of awesome references](https://github.com/globalbao/awesome-azure-policy)
-- [Microsoft Docs: Azure Policy Home](https://docs.microsoft.com/en-us/azure/governance/policy/)
-- [Microsoft Docs: List of Builtin Policies](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
-- [Microsoft Docs: Index of Azure Policy Samples](https://docs.microsoft.com/en-us/azure/governance/policy/samples/)
-- [Microsoft Docs: Design Azure Policy as Code workflows](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code)
-- [Microsoft Docs: Evaluate the impact of a new Azure Policy definition](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/evaluate-impact)
-- [Microsoft Docs: Author policies for array properties on Azure resources](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/author-policies-for-arrays)
-- [Microsoft Docs: Azure Policy Regulatory Compliance (Benchmarks)](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
-- [Microsoft Docs: Azure Policy Exemption](https://docs.microsoft.com/en-gb/azure/governance/policy/concepts/exemption-structure)
-- [Microsoft Tutorial: Build policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
-- [Microsoft Tutorial: Security Center - Working with security policies](https://docs.microsoft.com/en-us/azure/security-center/tutorial-security-policy)
+- [Microsoft Docs: Azure Policy Home](https://learn.microsoft.com/en-us/azure/governance/policy/)
+- [Microsoft Docs: List of Builtin Policies](https://learn.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
+- [Microsoft Docs: Index of Azure Policy Samples](https://learn.microsoft.com/en-us/azure/governance/policy/samples/)
+- [Microsoft Docs: Design Azure Policy as Code workflows](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code)
+- [Microsoft Docs: Evaluate the impact of a new Azure Policy definition](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/evaluate-impact)
+- [Microsoft Docs: Author policies for array properties on Azure resources](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/author-policies-for-arrays)
+- [Microsoft Docs: Azure Policy Regulatory Compliance (Benchmarks)](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
+- [Microsoft Docs: Azure Policy Exemption](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure)
+- [Microsoft Tutorial: Build policies to enforce compliance](https://learn.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
+- [Microsoft Tutorial: Security Center - Working with security policies](https://learn.microsoft.com/en-us/azure/security-center/tutorial-security-policy)
 - [VSCode Marketplace: Azure Policy Extension](https://marketplace.visualstudio.com/items?itemName=AzurePolicy.azurepolicyextension)
 - [AzAdvertizer: Release and change tracking on Azure Governance capabilities](https://www.azadvertizer.net/index.html)
 - [Azure Citadel: Creating Custom Policies](https://www.azurecitadel.com/policy/custom/)
@@ -270,7 +265,7 @@ To trigger an on-demand [compliance scan](https://docs.microsoft.com/en-us/azure
 
 - `DefinitionName` has a maximum length of **64** characters and `AssignmentName` a maximum length of **24** characters
 - `DisplayName` has a maximum length of **128** characters and `description` a maximum length of **512** characters
-- There's a [maximum count](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-policy-limits) for each object type for Azure Policy. For definitions, an entry of Scope means the management group or subscription. For assignments and exemptions, an entry of Scope means the management group, subscription, resource group, or individual resource:
+- There's a [maximum count](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-policy-limits) for each object type for Azure Policy. For definitions, an entry of Scope means the management group or subscription. For assignments and exemptions, an entry of Scope means the management group, subscription, resource group, or individual resource:
 
 | Where                                                     | What                             | Maximum count |
 |-----------------------------------------------------------|----------------------------------|---------------|

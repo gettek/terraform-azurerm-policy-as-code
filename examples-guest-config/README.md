@@ -1,8 +1,8 @@
 # Azure Policy Guest Configuration for Virtual Machines
 
-This folder demonstrates an effective terraform workflow for continuous compliance with [Azure Policy Guest Configuration](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/guest-configuration) (PowerShell Desired State Config).
+This folder demonstrates an effective terraform workflow for continuous compliance with [Azure Policy Guest Configuration](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/guest-configuration) (PowerShell Desired State Config).
 
-### [How to create custom guest configuration package artifacts](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/guest-configuration-create)
+### [How to create custom guest configuration package artifacts](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/guest-configuration-create)
 
 ### Automating CGC Package Deployment
 
