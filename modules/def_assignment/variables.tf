@@ -117,13 +117,13 @@ variable resource_count {
 
 variable role_definition_ids {
   type        = list(any)
-  description = "List of Role definition ID's for the System Assigned Identity, defaults to roles included in the definition. Changing this forces a new resource to be created"
+  description = "List of Role definition ID's for the System Assigned Identity, defaults to roles included in the definition. Ignored when using Managed Identities. Changing this forces a new resource to be created"
   default     = []
 }
 
 variable role_assignment_scope {
   type        = string
-  description = "The scope at which role definition(s) will be assigned, defaults to Policy Assignment Scope. Must be full resource IDs. Changing this forces a new resource to be created"
+  description = "The scope at which role definition(s) will be assigned, defaults to Policy Assignment Scope. Must be full resource IDs. Ignored when using Managed Identities. Changing this forces a new resource to be created"
   default     = null
 }
 
@@ -162,7 +162,7 @@ locals {
   identity_type = length(try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), [])) > 0 ? length(var.identity_ids) > 0 ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
 
   # try to use policy definition roles if explicit roles are ommitted
-  role_definition_ids = var.skip_role_assignment == false && local.identity_type.type != "UserAssigned" ? try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), []) : []
+  role_definition_ids = var.skip_role_assignment == false && local.identity_type == { type = "SystemAssigned" } ? try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), []) : []
 
   # policy assignment scope will be used if omitted
   role_assignment_scope = try(coalesce(var.role_assignment_scope, var.assignment_scope), "")
