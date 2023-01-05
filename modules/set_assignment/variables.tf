@@ -68,6 +68,12 @@ variable non_compliance_messages {
   default     = {}
 }
 
+variable "identity_ids" {
+  type        = list(any)
+  description = "Optional list of User Managed Identity IDs which should be assigned to the Policy Initiative"
+  default     = []
+}
+
 variable resource_discovery_mode {
   type        = string
   description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant. Applies to subscription scope and below"
@@ -111,13 +117,13 @@ variable resource_count {
 
 variable role_definition_ids {
   type        = list(string)
-  description = "List of Role definition ID's for the System Assigned Identity. Omit this to use those located in policy definitions. Changing this forces a new resource to be created"
+  description = "List of Role definition ID's for the System Assigned Identity. Omit this to use those located in policy definitions. Ignored when using Managed Identities. Changing this forces a new resource to be created"
   default     = []
 }
 
 variable role_assignment_scope {
   type        = string
-  description = "The scope at which role definition(s) will be assigned, defaults to Policy Assignment Scope. Must be full resource IDs. Changing this forces a new resource to be created"
+  description = "The scope at which role definition(s) will be assigned, defaults to Policy Assignment Scope. Must be full resource IDs. Ignored when using Managed Identities. Changing this forces a new resource to be created"
   default     = null
 }
 
@@ -156,10 +162,10 @@ locals {
   } : {}
 
   # determine if a managed identity should be created with this assignment
-  identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? { type = "SystemAssigned" } : {}
+  identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? length(var.identity_ids) > 0 ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
 
   # try to use policy definition roles if explicit roles are ommitted
-  role_definition_ids = var.skip_role_assignment == false ? try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), []) : []
+  role_definition_ids = var.skip_role_assignment == false && local.identity_type == { type = "SystemAssigned" } ? try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), []) : []
 
   # evaluate policy assignment scope from resource identifier
   assignment_scope = try({

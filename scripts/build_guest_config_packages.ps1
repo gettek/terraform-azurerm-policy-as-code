@@ -1,6 +1,6 @@
 ﻿<#
 Create & Publish Azure Policy Guest Configuration packages from local PowerShell DSC Configs
-MS Docs: How to create custom guest configuration package artifacts: https://docs.microsoft.com/en-us/azure/governance/policy/how-to/guest-configuration-create
+MS Docs: How to create custom guest configuration package artifacts: https://learn.microsoft.com/en-us/azure/governance/policy/how-to/guest-configuration-create
 Requires Azure PowerShell token, use -connectAzAccount flag to assume az cli token
 #>
 
@@ -50,28 +50,28 @@ try {
             Import-Module -Name $_
         }
     }
-    
+
     if ($env:createGuestConfigPackage) {
-    
+
         # Connect to Azure PowerShell using current az cli token context
         if ($env:connectAzAccount) {
             $token = (az account get-access-token | ConvertFrom-Json).accessToken
             $accountId = (az account show | ConvertFrom-Json)
             Connect-AzAccount -AccessToken $token -AccountId $accountId.user.name -Subscription $accountId.Id
         }
-    
+
         # Set working directory to script path
         Push-Location -Path "$PSScriptRoot/dsc_examples"
-    
+
         # Prepare output object
         $definitionList = [ordered]@{}
-        
+
         foreach ($configName in (Get-ChildItem "*.ps1").BaseName) {
 
             # Compile the DSC configuration MOF file
             # ensure the configuration name is ALSO referenced at the end of the file itself
             & .\$configName
-            
+
             # Create the Guest Configuration custom policy package
             $package = New-GuestConfigurationPackage `
                 -Name $configName `
@@ -87,7 +87,7 @@ try {
                     -StorageAccountName $env:storageAccountName `
                     -StorageContainerName $env:containerName `
                     -Force -Verbose
-                
+
                 # Create the Guest Configuration Policy definition
                 $policy = New-GuestConfigurationPolicy `
                     -PolicyId "CGC_$configName" `
@@ -98,7 +98,7 @@ try {
                     -Version 1.0.0 `
                     -Mode 'ApplyAndAutoCorrect' `
                     -Platform $(if ($configName -like "nx*") { "Linux" } else { "Windows" })
-                
+
                 # Publish the Guest Configuration Policy to a Management Group
                 if ($env:publishGuestConfigPolicyMG) {
                     $definition = Publish-GuestConfigurationPolicy -Path $policy.Path -ManagementGroupName $publishGuestConfigPolicyMG
@@ -126,12 +126,12 @@ try {
         }
         # Write output object
         $definitionList | ConvertTo-Json | Out-File -FilePath "$PSScriptRoot/definitionList.json" -Force
-    
+
         # Return to original working directory
         Pop-Location
-    
+
         # Clear Az PowerShell Context
-        if ($env:connectAzAccount) { 
+        if ($env:connectAzAccount) {
             Start-Sleep -Seconds 1.5
             Clear-AzContext -Confirm:$false -Force
         }
