@@ -1,9 +1,9 @@
 ##################
 # General
 ##################
-module "team_a_mg_deny_resources_types" {
+module "team_a_mg_deny_resource_types" {
   source            = "..//modules/def_assignment"
-  definition        = module.deny_resources_types.definition
+  definition        = module.deny_resource_types.definition
   assignment_scope  = data.azurerm_management_group.team_a.id
   assignment_effect = "Audit"
 
@@ -40,7 +40,7 @@ module "team_a_mg_inherit_resource_group_tags_modify" {
   assignment_effect = "Modify"
   skip_remediation  = var.skip_remediation
   remediation_scope = data.azurerm_subscription.current.id # change the scope of remediation tasks, defaults to assignment_scope
-  identity_ids      = [data.azurerm_user_assigned_identity.policy_rem.id]
+  identity_ids      = [data.azurerm_user_assigned_identity.policy_rem.id] # use User Managed Identities
 
   assignment_parameters = {
     tagName = "environment"

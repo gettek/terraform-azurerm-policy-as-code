@@ -24,7 +24,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 | <a name="module_configure_asc"></a> [configure\_asc](#module\_configure\_asc) | ..//modules/definition | n/a |
 | <a name="module_configure_asc_initiative"></a> [configure\_asc\_initiative](#module\_configure\_asc\_initiative) | ..//modules/initiative | n/a |
 | <a name="module_deny_nic_public_ip"></a> [deny\_nic\_public\_ip](#module\_deny\_nic\_public\_ip) | ..//modules/definition | n/a |
-| <a name="module_deny_resources_types"></a> [deny\_resources\_types](#module\_deny\_resources\_types) | ..//modules/definition | n/a |
+| <a name="module_deny_resource_types"></a> [deny\_resource\_types](#module\_deny\_resource\_types) | ..//modules/definition | n/a |
 | <a name="module_deploy_resource_diagnostic_setting"></a> [deploy\_resource\_diagnostic\_setting](#module\_deploy\_resource\_diagnostic\_setting) | ..//modules/definition | n/a |
 | <a name="module_exemption_subscription_diagnostics_settings"></a> [exemption\_subscription\_diagnostics\_settings](#module\_exemption\_subscription\_diagnostics\_settings) | ..//modules/exemption | n/a |
 | <a name="module_inherit_resource_group_tags_modify"></a> [inherit\_resource\_group\_tags\_modify](#module\_inherit\_resource\_group\_tags\_modify) | ..//modules/definition | n/a |
@@ -38,7 +38,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 | <a name="module_storage_enforce_https"></a> [storage\_enforce\_https](#module\_storage\_enforce\_https) | ..//modules/definition | n/a |
 | <a name="module_storage_enforce_minimum_tls1_2"></a> [storage\_enforce\_minimum\_tls1\_2](#module\_storage\_enforce\_minimum\_tls1\_2) | ..//modules/definition | n/a |
 | <a name="module_team_a_mg_deny_nic_public_ip"></a> [team\_a\_mg\_deny\_nic\_public\_ip](#module\_team\_a\_mg\_deny\_nic\_public\_ip) | ..//modules/def_assignment | n/a |
-| <a name="module_team_a_mg_deny_resources_types"></a> [team\_a\_mg\_deny\_resources\_types](#module\_team\_a\_mg\_deny\_resources\_types) | ..//modules/def_assignment | n/a |
+| <a name="module_team_a_mg_deny_resource_types"></a> [team\_a\_mg\_deny\_resource\_types](#module\_team\_a\_mg\_deny\_resource\_types) | ..//modules/def_assignment | n/a |
 | <a name="module_team_a_mg_inherit_resource_group_tags_modify"></a> [team\_a\_mg\_inherit\_resource\_group\_tags\_modify](#module\_team\_a\_mg\_inherit\_resource\_group\_tags\_modify) | ..//modules/def_assignment | n/a |
 | <a name="module_whitelist_regions"></a> [whitelist\_regions](#module\_whitelist\_regions) | ..//modules/definition | n/a |
 
