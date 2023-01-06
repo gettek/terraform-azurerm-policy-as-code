@@ -1,6 +1,6 @@
 {
   "type": "Microsoft.Authorization/policyDefinitions",
-  "name": "deny_resources_types",
+  "name": "deny_resource_types",
   "properties": {
     "metadata": {
       "category": "General"

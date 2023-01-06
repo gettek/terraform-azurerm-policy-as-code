@@ -37,10 +37,13 @@ module team_a_mg_inherit_resource_group_tags_modify {
   assignment_effect = "Modify"
   skip_remediation  = var.skip_remediation
 
+  # specify a list of role definitions or omit to use those defined in the policies
   role_definition_ids = [
-      data.azurerm_role_definition.contributor
+    data.azurerm_role_definition.contributor.id
   ]
-  role_assignment_scope = "omit this to assign at same scope as policy assignment"
+
+  # specify a different role assignment scope or omit to use the policy assignment scope
+  role_assignment_scope = data.azurerm_management_group.team_a.id
 
   assignment_parameters = {
     tagName = "environment"

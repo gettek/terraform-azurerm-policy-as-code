@@ -38,6 +38,7 @@
 📦examples
   ├──📜assignments_mg.tf
   ├──📜backend.tf
+  ├──📜built-in.tf
   ├──📜data.tf
   ├──📜definitions.tf
   ├──📜exemptions.tf
@@ -72,9 +73,9 @@
   └──📜build_guest_config_packages.ps1 (build and publish azure policy guest configuration packages)
 ```
 
-## Custom Policy Definitions Module
+## [Custom Policy Definitions Module](modules/definition)
 
-This module depends on populating `var.policy_name` and `var.policy_category` to correspond with the respective custom policy definition `json` file found in the [local library](policies). You can also parse in other template files and data sources at runtime, see the [definition module readme](modules/definition) for examples and acceptable inputs.
+This module depends on populating `var.policy_name` and `var.policy_category` to correspond with the respective custom policy definition `json` file found in the [local library](policies). You can also parse in other template files and data sources at runtime, see the [module readme](modules/definition) for examples and acceptable inputs.
 
 ```hcl
 module whitelist_regions {
@@ -88,7 +89,7 @@ module whitelist_regions {
 
 > 📘 [Microsoft Docs: Azure Policy definition structure](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure)
 
-## Policy Initiative (Set Definitions) Module
+## [Policy Initiative (Set Definitions) Module](modules/initiative)
 
 Dynamically create a policy set based on multiple custom or built-in policy definition references to simplify assignments.
 
@@ -111,7 +112,7 @@ module platform_baseline_initiative {
 
 > 📘 [Microsoft Docs: Azure Policy initiative definition structure](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure)
 
-## Policy Definition Assignment Module
+## [Policy Definition Assignment Module](modules/def_assignment)
 
 ```hcl
 module org_mg_whitelist_regions {
@@ -132,7 +133,7 @@ module org_mg_whitelist_regions {
 
 > 📘 [Microsoft Docs: Azure Policy assignment structure](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/assignment-structure)
 
-## Policy Initiative Assignment Module
+## [Policy Initiative Assignment Module](modules/set_assignment)
 
 ```hcl
 module org_mg_platform_diagnostics_initiative {
@@ -162,20 +163,12 @@ module org_mg_platform_diagnostics_initiative {
     null                                        = "The Default non-compliance message for all member definitions"
     "DeployApplicationGatewayDiagnosticSetting" = "The non-compliance message for the deploy_application_gateway_diagnostic_setting definition"
   }
-
-  # specify a list of role definitions or omit to use those defined in the policies
-  role_definition_ids = [
-    data.azurerm_role_definition.contributor.id
-  ]
-
-  # specify a different role assignment scope or omit to use the policy assignment scope
-  role_assignment_scope = data.azurerm_management_group.team_a.id
 }
 ```
 
-## Policy Exemption Module
+## [Policy Exemption Module](modules/exemption)
 
-Use the [exemption module](modules/exemption) in favour of `not_scopes` to create an auditable time-sensitive Policy exemption
+Use the exemption module in favour of `not_scopes` to create an auditable time-sensitive Policy exemption
 
 ```hcl
 module exemption_team_a_mg_deny_nic_public_ip {
@@ -214,7 +207,7 @@ Azure Policy supports the following types of effect:
 
 ### 👥Role Assignments
 
-Role assignments and remediation tasks will be automatically created if the Policy Definition contains a list of [Role Definitions](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources#configure-policy-definition). You can override these with explicit ones, [as seen here](examples/assignments_org.tf#L52-L58), or specify `skip_role_assignment=true` to omit creation. By default these will scope at the policy assignment but can be changed by setting `role_assignment_scope`.
+Role assignments and remediation tasks will be automatically created if the Policy Definition contains a list of [Role Definitions](policies/Tags/inherit_resource_group_tags_modify.json#L46). You can override these with explicit ones, [as seen here](examples/assignments_org.tf#L40), or specify `skip_role_assignment=true` to omit creation, this is also skipped when using User Managed Identities. By default role assignment scopes will match the policy assignment but can be changed by setting `role_assignment_scope`.
 
 ### ✅Remediation Tasks
 
@@ -230,7 +223,7 @@ To trigger an on-demand [compliance scan](https://learn.microsoft.com/en-us/azur
 
   - Should be Defined as **high up** in the hierarchy as possible.
   - Should be Assigned as **low down** in the hierarchy as possible.
-  - Multiple scopes can be exempt from policy inheritance by specifying `assignment_not_scopes`.
+  - Multiple scopes can be exempt from policy inheritance by specifying `assignment_not_scopes` or using the [exemption module](modules/exemption).
   - Policy **overrides RBAC** so even resource owners and contributors fall under compliance enforcements assigned at a higher scope (unless the policy is assigned at the ownership scope).
 
 ![Policy Definition and Assignment Scopes](img/scopes.svg)
