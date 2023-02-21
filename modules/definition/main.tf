@@ -3,7 +3,7 @@ resource azurerm_policy_definition def {
   display_name = local.display_name
   description  = local.description
   policy_type  = "Custom"
-  mode         = var.policy_mode
+  mode         = local.mode
 
   management_group_id = var.management_group_id
 

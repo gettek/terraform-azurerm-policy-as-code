@@ -28,12 +28,13 @@ module "org_mg_whitelist_regions" {
 # Security Center
 ##################
 module "org_mg_configure_asc_initiative" {
-  source               = "..//modules/set_assignment"
-  initiative           = module.configure_asc_initiative.initiative
-  assignment_scope     = data.azurerm_management_group.org.id
-  assignment_effect    = "DeployIfNotExists"
-  skip_remediation     = var.skip_remediation
-  skip_role_assignment = var.skip_role_assignment
+  source                  = "..//modules/set_assignment"
+  initiative              = module.configure_asc_initiative.initiative
+  assignment_scope        = data.azurerm_management_group.org.id
+  assignment_effect       = "DeployIfNotExists"
+  skip_remediation        = var.skip_remediation
+  skip_role_assignment    = var.skip_role_assignment
+  resource_discovery_mode = local.resource_discovery_mode
 
   role_assignment_scope = data.azurerm_management_group.team_a.id # using explicit scopes
   role_definition_ids = [

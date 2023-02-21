@@ -40,10 +40,10 @@ variable policy_description {
 variable policy_mode {
   type        = string
   description = "The policy mode that allows you to specify which resource types will be evaluated, defaults to All. Possible values are All and Indexed"
-  default     = "All"
+  default     = null
 
   validation {
-    condition     = var.policy_mode == "All" || var.policy_mode == "Indexed" || var.policy_mode == "Microsoft.Kubernetes.Data"
+    condition     = var.policy_mode == null || var.policy_mode == "All" || var.policy_mode == "Indexed" || var.policy_mode == "Microsoft.Kubernetes.Data"
     error_message = "Policy mode possible values are: All, Indexed or Microsoft.Kubernetes.Data (In Preview). Other modes are only allowed in built-in policy definitions, these include Microsoft.ContainerService.Data, Microsoft.CustomerLockbox.Data, Microsoft.DataCatalog.Data, Microsoft.KeyVault.Data, Microsoft.MachineLearningServices.Data, Microsoft.Network.Data and Microsoft.Synapse.Data"
   }
 }
@@ -98,6 +98,7 @@ locals {
   title = title(replace(local.policy_name, "/-|_|\\s/", " "))
   category = coalesce(var.policy_category, try((local.policy_object).properties.metadata.category, "General"))
   version = coalesce(var.policy_version, try((local.policy_object).properties.metadata.version, "1.0.0"))
+  mode = coalesce(var.policy_mode, try((local.policy_object).properties.mode, "All"))
 
   # use local library attributes if runtime inputs are omitted
   policy_name = coalesce(var.policy_name, try((local.policy_object).name, null))
