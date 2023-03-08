@@ -5,17 +5,12 @@
 		}
 	],
 	"settings": {
-		// List of extensions which should be recommended for users of this workspace.
+		// list of extensions which should be recommended for users of this workspace.
 		"recommendations": [
 			"azurepolicy.azurepolicyextension",
 			"hashicorp.terraform",
 			"oderwat.indent-rainbow"
 		],
-		// When enabled, will trim trailing whitespace when you save a file.
-		"files.trimTrailingWhitespace": true,
-		// enable bracket pair colorization.
-		"editor.bracketPairColorization.enabled": true,
-		"editor.guides.bracketPairs": "active",
 		// azure policy definition schemas
 		"json.schemas": [
 			{
@@ -26,11 +21,40 @@
 			}
 		],
 		// github workflows
+		"github-actions.workflows.pinned.refresh.enabled": true,
+		"github-actions.workflows.pinned.refresh.interval": 30,
 		"github-actions.workflows.pinned.workflows": [
 			".github/workflows/cd.yml",
 			".github/workflows/ci.yml"
 		],
-		"github-actions.workflows.pinned.refresh.enabled": true,
-		"github-actions.workflows.pinned.refresh.interval": 30,
+		// code formatting
+		"files.trimTrailingWhitespace": true,
+		"[markdown]": {
+			"files.trimTrailingWhitespace": false
+		},
+		"cSpell.language": "en-GB",
+		"cSpell.enabled": true,
+		"editor.formatOnPaste": true,
+		"editor.formatOnSave": true,
+		// pwsh formatting
+		"powershell.codeFormatting.addWhitespaceAroundPipe": true,
+		"powershell.codeFormatting.alignPropertyValuePairs": true,
+		"powershell.codeFormatting.autoCorrectAliases": true,
+		"powershell.codeFormatting.ignoreOneLineBlock": true,
+		"powershell.codeFormatting.newLineAfterCloseBrace": true,
+		"powershell.codeFormatting.newLineAfterOpenBrace": true,
+		"powershell.codeFormatting.openBraceOnSameLine": true,
+		"powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
+		"powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+		"powershell.codeFormatting.useConstantStrings": true,
+		"powershell.codeFormatting.useCorrectCasing": true,
+		"powershell.codeFormatting.whitespaceAfterSeparator": true,
+		"powershell.codeFormatting.whitespaceAroundOperator": true,
+		"powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
+		"powershell.codeFormatting.whitespaceBeforeOpenParen": true,
+		"powershell.codeFormatting.whitespaceBetweenParameters": true,
+		// enable bracket pair colorization.
+		"editor.bracketPairColorization.enabled": true,
+		"editor.guides.bracketPairs": "active",
 	}
 }

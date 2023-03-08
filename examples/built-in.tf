@@ -17,7 +17,7 @@ module "org_mg_configure_az_monitor_and_security_vm_initiative" {
   skip_remediation     = var.skip_remediation
   skip_role_assignment = var.skip_role_assignment
 
-  # built-ins that deploy/modify require role-definitions to be present
+  # built-ins that deploy/modify require role_definition_ids be present
   role_definition_ids = [
     data.azurerm_role_definition.vm_contributor.id
   ]

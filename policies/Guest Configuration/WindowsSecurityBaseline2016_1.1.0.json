@@ -1,36 +1,36 @@
 {
     "properties": {
-        "displayName": "SecurityBaselineConfigurationWS2016",
+        "displayName": "[CGC]: WindowsSecurityBaseline2016 v1.1.0",
         "policyType": "Custom",
         "mode": "Indexed",
-        "description": "VM Custom Guest Configuration: SecurityBaselineConfigurationWS2016",
+        "description": "VM Custom Machine Config: WindowsSecurityBaseline2016 v1.1.0",
         "metadata": {
-            "version": "1.0.0",
             "category": "Guest Configuration",
-            "guestConfiguration": {
-                "name": "SecurityBaselineConfigurationWS2016",
-                "version": "1.0.0",
-                "contentType": "Custom",
-                "contentUri": "https://guestconfig4ec2d.blob.core.windows.net/configs/SecurityBaselineConfigurationWS2016.zip?<<SAS_KEY_WOULD_BE_HERE>>",
-                "contentHash": "E5FB69BDB867107D4EDADDF0AF4A66FBDBAC477B15E09B56F83F15DFB4FC2763",
-                "configurationParameter": {}
-            },
+            "version": "1.1.0",
             "requiredProviders": [
                 "Microsoft.GuestConfiguration"
-            ]
+            ],
+            "guestConfiguration": {
+                "name": "WindowsSecurityBaseline2016",
+                "version": "1.1.0",
+                "contentType": "Custom",
+                "contentUri": "https://guestconfig861b0.blob.core.windows.net/configs/WindowsSecurityBaseline2016.zip<SAS_TOKEN_WOULD_BE_HERE>",
+                "contentHash": "E17F1CE24197E6E5561AEBB95E99AFD4D2EFEACE94013F8F16A3BD5EC39F40B6"
+            }
         },
         "parameters": {
             "IncludeArcMachines": {
                 "type": "string",
                 "metadata": {
-                    "displayName": "Include Arc connected servers",
-                    "description": "By selecting this option, you agree to be charged monthly per Arc connected machine."
+                    "displayName": "Include Arc connected machines",
+                    "description": "By selecting this option, you agree to be charged monthly per Arc connected machine.",
+                    "portalReview": "true"
                 },
                 "allowedValues": [
-                    "True",
-                    "False"
+                    "true",
+                    "false"
                 ],
-                "defaultValue": "False"
+                "defaultValue": "false"
             }
         },
         "policyRule": {
@@ -88,7 +88,7 @@
                                             },
                                             {
                                                 "field": "Microsoft.Compute/imageOffer",
-                                                "equals": "dsvm-windows"
+                                                "like": "dsvm-win*"
                                             }
                                         ]
                                     },
@@ -161,7 +161,7 @@
                                                 "anyOf": [
                                                     {
                                                         "field": "Microsoft.Compute/virtualMachines/osProfile.windowsConfiguration",
-                                                        "exists": "true"
+                                                        "exists": true
                                                     },
                                                     {
                                                         "field": "Microsoft.Compute/virtualMachines/storageProfile.osDisk.osType",
@@ -173,17 +173,17 @@
                                                 "anyOf": [
                                                     {
                                                         "field": "Microsoft.Compute/imageSKU",
-                                                        "exists": "false"
+                                                        "exists": false
                                                     },
                                                     {
                                                         "allOf": [
                                                             {
-                                                                "field": "Microsoft.Compute/imageSKU",
-                                                                "notLike": "2008*"
-                                                            },
-                                                            {
                                                                 "field": "Microsoft.Compute/imageOffer",
                                                                 "notLike": "SQL2008*"
+                                                            },
+                                                            {
+                                                                "field": "Microsoft.Compute/imageSKU",
+                                                                "notLike": "2008*"
                                                             }
                                                         ]
                                                     }
@@ -199,15 +199,35 @@
                         "allOf": [
                             {
                                 "value": "[parameters('IncludeArcMachines')]",
-                                "equals": "true"
+                                "equals": true
                             },
                             {
-                                "field": "type",
-                                "equals": "Microsoft.HybridCompute/machines"
-                            },
-                            {
-                                "field": "Microsoft.HybridCompute/imageOffer",
-                                "like": "windows*"
+                                "anyOf": [
+                                    {
+                                        "allOf": [
+                                            {
+                                                "field": "type",
+                                                "equals": "Microsoft.HybridCompute/machines"
+                                            },
+                                            {
+                                                "field": "Microsoft.HybridCompute/imageOffer",
+                                                "like": "windows*"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            {
+                                                "field": "type",
+                                                "equals": "Microsoft.ConnectedVMwarevSphere/virtualMachines"
+                                            },
+                                            {
+                                                "field": "Microsoft.ConnectedVMwarevSphere/virtualMachines/osProfile.osType",
+                                                "like": "windows*"
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -216,22 +236,14 @@
             "then": {
                 "effect": "deployIfNotExists",
                 "details": {
-                    "type": "Microsoft.GuestConfiguration/guestConfigurationAssignments",
-                    "name": "SecurityBaselineConfigurationWS2016",
                     "roleDefinitionIds": [
-                        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                        "/providers/Microsoft.Authorization/roleDefinitions/088ab73d-1256-47ae-bea9-9de8e7131f31"
                     ],
+                    "type": "Microsoft.GuestConfiguration/guestConfigurationAssignments",
+                    "name": "[concat('WindowsSecurityBaseline2016$pid', uniqueString(policy().assignmentId, policy().definitionReferenceId))]",
                     "existenceCondition": {
-                        "allOf": [
-                            {
-                                "field": "Microsoft.GuestConfiguration/guestConfigurationAssignments/contentHash",
-                                "equals": "E5FB69BDB867107D4EDADDF0AF4A66FBDBAC477B15E09B56F83F15DFB4FC2763"
-                            },
-                            {
-                                "field": "Microsoft.GuestConfiguration/guestConfigurationAssignments/complianceStatus",
-                                "equals": "Compliant"
-                            }
-                        ]
+                        "field": "Microsoft.GuestConfiguration/guestConfigurationAssignments/complianceStatus",
+                        "equals": "Compliant"
                     },
                     "deployment": {
                         "properties": {
@@ -246,14 +258,8 @@
                                 "type": {
                                     "value": "[field('type')]"
                                 },
-                                "configurationName": {
-                                    "value": "SecurityBaselineConfigurationWS2016"
-                                },
-                                "contentUri": {
-                                    "value": "https://guestconfig4ec2d.blob.core.windows.net/configs/SecurityBaselineConfigurationWS2016.zip?<<SAS_KEY_WOULD_BE_HERE>>"
-                                },
-                                "contentHash": {
-                                    "value": "E5FB69BDB867107D4EDADDF0AF4A66FBDBAC477B15E09B56F83F15DFB4FC2763"
+                                "assignmentName": {
+                                    "value": "[concat('WindowsSecurityBaseline2016$pid', uniqueString(policy().assignmentId, policy().definitionReferenceId))]"
                                 }
                             },
                             "template": {
@@ -269,13 +275,7 @@
                                     "type": {
                                         "type": "string"
                                     },
-                                    "configurationName": {
-                                        "type": "string"
-                                    },
-                                    "contentUri": {
-                                        "type": "string"
-                                    },
-                                    "contentHash": {
+                                    "assignmentName": {
                                         "type": "string"
                                     }
                                 },
@@ -284,33 +284,33 @@
                                         "condition": "[equals(toLower(parameters('type')), toLower('Microsoft.Compute/virtualMachines'))]",
                                         "apiVersion": "2018-11-20",
                                         "type": "Microsoft.Compute/virtualMachines/providers/guestConfigurationAssignments",
-                                        "name": "[concat(parameters('vmName'), '/Microsoft.GuestConfiguration/', parameters('configurationName'))]",
+                                        "name": "[concat(parameters('vmName'), '/Microsoft.GuestConfiguration/', parameters('assignmentName'))]",
                                         "location": "[parameters('location')]",
                                         "properties": {
                                             "guestConfiguration": {
-                                                "name": "[parameters('configurationName')]",
-                                                "version": "1.0.0",
-                                                "contentUri": "[parameters('contentUri')]",
-                                                "contentHash": "[parameters('contentHash')]",
-                                                "assignmentType": "ApplyAndAutoCorrect",
-                                                "configurationParameter": []
+                                                "name": "WindowsSecurityBaseline2016",
+                                                "version": "1.1.0",
+                                                "contentType": "Custom",
+                                                "contentUri": "https://guestconfig861b0.blob.core.windows.net/configs/WindowsSecurityBaseline2016.zip<SAS_TOKEN_WOULD_BE_HERE>",
+                                                "contentHash": "E17F1CE24197E6E5561AEBB95E99AFD4D2EFEACE94013F8F16A3BD5EC39F40B6",
+                                                "assignmentType": "ApplyAndAutoCorrect"
                                             }
                                         }
                                     },
                                     {
-                                        "condition": "[equals(toLower(parameters('type')), toLower('microsoft.hybridcompute/machines'))]",
+                                        "condition": "[equals(toLower(parameters('type')), toLower('Microsoft.HybridCompute/machines'))]",
                                         "apiVersion": "2018-11-20",
                                         "type": "Microsoft.HybridCompute/machines/providers/guestConfigurationAssignments",
-                                        "name": "[concat(parameters('vmName'), '/Microsoft.GuestConfiguration/', parameters('configurationName'))]",
+                                        "name": "[concat(parameters('vmName'), '/Microsoft.GuestConfiguration/', parameters('assignmentName'))]",
                                         "location": "[parameters('location')]",
                                         "properties": {
                                             "guestConfiguration": {
-                                                "name": "[parameters('configurationName')]",
-                                                "contentUri": "[parameters('contentUri')]",
-                                                "contentHash": "[parameters('contentHash')]",
-                                                "assignmentType": "ApplyAndAutoCorrect",
-                                                "version": "1.0.0",
-                                                "configurationParameter": []
+                                                "name": "WindowsSecurityBaseline2016",
+                                                "version": "1.1.0",
+                                                "contentType": "Custom",
+                                                "contentUri": "https://guestconfig861b0.blob.core.windows.net/configs/WindowsSecurityBaseline2016.zip<SAS_TOKEN_WOULD_BE_HERE>",
+                                                "contentHash": "E17F1CE24197E6E5561AEBB95E99AFD4D2EFEACE94013F8F16A3BD5EC39F40B6",
+                                                "assignmentType": "ApplyAndAutoCorrect"
                                             }
                                         }
                                     }
@@ -322,7 +322,5 @@
             }
         }
     },
-    "id": "/providers/Microsoft.Authorization/policyDefinitions/CGC_SecurityBaselineConfigurationWS2016",
-    "type": "Microsoft.Authorization/policyDefinitions",
-    "name": "CGC_SecurityBaselineConfigurationWS2016"
+    "name": "b272797e-bc0e-4db7-ba24-99819c65cd5b"
 }
