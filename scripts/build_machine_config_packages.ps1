@@ -96,6 +96,7 @@ if ($env:createGuestConfigPackage) {
             TenantId       = $env:ARM_TENANT_ID
             SubscriptionId = $env:ARM_SUBSCRIPTION_ID
             credential     = (New-Object System.Management.Automation.PSCredential ($env:ARM_CLIENT_ID, (ConvertTo-SecureString $env:ARM_CLIENT_SECRET -AsPlainText -Force)))
+            WarningAction  = 'SilentlyContinue'
         }
         try {
             Connect-AzAccount @conn -ServicePrincipal -Confirm:$false | Out-Null

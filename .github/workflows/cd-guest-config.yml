@@ -24,15 +24,27 @@ jobs:
         with:
           terraform_version: ~1.3.0
 
+      - name: Log in with Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
+
       - name: Terraform Init
         id: init
         run: terraform init -no-color
         working-directory: examples-machine-config
 
+      - name: Terraform Build Machine Configs
+        id: build
+        if: ${{ success() }}
+        run: terraform apply -target null_resource.build_machine_config_packages -parallelism=1
+        working-directory: examples-machine-config
+
       - name: Terraform Apply
         id: apply
         if: ${{ success() }}
-        run: terraform apply -target null_resource.build_machine_config_packages -parallelism=1 && terraform apply
+        run: terraform apply
         working-directory: examples-machine-config
 
       - name: Terraform Destroy

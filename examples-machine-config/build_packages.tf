@@ -13,7 +13,6 @@ resource "null_resource" "build_machine_config_packages" {
 
     environment = {
       config                   = each.key
-      connectAzAccount         = "true"
       housekeeping             = "true"
       checkDependancies        = "true"
       createGuestConfigPackage = "true"
