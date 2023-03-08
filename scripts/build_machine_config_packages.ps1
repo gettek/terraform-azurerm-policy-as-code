@@ -80,6 +80,7 @@ if ($env:checkDependancies) {
                         Write-Host '🔷 Updating' $_.Name 'to the latest version:' $_.Version -ForegroundColor Blue
                         Update-Module -Name $_.Name -Force -AcceptLicense -Confirm:$false
                     }
+                    Import-Module $_.Name
                 }
             }
             catch { Write-Host "🥵 Could not install module: $_" -ForegroundColor Red }
