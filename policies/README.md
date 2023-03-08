@@ -1,6 +1,6 @@
 
 # Custom Policy Definition Library
-Compile time: 09/30/2022 15:20:06 UTC
+Compile time: 03/08/2023 17:42:45 UTC
 Example custom definitions located in the local library
 
 ## Categories
@@ -280,10 +280,10 @@ Example custom definitions located in the local library
 
 ## General
 
-### 📜 [deny_resources_types](./General/deny_resources_types.json)
+### 📜 [deny_resource_types](./General/deny_resource_types.json)
 | Title | Description |
 | ----- | ----------- |
-| Name                | deny_resources_types |
+| Name                | deny_resource_types |
 | DisplayName         |  |
 | Description         |  |
 | Version             |  |
@@ -341,129 +341,37 @@ Example custom definitions located in the local library
 
 ## Guest Configuration
 
-### 📜 [add_system_identity_when_user_prerequisite](./Guest%20Configuration/add_system_identity_when_user_prerequisite.json)
+### 📜 [nxLAMPServer_2.1.2](./Guest%20Configuration/nxLAMPServer_2.1.2.json)
 | Title | Description |
 | ----- | ----------- |
-| Name                | Add_System_Identity_When_User |
-| DisplayName         | Add system-assigned managed identity when User-Assigned is present to enable Guest Configuration assignments on VMs |
-| Description         | This policy adds a system-assigned managed identity to virtual machines hosted in Azure that are supported by Guest Configuration and have at least one user-assigned identity but do not have a system-assigned managed identity. A system-assigned managed identity is a prerequisite for all Guest Configuration assignments and must be added to machines before using any Guest Configuration policy definitions. For more information on Guest Configuration, visit https://aka.ms/gcpol. |
-| Version             | 1.0.0 |
-| Effect              | modify |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| listOfImageIdToInclude_windows | Example value: '/subscriptions/<subscriptionId>/resourceGroups/YourResourceGroup/providers/Microsoft.Compute/images/ContosoStdImage' |  |  |
-| listOfImageIdToInclude_linux | Example value: '/subscriptions/<subscriptionId>/resourceGroups/YourResourceGroup/providers/Microsoft.Compute/images/ContosoStdImage' |  |  |
-
-<br>
-
-<br>
-
-### 📜 [CGC_nxLAMPServer](./Guest%20Configuration/CGC_nxLAMPServer.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | CGC_nxLAMPServer |
-| DisplayName         | nxLAMPServer |
-| Description         | VM Custom Guest Configuration: nxLAMPServer |
-| Version             | 1.0.0 |
+| Name                | dfaa1524-3971-46f0-8c33-a96b6070d953 |
+| DisplayName         | [CGC]: nxLAMPServer v2.1.2 |
+| Description         | VM Custom Machine Config: nxLAMPServer v2.1.2 |
+| Version             | 2.1.2 |
 | Effect              | deployIfNotExists |
 
 #### 🧮 ~ Parameters
 | Name | Description | Default Value | Allowed Values |
 | ---- | ----------- | ------------- | -------------- |
-| IncludeArcMachines | By selecting this option, you agree to be charged monthly per Arc connected machine. | False | True False |
+| IncludeArcMachines | By selecting this option, you agree to be charged monthly per Arc connected machine. | false | true false |
 
 <br>
 
 <br>
 
-### 📜 [CGC_SecurityBaselineConfigurationWS2016](./Guest%20Configuration/CGC_SecurityBaselineConfigurationWS2016.json)
+### 📜 [WindowsSecurityBaseline2016_1.1.0](./Guest%20Configuration/WindowsSecurityBaseline2016_1.1.0.json)
 | Title | Description |
 | ----- | ----------- |
-| Name                | CGC_SecurityBaselineConfigurationWS2016 |
-| DisplayName         | SecurityBaselineConfigurationWS2016 |
-| Description         | VM Custom Guest Configuration: SecurityBaselineConfigurationWS2016 |
-| Version             | 1.0.0 |
+| Name                | b272797e-bc0e-4db7-ba24-99819c65cd5b |
+| DisplayName         | [CGC]: WindowsSecurityBaseline2016 v1.1.0 |
+| Description         | VM Custom Machine Config: WindowsSecurityBaseline2016 v1.1.0 |
+| Version             | 1.1.0 |
 | Effect              | deployIfNotExists |
 
 #### 🧮 ~ Parameters
 | Name | Description | Default Value | Allowed Values |
 | ---- | ----------- | ------------- | -------------- |
-| IncludeArcMachines | By selecting this option, you agree to be charged monthly per Arc connected machine. | False | True False |
-
-<br>
-
-<br>
-
-### 📜 [CGC_WindowsIISServerConfig](./Guest%20Configuration/CGC_WindowsIISServerConfig.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | CGC_WindowsIISServerConfig |
-| DisplayName         | WindowsIISServerConfig |
-| Description         | VM Custom Guest Configuration: WindowsIISServerConfig |
-| Version             | 1.0.0 |
-| Effect              | deployIfNotExists |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| IncludeArcMachines | By selecting this option, you agree to be charged monthly per Arc connected machine. | False | True False |
-
-<br>
-
-<br>
-
-### 📜 [deploy_extension_linux_prerequisite](./Guest%20Configuration/deploy_extension_linux_prerequisite.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | Deploy_the_Linux_Guest_Configuration_extension |
-| DisplayName         | Deploy the Linux Guest Configuration extension to enable Guest Configuration assignments on Linux VMs |
-| Description         | This policy deploys the Linux Guest Configuration extension to Linux virtual machines hosted in Azure that are supported by Guest Configuration. The Linux Guest Configuration extension is a prerequisite for all Linux Guest Configuration assignments and must be deployed to machines before using any Linux Guest Configuration policy definition. For more information on Guest Configuration, visit https://aka.ms/gcpol. |
-| Version             | 1.0.1 |
-| Effect              | deployIfNotExists |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| listOfImageIdToInclude_linux | Example value: '/subscriptions/<subscriptionId>/resourceGroups/YourResourceGroup/providers/Microsoft.Compute/images/ContosoStdImage' |  |  |
-
-<br>
-
-<br>
-
-### 📜 [deploy_extension_windows_prerequisite](./Guest%20Configuration/deploy_extension_windows_prerequisite.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | Deploy_the_Windows_Guest_Configuration_extension |
-| DisplayName         | Deploy the Windows Guest Configuration extension to enable Guest Configuration assignments on Windows VMs |
-| Description         | This policy deploys the Windows Guest Configuration extension to Windows virtual machines hosted in Azure that are supported by Guest Configuration. The Windows Guest Configuration extension is a prerequisite for all Windows Guest Configuration assignments and must be deployed to machines before using any Windows Guest Configuration policy definition. For more information on Guest Configuration, visit https://aka.ms/gcpol. |
-| Version             | 1.0.1 |
-| Effect              | deployIfNotExists |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| listOfImageIdToInclude_windows | Example value: '/subscriptions/<subscriptionId>/resourceGroups/YourResourceGroup/providers/Microsoft.Compute/images/ContosoStdImage' |  |  |
-
-<br>
-
-<br>
-
-### 📜 [add_system_identity_when_none_prerequisite](./Guest%20Configuration/add_system_identity_when_none_prerequisite.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | Add_System_Identity_When_None |
-| DisplayName         | Add system-assigned managed identity when none present to enable Guest Configuration assignments on virtual machines |
-| Description         | This policy adds a system-assigned managed identity to virtual machines hosted in Azure that are supported by Guest Configuration but do not have any managed identities. A system-assigned managed identity is a prerequisite for all Guest Configuration assignments and must be added to machines before using any Guest Configuration policy definitions. For more information on Guest Configuration, visit https://aka.ms/gcpol. |
-| Version             | 1.0.0 |
-| Effect              | modify |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| listOfImageIdToInclude_windows | Example value: '/subscriptions/<subscriptionId>/resourceGroups/YourResourceGroup/providers/Microsoft.Compute/images/ContosoStdImage' |  |  |
-| listOfImageIdToInclude_linux | Example value: '/subscriptions/<subscriptionId>/resourceGroups/YourResourceGroup/providers/Microsoft.Compute/images/ContosoStdImage' |  |  |
+| IncludeArcMachines | By selecting this option, you agree to be charged monthly per Arc connected machine. | false | true false |
 
 <br>
 
@@ -472,80 +380,6 @@ Example custom definitions located in the local library
 ---
 
 ## Monitoring
-
-### 📜 [deploy_public_ip_diagnostic_setting](./Monitoring/deploy_public_ip_diagnostic_setting.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | deploy_public_ip_diagnostic_setting |
-| DisplayName         | Deploy Diagnostic Settings for Public IPs to a Log Analytics workspace |
-| Description         | Deploys the diagnostic settings for Public IPs to stream to a regional Log Analytics workspace when any Public IP which is missing this diagnostic settings is created or updated. |
-| Version             |  |
-| Effect              | [parameters('effect')] |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| effect | Enable or disable the execution of the policy | DeployIfNotExists | AuditIfNotExists DeployIfNotExists Disabled |
-| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
-| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
-| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
-| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
-| eventHubName | The EventHub name to stream activity logs to |  |  |
-| metricsEnabled | Enable Metrics - True or False | True | True False |
-| logsEnabled | Enable Logs - True or False | True | True False |
-
-<br>
-
-<br>
-
-### 📜 [deploy_storage_account_diagnostic_setting](./Monitoring/deploy_storage_account_diagnostic_setting.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | deploy_storage_account_diagnostic_setting |
-| DisplayName         | Deploy Diagnostic Settings for Azure Storage, including blobs, files, tables, and queues to a Log Analytics workspace |
-| Description         | Deploys the diagnostic settings for Azure Storage, including blobs, files, tables, and queues to stream to a regional Log Analytics workspace when any Azure Storage which is missing this diagnostic settings is created or updated. |
-| Version             |  |
-| Effect              | [parameters('effect')] |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| effect | Enable or disable the execution of the policy | DeployIfNotExists | AuditIfNotExists DeployIfNotExists Disabled |
-| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
-| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
-| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
-| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
-| eventHubName | The EventHub name to stream activity logs to |  |  |
-| metricsEnabled | Whether to enable metrics stream to the Log Analytics workspace - True or False | False | True False |
-| logsEnabled | Enable Logs - True or False | True | True False |
-
-<br>
-
-<br>
-
-### 📜 [deploy_subscription_diagnostic_setting](./Monitoring/deploy_subscription_diagnostic_setting.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | deploy_subscription_diagnostic_setting |
-| DisplayName         | Deploy Diagnostic Settings for Subscriptions to a Log Analytics workspace |
-| Description         | Deploys the diagnostic settings for Subscriptions to stream to a regional Log Analytics workspace when any Subscription which is missing this diagnostic settings is created or updated. |
-| Version             |  |
-| Effect              | [parameters('effect')] |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| effect | Enable or disable the execution of the policy | DeployIfNotExists | DeployIfNotExists AuditIfNotExists Disabled |
-| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
-| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
-| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
-| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
-| eventHubName | The EventHub name to stream activity logs to |  |  |
-| logsEnabled | Enable Logs - True or False | True | True False |
-
-<br>
-
-<br>
 
 ### 📜 [deploy_virtual_machine_diagnostic_setting](./Monitoring/deploy_virtual_machine_diagnostic_setting.json)
 | Title | Description |
@@ -622,6 +456,80 @@ Example custom definitions located in the local library
 
 <br>
 
+### 📜 [deploy_subscription_diagnostic_setting](./Monitoring/deploy_subscription_diagnostic_setting.json)
+| Title | Description |
+| ----- | ----------- |
+| Name                | deploy_subscription_diagnostic_setting |
+| DisplayName         | Deploy Diagnostic Settings for Subscriptions to a Log Analytics workspace |
+| Description         | Deploys the diagnostic settings for Subscriptions to stream to a regional Log Analytics workspace when any Subscription which is missing this diagnostic settings is created or updated. |
+| Version             |  |
+| Effect              | [parameters('effect')] |
+
+#### 🧮 ~ Parameters
+| Name | Description | Default Value | Allowed Values |
+| ---- | ----------- | ------------- | -------------- |
+| effect | Enable or disable the execution of the policy | DeployIfNotExists | DeployIfNotExists AuditIfNotExists Disabled |
+| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
+| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
+| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
+| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
+| eventHubName | The EventHub name to stream activity logs to |  |  |
+| logsEnabled | Enable Logs - True or False | True | True False |
+
+<br>
+
+<br>
+
+### 📜 [deploy_storage_account_diagnostic_setting](./Monitoring/deploy_storage_account_diagnostic_setting.json)
+| Title | Description |
+| ----- | ----------- |
+| Name                | deploy_storage_account_diagnostic_setting |
+| DisplayName         | Deploy Diagnostic Settings for Azure Storage, including blobs, files, tables, and queues to a Log Analytics workspace |
+| Description         | Deploys the diagnostic settings for Azure Storage, including blobs, files, tables, and queues to stream to a regional Log Analytics workspace when any Azure Storage which is missing this diagnostic settings is created or updated. |
+| Version             |  |
+| Effect              | [parameters('effect')] |
+
+#### 🧮 ~ Parameters
+| Name | Description | Default Value | Allowed Values |
+| ---- | ----------- | ------------- | -------------- |
+| effect | Enable or disable the execution of the policy | DeployIfNotExists | AuditIfNotExists DeployIfNotExists Disabled |
+| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
+| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
+| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
+| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
+| eventHubName | The EventHub name to stream activity logs to |  |  |
+| metricsEnabled | Whether to enable metrics stream to the Log Analytics workspace - True or False | False | True False |
+| logsEnabled | Enable Logs - True or False | True | True False |
+
+<br>
+
+<br>
+
+### 📜 [deploy_public_ip_diagnostic_setting](./Monitoring/deploy_public_ip_diagnostic_setting.json)
+| Title | Description |
+| ----- | ----------- |
+| Name                | deploy_public_ip_diagnostic_setting |
+| DisplayName         | Deploy Diagnostic Settings for Public IPs to a Log Analytics workspace |
+| Description         | Deploys the diagnostic settings for Public IPs to stream to a regional Log Analytics workspace when any Public IP which is missing this diagnostic settings is created or updated. |
+| Version             |  |
+| Effect              | [parameters('effect')] |
+
+#### 🧮 ~ Parameters
+| Name | Description | Default Value | Allowed Values |
+| ---- | ----------- | ------------- | -------------- |
+| effect | Enable or disable the execution of the policy | DeployIfNotExists | AuditIfNotExists DeployIfNotExists Disabled |
+| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
+| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
+| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
+| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
+| eventHubName | The EventHub name to stream activity logs to |  |  |
+| metricsEnabled | Enable Metrics - True or False | True | True False |
+| logsEnabled | Enable Logs - True or False | True | True False |
+
+<br>
+
+<br>
+
 ### 📜 [deploy_network_security_group_diagnostic_setting](./Monitoring/deploy_network_security_group_diagnostic_setting.json)
 | Title | Description |
 | ----- | ----------- |
@@ -641,80 +549,6 @@ Example custom definitions located in the local library
 | eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
 | eventHubName | The EventHub name to stream activity logs to |  |  |
 | logsEnabled | Enable Logs - True or False | True | True False |
-
-<br>
-
-<br>
-
-### 📜 [deploy_network_interface_diagnostic_setting](./Monitoring/deploy_network_interface_diagnostic_setting.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | deploy_network_interface_diagnostic_setting |
-| DisplayName         | Deploy Diagnostic Settings for Network Interfaces to a Log Analytics workspace |
-| Description         | Deploys the diagnostic settings for Network Interfaces to stream to a regional Log Analytics workspace when any Network Interface which is missing this diagnostic settings is created or updated. |
-| Version             |  |
-| Effect              | [parameters('effect')] |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| effect | Enable or disable the execution of the policy | DeployIfNotExists | AuditIfNotExists DeployIfNotExists Disabled |
-| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
-| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
-| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
-| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
-| eventHubName | The EventHub name to stream activity logs to |  |  |
-| metricsEnabled | Enable Metrics - True or False | True | True False |
-
-<br>
-
-<br>
-
-### 📜 [deploy_keyvault_diagnostic_setting](./Monitoring/deploy_keyvault_diagnostic_setting.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | deploy_keyvault_diagnostic_setting |
-| DisplayName         | Deploy Diagnostic Settings for KeyVaults to a Log Analytics workspace |
-| Description         | Deploys the diagnostic settings for KeyVaults to stream to a regional Log Analytics workspace when any KeyVault which is missing this diagnostic settings is created or updated. |
-| Version             |  |
-| Effect              | [parameters('effect')] |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| effect | Enable or disable the execution of the policy | DeployIfNotExists | AuditIfNotExists DeployIfNotExists Disabled |
-| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
-| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
-| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
-| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
-| eventHubName | The EventHub name to stream activity logs to |  |  |
-| metricsEnabled | Whether to enable metrics stream to the Log Analytics workspace - True or False | False | True False |
-| logsEnabled | Whether to enable logs stream to the Log Analytics workspace - True or False | True | True False |
-
-<br>
-
-<br>
-
-### 📜 [deploy_loadbalancer_diagnostic_setting](./Monitoring/deploy_loadbalancer_diagnostic_setting.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | deploy_loadbalancer_diagnostic_setting |
-| DisplayName         | Deploy Diagnostic Settings for Load Balancers to a Log Analytics workspace |
-| Description         | Deploys the diagnostic settings for Load Balancers to stream to a regional Log Analytics workspace when any Load Balancer which is missing this diagnostic settings is created or updated. |
-| Version             |  |
-| Effect              | [parameters('effect')] |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| effect | Enable or disable the execution of the policy | DeployIfNotExists | AuditIfNotExists AuditIfNotExists DeployIfNotExists Disabled |
-| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
-| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
-| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
-| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
-| eventHubName | The EventHub name to stream activity logs to |  |  |
-| metricsEnabled | Whether to enable metrics stream to the Log Analytics workspace - True or False | False | True False |
-| logsEnabled | Whether to enable logs stream to the Log Analytics workspace - True or False | True | True False |
 
 <br>
 
@@ -882,6 +716,80 @@ Example custom definitions located in the local library
 
 <br>
 
+### 📜 [deploy_keyvault_diagnostic_setting](./Monitoring/deploy_keyvault_diagnostic_setting.json)
+| Title | Description |
+| ----- | ----------- |
+| Name                | deploy_keyvault_diagnostic_setting |
+| DisplayName         | Deploy Diagnostic Settings for KeyVaults to a Log Analytics workspace |
+| Description         | Deploys the diagnostic settings for KeyVaults to stream to a regional Log Analytics workspace when any KeyVault which is missing this diagnostic settings is created or updated. |
+| Version             |  |
+| Effect              | [parameters('effect')] |
+
+#### 🧮 ~ Parameters
+| Name | Description | Default Value | Allowed Values |
+| ---- | ----------- | ------------- | -------------- |
+| effect | Enable or disable the execution of the policy | DeployIfNotExists | AuditIfNotExists DeployIfNotExists Disabled |
+| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
+| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
+| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
+| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
+| eventHubName | The EventHub name to stream activity logs to |  |  |
+| metricsEnabled | Whether to enable metrics stream to the Log Analytics workspace - True or False | False | True False |
+| logsEnabled | Whether to enable logs stream to the Log Analytics workspace - True or False | True | True False |
+
+<br>
+
+<br>
+
+### 📜 [deploy_loadbalancer_diagnostic_setting](./Monitoring/deploy_loadbalancer_diagnostic_setting.json)
+| Title | Description |
+| ----- | ----------- |
+| Name                | deploy_loadbalancer_diagnostic_setting |
+| DisplayName         | Deploy Diagnostic Settings for Load Balancers to a Log Analytics workspace |
+| Description         | Deploys the diagnostic settings for Load Balancers to stream to a regional Log Analytics workspace when any Load Balancer which is missing this diagnostic settings is created or updated. |
+| Version             |  |
+| Effect              | [parameters('effect')] |
+
+#### 🧮 ~ Parameters
+| Name | Description | Default Value | Allowed Values |
+| ---- | ----------- | ------------- | -------------- |
+| effect | Enable or disable the execution of the policy | DeployIfNotExists | AuditIfNotExists AuditIfNotExists DeployIfNotExists Disabled |
+| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
+| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
+| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
+| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
+| eventHubName | The EventHub name to stream activity logs to |  |  |
+| metricsEnabled | Whether to enable metrics stream to the Log Analytics workspace - True or False | False | True False |
+| logsEnabled | Whether to enable logs stream to the Log Analytics workspace - True or False | True | True False |
+
+<br>
+
+<br>
+
+### 📜 [deploy_network_interface_diagnostic_setting](./Monitoring/deploy_network_interface_diagnostic_setting.json)
+| Title | Description |
+| ----- | ----------- |
+| Name                | deploy_network_interface_diagnostic_setting |
+| DisplayName         | Deploy Diagnostic Settings for Network Interfaces to a Log Analytics workspace |
+| Description         | Deploys the diagnostic settings for Network Interfaces to stream to a regional Log Analytics workspace when any Network Interface which is missing this diagnostic settings is created or updated. |
+| Version             |  |
+| Effect              | [parameters('effect')] |
+
+#### 🧮 ~ Parameters
+| Name | Description | Default Value | Allowed Values |
+| ---- | ----------- | ------------- | -------------- |
+| effect | Enable or disable the execution of the policy | DeployIfNotExists | AuditIfNotExists DeployIfNotExists Disabled |
+| profileName | The diagnostic settings profile name | setbypolicy_Diagnostics |  |
+| workspaceId | Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID. |  |  |
+| storageAccountId | The Storage Account Resource Id to send activity logs |  |  |
+| eventHubAuthorizationRuleId | The Event Hub authorization rule Id for Azure Diagnostics. The authorization rule needs to be at Event Hub namespace level. e.g. /subscriptions/{subscription Id}/resourceGroups/{resource group}/providers/Microsoft.EventHub/namespaces/{Event Hub namespace}/authorizationrules/{authorization rule} |  |  |
+| eventHubName | The EventHub name to stream activity logs to |  |  |
+| metricsEnabled | Enable Metrics - True or False | True | True False |
+
+<br>
+
+<br>
+
 ---
 
 ## Network
@@ -1041,6 +949,27 @@ Example custom definitions located in the local library
 
 <br>
 
+### 📜 [deny_unapproved_udr_hop_type](./Network/deny_unapproved_udr_hop_type.json)
+| Title | Description |
+| ----- | ----------- |
+| Name                | deny_unapproved_udr_hop_type |
+| DisplayName         |  |
+| Description         |  |
+| Version             |  |
+| Effect              | [parameters('effect')] |
+
+#### 🧮 ~ Parameters
+| Name | Description | Default Value | Allowed Values |
+| ---- | ----------- | ------------- | -------------- |
+| allowedHopType1 | A permitted hop type for a UDR |  |  |
+| allowedHopType2 | A permitted hop type for a UDR |  |  |
+| allowedHopType3 | A permitted hop type for a UDR |  |  |
+| effect | The effect determines what happens when the policy rule is evaluated to match | Audit | Audit Deny Disabled |
+
+<br>
+
+<br>
+
 ### 📜 [deny_unapproved_udr](./Network/deny_unapproved_udr.json)
 | Title | Description |
 | ----- | ----------- |
@@ -1092,27 +1021,6 @@ Example custom definitions located in the local library
 | Name | Description | Default Value | Allowed Values |
 | ---- | ----------- | ------------- | -------------- |
 | trustedVnetIds | Trusted vNet IDs |  |  |
-| effect | The effect determines what happens when the policy rule is evaluated to match | Audit | Audit Deny Disabled |
-
-<br>
-
-<br>
-
-### 📜 [deny_unapproved_udr_hop_type](./Network/deny_unapproved_udr_hop_type.json)
-| Title | Description |
-| ----- | ----------- |
-| Name                | deny_unapproved_udr_hop_type |
-| DisplayName         |  |
-| Description         |  |
-| Version             |  |
-| Effect              | [parameters('effect')] |
-
-#### 🧮 ~ Parameters
-| Name | Description | Default Value | Allowed Values |
-| ---- | ----------- | ------------- | -------------- |
-| allowedHopType1 | A permitted hop type for a UDR |  |  |
-| allowedHopType2 | A permitted hop type for a UDR |  |  |
-| allowedHopType3 | A permitted hop type for a UDR |  |  |
 | effect | The effect determines what happens when the policy rule is evaluated to match | Audit | Audit Deny Disabled |
 
 <br>
