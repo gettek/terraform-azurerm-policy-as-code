@@ -174,8 +174,8 @@ if ($env:createGuestConfigPackage) {
                 ContentUri    = $contentUri
                 DisplayName   = "[CGC]: $configName v$configversion"
                 Description   = "VM Custom Machine Config: $configName v$configversion"
-                Path          = "../policies/Guest Configuration"
-                Platform      = $(if ($configName -like "nx*") { "Linux" } else { "Windows" })
+                Path          = '../policies/Guest Configuration'
+                Platform      = $(if ($configName -like 'nx*') { 'Linux' } else { 'Windows' })
                 Mode          = 'ApplyAndAutoCorrect'
                 PolicyVersion = $configversion
             }
