@@ -20,9 +20,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: ~1.3.0
+
+      - name: Install Terraform
+        id: tfinstall
+        run: choco install terraform
 
       - name: Log in with Azure
         uses: azure/login@v1
