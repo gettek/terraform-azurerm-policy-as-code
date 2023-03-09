@@ -15,10 +15,6 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# Custom Guest Configs
-scripts/dsc_examples/*/
-scripts/definitionList.json
-
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json

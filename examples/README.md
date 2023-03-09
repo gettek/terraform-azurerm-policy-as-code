@@ -15,7 +15,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.37.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.44.1 |
 
 ## Modules
 
@@ -59,6 +59,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_re_evaluate_compliance"></a> [re\_evaluate\_compliance](#input\_re\_evaluate\_compliance) | Should the module re-evaluate compliant resources for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 | <a name="input_skip_remediation"></a> [skip\_remediation](#input\_skip\_remediation) | Skip creation of all remediation tasks for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 | <a name="input_skip_role_assignment"></a> [skip\_role\_assignment](#input\_skip\_role\_assignment) | Should the module skip creation of role assignment for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 

@@ -1,6 +1,7 @@
 <#
 .SYNOPSIS
     Converts Policies into JSON files from a terraform plan output
+    Useful when migrating from an existing deployment
     terraform plan -out='tfplan'
 .PARAMETER planFile
     The plan file name e.g. tfplan

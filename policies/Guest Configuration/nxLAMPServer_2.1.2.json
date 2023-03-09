@@ -1,36 +1,36 @@
 {
     "properties": {
-        "displayName": "nxLAMPServer",
+        "displayName": "[CGC]: nxLAMPServer v2.1.2",
         "policyType": "Custom",
         "mode": "Indexed",
-        "description": "VM Custom Guest Configuration: nxLAMPServer",
+        "description": "VM Custom Machine Config: nxLAMPServer v2.1.2",
         "metadata": {
-            "version": "1.0.0",
             "category": "Guest Configuration",
-            "guestConfiguration": {
-                "name": "nxLAMPServer",
-                "version": "1.0.0",
-                "contentType": "Custom",
-                "contentUri": "https://guestconfig4ec2d.blob.core.windows.net/configs/nxLAMPServer.zip?<<SAS_KEY_WOULD_BE_HERE>>",
-                "contentHash": "E671D3501F5F5CC11AEA0785AEAF7534C66CF228981FC7AC1B4C570EABFE93A5",
-                "configurationParameter": {}
-            },
+            "version": "2.1.2",
             "requiredProviders": [
                 "Microsoft.GuestConfiguration"
-            ]
+            ],
+            "guestConfiguration": {
+                "name": "nxLAMPServer",
+                "version": "2.1.2",
+                "contentType": "Custom",
+                "contentUri": "https://guestconfig861b0.blob.core.windows.net/configs/nxLAMPServer.zip<SAS_TOKEN_WOULD_BE_HERE>",
+                "contentHash": "60699D4FEA649AE0AF1CE98BEEC505067DD0F25C990A503D2128D6D70CAB8515"
+            }
         },
         "parameters": {
             "IncludeArcMachines": {
                 "type": "string",
                 "metadata": {
-                    "displayName": "Include Arc connected servers",
-                    "description": "By selecting this option, you agree to be charged monthly per Arc connected machine."
+                    "displayName": "Include Arc connected machines",
+                    "description": "By selecting this option, you agree to be charged monthly per Arc connected machine.",
+                    "portalReview": "true"
                 },
                 "allowedValues": [
-                    "True",
-                    "False"
+                    "true",
+                    "false"
                 ],
-                "defaultValue": "False"
+                "defaultValue": "false"
             }
         },
         "policyRule": {
@@ -53,7 +53,9 @@
                                             "couchbase",
                                             "scalegrid",
                                             "checkpoint",
-                                            "paloaltonetworks"
+                                            "paloaltonetworks",
+                                            "debian",
+                                            "credativ"
                                         ]
                                     },
                                     {
@@ -61,10 +63,6 @@
                                             {
                                                 "field": "Microsoft.Compute/imagePublisher",
                                                 "equals": "OpenLogic"
-                                            },
-                                            {
-                                                "field": "Microsoft.Compute/imageOffer",
-                                                "like": "CentOS*"
                                             },
                                             {
                                                 "field": "Microsoft.Compute/imageSKU",
@@ -79,10 +77,6 @@
                                                 "equals": "Oracle"
                                             },
                                             {
-                                                "field": "Microsoft.Compute/imageOffer",
-                                                "equals": "Oracle-Linux"
-                                            },
-                                            {
                                                 "field": "Microsoft.Compute/imageSKU",
                                                 "notLike": "6*"
                                             }
@@ -95,34 +89,8 @@
                                                 "equals": "RedHat"
                                             },
                                             {
-                                                "field": "Microsoft.Compute/imageOffer",
-                                                "in": [
-                                                    "RHEL",
-                                                    "RHEL-HA",
-                                                    "RHEL-SAP",
-                                                    "RHEL-SAP-APPS",
-                                                    "RHEL-SAP-HA",
-                                                    "RHEL-SAP-HANA"
-                                                ]
-                                            },
-                                            {
                                                 "field": "Microsoft.Compute/imageSKU",
                                                 "notLike": "6*"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "allOf": [
-                                            {
-                                                "field": "Microsoft.Compute/imagePublisher",
-                                                "equals": "RedHat"
-                                            },
-                                            {
-                                                "field": "Microsoft.Compute/imageOffer",
-                                                "in": [
-                                                    "osa",
-                                                    "rhel-byos"
-                                                ]
                                             }
                                         ]
                                     },
@@ -134,39 +102,7 @@
                                             },
                                             {
                                                 "field": "Microsoft.Compute/imageOffer",
-                                                "in": [
-                                                    "cis-centos-7-l1",
-                                                    "cis-centos-7-v2-1-1-l1",
-                                                    "cis-centos-8-l1",
-                                                    "cis-debian-linux-8-l1",
-                                                    "cis-debian-linux-9-l1",
-                                                    "cis-nginx-centos-7-v1-1-0-l1",
-                                                    "cis-oracle-linux-7-v2-0-0-l1",
-                                                    "cis-oracle-linux-8-l1",
-                                                    "cis-postgresql-11-centos-linux-7-level-1",
-                                                    "cis-rhel-7-l2",
-                                                    "cis-rhel-7-v2-2-0-l1",
-                                                    "cis-rhel-8-l1",
-                                                    "cis-suse-linux-12-v2-0-0-l1",
-                                                    "cis-ubuntu-linux-1604-v1-0-0-l1",
-                                                    "cis-ubuntu-linux-1804-l1"
-                                                ]
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "allOf": [
-                                            {
-                                                "field": "Microsoft.Compute/imagePublisher",
-                                                "equals": "credativ"
-                                            },
-                                            {
-                                                "field": "Microsoft.Compute/imageOffer",
-                                                "equals": "Debian"
-                                            },
-                                            {
-                                                "field": "Microsoft.Compute/imageSKU",
-                                                "notLike": "7*"
+                                                "notLike": "cis-windows*"
                                             }
                                         ]
                                     },
@@ -175,10 +111,6 @@
                                             {
                                                 "field": "Microsoft.Compute/imagePublisher",
                                                 "equals": "Suse"
-                                            },
-                                            {
-                                                "field": "Microsoft.Compute/imageOffer",
-                                                "like": "SLES*"
                                             },
                                             {
                                                 "field": "Microsoft.Compute/imageSKU",
@@ -191,10 +123,6 @@
                                             {
                                                 "field": "Microsoft.Compute/imagePublisher",
                                                 "equals": "Canonical"
-                                            },
-                                            {
-                                                "field": "Microsoft.Compute/imageOffer",
-                                                "equals": "UbuntuServer"
                                             },
                                             {
                                                 "field": "Microsoft.Compute/imageSKU",
@@ -210,10 +138,7 @@
                                             },
                                             {
                                                 "field": "Microsoft.Compute/imageOffer",
-                                                "in": [
-                                                    "linux-data-science-vm-ubuntu",
-                                                    "azureml"
-                                                ]
+                                                "notLike": "dsvm-win*"
                                             }
                                         ]
                                     },
@@ -222,26 +147,10 @@
                                             {
                                                 "field": "Microsoft.Compute/imagePublisher",
                                                 "equals": "cloudera"
-                                            },
-                                            {
-                                                "field": "Microsoft.Compute/imageOffer",
-                                                "equals": "cloudera-centos-os"
                                             },
                                             {
                                                 "field": "Microsoft.Compute/imageSKU",
                                                 "notLike": "6*"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "allOf": [
-                                            {
-                                                "field": "Microsoft.Compute/imagePublisher",
-                                                "equals": "cloudera"
-                                            },
-                                            {
-                                                "field": "Microsoft.Compute/imageOffer",
-                                                "equals": "cloudera-altus-centos-os"
                                             }
                                         ]
                                     },
@@ -256,6 +165,47 @@
                                                 "like": "linux*"
                                             }
                                         ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            {
+                                                "anyOf": [
+                                                    {
+                                                        "field": "Microsoft.Compute/virtualMachines/osProfile.linuxConfiguration",
+                                                        "exists": true
+                                                    },
+                                                    {
+                                                        "field": "Microsoft.Compute/virtualMachines/storageProfile.osDisk.osType",
+                                                        "like": "Linux*"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "anyOf": [
+                                                    {
+                                                        "field": "Microsoft.Compute/imagePublisher",
+                                                        "exists": false
+                                                    },
+                                                    {
+                                                        "field": "Microsoft.Compute/imagePublisher",
+                                                        "notIn": [
+                                                            "OpenLogic",
+                                                            "RedHat",
+                                                            "credativ",
+                                                            "Suse",
+                                                            "Canonical",
+                                                            "microsoft-dsvm",
+                                                            "cloudera",
+                                                            "microsoft-ads",
+                                                            "center-for-internet-security-inc",
+                                                            "Oracle",
+                                                            "AzureDatabricks",
+                                                            "azureopenshift"
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 ]
                             }
@@ -265,19 +215,35 @@
                         "allOf": [
                             {
                                 "value": "[parameters('IncludeArcMachines')]",
-                                "equals": "true"
+                                "equals": true
                             },
                             {
-                                "field": "type",
-                                "equals": "Microsoft.HybridCompute/machines"
-                            },
-                            {
-                                "field": "Microsoft.HybridCompute/imageOffer",
-                                "like": "linux*"
-                            },
-                            {
-                                "field": "Microsoft.HybridCompute/imageOffer",
-                                "like": "linux*"
+                                "anyOf": [
+                                    {
+                                        "allOf": [
+                                            {
+                                                "field": "type",
+                                                "equals": "Microsoft.HybridCompute/machines"
+                                            },
+                                            {
+                                                "field": "Microsoft.HybridCompute/imageOffer",
+                                                "like": "linux*"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            {
+                                                "field": "type",
+                                                "equals": "Microsoft.ConnectedVMwarevSphere/virtualMachines"
+                                            },
+                                            {
+                                                "field": "Microsoft.ConnectedVMwarevSphere/virtualMachines/osProfile.osType",
+                                                "like": "linux*"
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -286,22 +252,14 @@
             "then": {
                 "effect": "deployIfNotExists",
                 "details": {
-                    "type": "Microsoft.GuestConfiguration/guestConfigurationAssignments",
-                    "name": "nxLAMPServer",
                     "roleDefinitionIds": [
-                        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                        "/providers/Microsoft.Authorization/roleDefinitions/088ab73d-1256-47ae-bea9-9de8e7131f31"
                     ],
+                    "type": "Microsoft.GuestConfiguration/guestConfigurationAssignments",
+                    "name": "[concat('nxLAMPServer$pid', uniqueString(policy().assignmentId, policy().definitionReferenceId))]",
                     "existenceCondition": {
-                        "allOf": [
-                            {
-                                "field": "Microsoft.GuestConfiguration/guestConfigurationAssignments/contentHash",
-                                "equals": "E671D3501F5F5CC11AEA0785AEAF7534C66CF228981FC7AC1B4C570EABFE93A5"
-                            },
-                            {
-                                "field": "Microsoft.GuestConfiguration/guestConfigurationAssignments/complianceStatus",
-                                "equals": "Compliant"
-                            }
-                        ]
+                        "field": "Microsoft.GuestConfiguration/guestConfigurationAssignments/complianceStatus",
+                        "equals": "Compliant"
                     },
                     "deployment": {
                         "properties": {
@@ -316,14 +274,8 @@
                                 "type": {
                                     "value": "[field('type')]"
                                 },
-                                "configurationName": {
-                                    "value": "nxLAMPServer"
-                                },
-                                "contentUri": {
-                                    "value": "https://guestconfig4ec2d.blob.core.windows.net/configs/nxLAMPServer.zip?<<SAS_KEY_WOULD_BE_HERE>>"
-                                },
-                                "contentHash": {
-                                    "value": "E671D3501F5F5CC11AEA0785AEAF7534C66CF228981FC7AC1B4C570EABFE93A5"
+                                "assignmentName": {
+                                    "value": "[concat('nxLAMPServer$pid', uniqueString(policy().assignmentId, policy().definitionReferenceId))]"
                                 }
                             },
                             "template": {
@@ -339,13 +291,7 @@
                                     "type": {
                                         "type": "string"
                                     },
-                                    "configurationName": {
-                                        "type": "string"
-                                    },
-                                    "contentUri": {
-                                        "type": "string"
-                                    },
-                                    "contentHash": {
+                                    "assignmentName": {
                                         "type": "string"
                                     }
                                 },
@@ -354,33 +300,33 @@
                                         "condition": "[equals(toLower(parameters('type')), toLower('Microsoft.Compute/virtualMachines'))]",
                                         "apiVersion": "2018-11-20",
                                         "type": "Microsoft.Compute/virtualMachines/providers/guestConfigurationAssignments",
-                                        "name": "[concat(parameters('vmName'), '/Microsoft.GuestConfiguration/', parameters('configurationName'))]",
+                                        "name": "[concat(parameters('vmName'), '/Microsoft.GuestConfiguration/', parameters('assignmentName'))]",
                                         "location": "[parameters('location')]",
                                         "properties": {
                                             "guestConfiguration": {
-                                                "name": "[parameters('configurationName')]",
-                                                "version": "1.0.0",
-                                                "contentUri": "[parameters('contentUri')]",
-                                                "contentHash": "[parameters('contentHash')]",
-                                                "assignmentType": "ApplyAndAutoCorrect",
-                                                "configurationParameter": []
+                                                "name": "nxLAMPServer",
+                                                "version": "2.1.2",
+                                                "contentType": "Custom",
+                                                "contentUri": "https://guestconfig861b0.blob.core.windows.net/configs/nxLAMPServer.zip<SAS_TOKEN_WOULD_BE_HERE>",
+                                                "contentHash": "60699D4FEA649AE0AF1CE98BEEC505067DD0F25C990A503D2128D6D70CAB8515",
+                                                "assignmentType": "ApplyAndAutoCorrect"
                                             }
                                         }
                                     },
                                     {
-                                        "condition": "[equals(toLower(parameters('type')), toLower('microsoft.hybridcompute/machines'))]",
+                                        "condition": "[equals(toLower(parameters('type')), toLower('Microsoft.HybridCompute/machines'))]",
                                         "apiVersion": "2018-11-20",
                                         "type": "Microsoft.HybridCompute/machines/providers/guestConfigurationAssignments",
-                                        "name": "[concat(parameters('vmName'), '/Microsoft.GuestConfiguration/', parameters('configurationName'))]",
+                                        "name": "[concat(parameters('vmName'), '/Microsoft.GuestConfiguration/', parameters('assignmentName'))]",
                                         "location": "[parameters('location')]",
                                         "properties": {
                                             "guestConfiguration": {
-                                                "name": "[parameters('configurationName')]",
-                                                "contentUri": "[parameters('contentUri')]",
-                                                "contentHash": "[parameters('contentHash')]",
-                                                "assignmentType": "ApplyAndAutoCorrect",
-                                                "version": "1.0.0",
-                                                "configurationParameter": []
+                                                "name": "nxLAMPServer",
+                                                "version": "2.1.2",
+                                                "contentType": "Custom",
+                                                "contentUri": "https://guestconfig861b0.blob.core.windows.net/configs/nxLAMPServer.zip<SAS_TOKEN_WOULD_BE_HERE>",
+                                                "contentHash": "60699D4FEA649AE0AF1CE98BEEC505067DD0F25C990A503D2128D6D70CAB8515",
+                                                "assignmentType": "ApplyAndAutoCorrect"
                                             }
                                         }
                                     }
@@ -392,7 +338,5 @@
             }
         }
     },
-    "id": "/providers/Microsoft.Authorization/policyDefinitions/CGC_nxLAMPServer",
-    "type": "Microsoft.Authorization/policyDefinitions",
-    "name": "CGC_nxLAMPServer"
+    "name": "dfaa1524-3971-46f0-8c33-a96b6070d953"
 }

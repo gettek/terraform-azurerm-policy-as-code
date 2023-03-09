@@ -70,7 +70,7 @@
       └──📜policy_name.json (e.g. whitelist_regions, should correspond to [var.policy_name])
 📦scripts
   ├──📂dsc_examples
-  └──📜build_guest_config_packages.ps1 (build and publish azure policy guest configuration packages)
+  └──📜build_machine_config_packages.ps1 (build and publish custom guest configuration packages)
 ```
 
 ## [Custom Policy Definitions Module](modules/definition)
