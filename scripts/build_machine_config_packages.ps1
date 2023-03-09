@@ -4,9 +4,10 @@
     Requires Azure PowerShell, use -connectAzAccount flag to assume az cli token
 .DESCRIPTION
     Use this script to simplify machine config package build and publish with Terraform
-    Steps outlined in the NOTE links are automated here
     Paramters are set as Environment Variables '$env' as to work with the Terraform (null_resource) interpreter
     Running terraform apply with -parallelism=1 will prevent the GuestConfiguration module from encountering conflicts during package creation
+.PARAMETER config
+    DSC Config File Name
 .PARAMETER connectAzAccount
     use Az CLI Token to authenticate to Azure PowerShell, Omit if already authenticated
 .PARAMETER checkDependancies
@@ -24,18 +25,11 @@
 .PARAMETER containerName
     Storage Container name that will hold DSC packages
 .PARAMETER publishGuestConfigPolicyMG
-    Managment Group to publish Policy Definitions
+    Managment Group Name to publish Policy Definitions
 .NOTES
     Author: Sadik Tekin
     Automating CGC Package Deployment:
     https://github.com/gettek/terraform-azurerm-policy-as-code/tree/main/examples-machine-config
-
-    How to set up a machine configuration authoring environment:
-    https://learn.microsoft.com/en-us/azure/governance/machine-configuration/machine-configuration-create-setup
-    How to create custom machine configuration package artifacts:
-    https://learn.microsoft.com/en-us/azure/governance/machine-configuration/machine-configuration-create
-    How to create custom machine configuration policy definitions:
-    https://learn.microsoft.com/en-us/azure/governance/machine-configuration/machine-configuration-create-definition
 #>
 
 [CmdletBinding()]
