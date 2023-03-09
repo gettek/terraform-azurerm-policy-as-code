@@ -12,6 +12,7 @@ resource "null_resource" "build_machine_config_packages" {
     working_dir = "${path.module}/../scripts"
 
     environment = {
+      connectAzAccount         = "true"
       config                   = each.key
       checkDependancies        = "true"
       createGuestConfigPackage = "true"

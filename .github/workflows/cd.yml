@@ -35,7 +35,7 @@ jobs:
         run: terraform apply
         working-directory: examples
 
-      - name: Log in with Azure
+      - name: Azure Login
         uses: azure/login@v1
         if: ${{ failure() }} || ${{ success() }}
         with:

@@ -1,5 +1,7 @@
 # Azure Policy Machine Configuration for Virtual Machines
 
+[![cd-machine-config](https://github.com/gettek/terraform-azurerm-policy-as-code/actions/workflows/cd-guest-config.yml/badge.svg)](https://github.com/gettek/terraform-azurerm-policy-as-code/actions/workflows/cd-guest-config.yml)
+
 This folder demonstrates an effective terraform workflow for continuous compliance with [Azure Policy Machine Configuration](https://learn.microsoft.com/en-us/azure/governance/machine-configuration/overview) (Uses PowerShell Desired State Config).
 
 ### Automating CGC Package Deployment

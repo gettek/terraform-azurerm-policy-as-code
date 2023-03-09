@@ -58,7 +58,6 @@ if ($env:checkDependancies) {
     Import-Module PowerShellGet
     # Include modules required by dsc configs
     @(
-        'Az.Accounts'
         'Az.Storage'
         'GuestConfiguration'
         'PSDscResources'
@@ -67,24 +66,24 @@ if ($env:checkDependancies) {
         'SecurityPolicyDsc'
         'xWebAdministration'
         'nx'
-    ).ForEach({
-            Write-Host "Checking dependancies for $_" -ForegroundColor Green
-            try {
-                Find-Module -Name $_ | Select-Object Version, Name | ForEach-Object {
-                    $installedVersion = (Get-InstalledModule -Name $_.Name -ErrorAction SilentlyContinue).Version
-                    if (!($installedVersion)) {
-                        Write-Host '🟢 Installing New Module' $_.Name $_.Version -ForegroundColor Green
-                        Install-Module $_.Name -Force -AcceptLicense -Confirm:$false -AllowClobber
-                    }
-                    elseif ($installedVersion -lt $_.Version) {
-                        Write-Host '🔷 Updating' $_.Name 'to the latest version:' $_.Version -ForegroundColor Blue
-                        Update-Module -Name $_.Name -Force -AcceptLicense -Confirm:$false
-                    }
-                    Import-Module $_.Name
+    ) | ForEach-Object -Parallel {
+        Write-Host "Checking dependancies for $_" -ForegroundColor Green
+        try {
+            Find-Module -Name $_ | Select-Object Version, Name | ForEach-Object {
+                $installedVersion = (Get-InstalledModule -Name $_.Name -ErrorAction SilentlyContinue).Version
+                if (!($installedVersion)) {
+                    Write-Host '🟢 Installing New Module' $_.Name $_.Version -ForegroundColor Green
+                    Install-Module $_.Name -Force -AcceptLicense -Confirm:$false -AllowClobber
                 }
+                elseif ($installedVersion -lt $_.Version) {
+                    Write-Host '🔷 Updating' $_.Name 'to the latest version:' $_.Version -ForegroundColor Blue
+                    Update-Module -Name $_.Name -Force -AcceptLicense -Confirm:$false
+                }
+                Import-Module $_.Name
             }
-            catch { Write-Host "🥵 Could not install module: $_" -ForegroundColor Red }
-        })
+        }
+        catch { Write-Host "🥵 Could not install module: $_" -ForegroundColor Red }
+    }
 }
 
 if ($env:createGuestConfigPackage) {
@@ -103,7 +102,7 @@ if ($env:createGuestConfigPackage) {
             Connect-AzAccount @conn -ServicePrincipal -Confirm:$false | Out-Null
         }
         catch {
-            Write-Host "🔴 Could not Authenticate to Azure: $_" -ForegroundColor Red
+            Write-Host "🔑 Could not Authenticate to Azure: $_" -ForegroundColor Red
             Exit 1
         }
     }
@@ -126,7 +125,7 @@ if ($env:createGuestConfigPackage) {
             Type          = 'AuditAndSet'
         }
         $package = New-GuestConfigurationPackage @packageConfig -Force
-        Write-Host "🟢 New GuestConfig Package Created: $configName v$configversion" -ForegroundColor Green
+        Write-Host "🗃️ New GuestConfig Package Created: $configName v$configversion" -ForegroundColor Green
     }
     catch {
         Write-Host "🔴 Could not Create GuestConfig Package $configName v${configversion}: $_" -ForegroundColor Red
@@ -139,7 +138,7 @@ if ($env:createGuestConfigPackage) {
             $saKey = (Get-AzStorageAccountKey -ResourceGroupName $env:storageResourceGroupName -Name $env:storageAccountName).value[0]
             $context = New-AzStorageContext -ConnectionString "DefaultEndpointsProtocol=https;AccountName=$env:storageAccountName;AccountKey=$saKey;"
             $uploadPackage = Set-AzStorageBlobContent -Container $env:containerName -File $package.Path -Context $context -Force
-            Write-Host "🔷 Uploaded Package to Storage: $env:storageAccountName/$env:containerName/$configName.zip" -ForegroundColor DarkCyan
+            Write-Host "⬆️ Uploaded Package to Storage: $env:storageAccountName/$env:containerName/$configName.zip" -ForegroundColor DarkCyan
         }
         catch {
             Write-Host "🔴 Could not Uploaded Package to Storage: $_" -ForegroundColor Red
@@ -187,7 +186,7 @@ if ($env:createGuestConfigPackage) {
             Move-Item -Path $policy.Path -Destination $libraryPath -Force -Confirm:$false
             Write-Host "✅ Policy Definition Created: $libraryPath" -ForegroundColor Yellow
             # Remove older versions
-                (Get-ChildItem "../policies/Guest Configuration/${configName}_*.json").FullName | Where-Object { $_ -notlike "*$configversion*" } | Remove-Item -Force -Confirm:$false
+            (Get-ChildItem "../policies/Guest Configuration/${configName}_*.json").FullName | Where-Object { $_ -notlike "*$configversion*" } | Remove-Item -Force -Confirm:$false
         }
         catch {
             Write-Host "🔴 Could not create Policy Definition: $_" -ForegroundColor Red
@@ -198,7 +197,7 @@ if ($env:createGuestConfigPackage) {
             try {
                 $publishDefinition = New-AzPolicyDefinition -Name $configName -Policy $libraryPath -ManagementGroupName $env:publishGuestConfigPolicyMG
                 $policyDefinitionId = $publishDefinition.PolicyDefinitionId
-                Write-Host "🔷 Policy Definition Published: $policyDefinitionId" -ForegroundColor DarkCyan
+                Write-Host "📜 Policy Definition Published: $policyDefinitionId" -ForegroundColor DarkCyan
             }
             catch {
                 Write-Host "🔴 Could not Publish Policy Definition: $_" -ForegroundColor Red
