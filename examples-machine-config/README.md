@@ -50,7 +50,7 @@ No requirements.
 | <a name="module_custom_guest_configs"></a> [custom\_guest\_configs](#module\_custom\_guest\_configs) | ..//modules/definition | n/a |
 | <a name="module_custom_guest_configs_initiative"></a> [custom\_guest\_configs\_initiative](#module\_custom\_guest\_configs\_initiative) | ..//modules/initiative | n/a |
 | <a name="module_team_a_mg_guest_config_prereqs_initiative"></a> [team\_a\_mg\_guest\_config\_prereqs\_initiative](#module\_team\_a\_mg\_guest\_config\_prereqs\_initiative) | ..//modules/set_assignment | n/a |
-| <a name="module_team_a_mg_vm_custom_machine_configs"></a> [team\_a\_mg\_vm\_custom\_machine\_configs](#module\_team\_a\_mg\_vm\_custom\_machine\_configs) | ..//modules/set_assignment | n/a |
+| <a name="module_team_a_mg_vm_custom_guest_configs"></a> [team\_a\_mg\_vm\_custom\_guest\_configs](#module\_team\_a\_mg\_vm\_custom\_guest\_configs) | ..//modules/set_assignment | n/a |
 
 ## Resources
 
@@ -68,7 +68,6 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_build_packages"></a> [build\_packages](#input\_build\_packages) | Create and publish custom machine config polices with build\_machine\_config\_packages.ps1 | `bool` | `true` | no |
 | <a name="input_re_evaluate_compliance"></a> [re\_evaluate\_compliance](#input\_re\_evaluate\_compliance) | Should the module re-evaluate compliant resources for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 | <a name="input_skip_remediation"></a> [skip\_remediation](#input\_skip\_remediation) | Skip creation of all remediation tasks for policies that DeployIfNotExists and Modify | `bool` | `true` | no |
 | <a name="input_skip_role_assignment"></a> [skip\_role\_assignment](#input\_skip\_role\_assignment) | Should the module skip creation of role assignment for policies that DeployIfNotExists and Modify | `bool` | `false` | no |

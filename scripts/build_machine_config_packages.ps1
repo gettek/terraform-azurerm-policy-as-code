@@ -6,7 +6,7 @@
     Use this script to simplify machine config package build and publish with Terraform
     Paramters are set as Environment Variables '$env' as to work with the Terraform (null_resource) interpreter
     Running terraform apply with -parallelism=1 will prevent the GuestConfiguration module from encountering conflicts during package creation
-.PARAMETER config
+.PARAMETER configFile
     DSC Config File Name
 .PARAMETER connectAzAccount
     use Az CLI Token to authenticate to Azure PowerShell, Omit if already authenticated
@@ -34,7 +34,7 @@
 
 [CmdletBinding()]
 Param(
-    [switch][Parameter(Mandatory = $false)] $env:config,
+    [switch][Parameter(Mandatory = $false)] $env:configFile,
     [switch][Parameter(Mandatory = $false)] $env:connectAzAccount,
     [switch][Parameter(Mandatory = $false)] $env:checkDependancies,
     [switch][Parameter(Mandatory = $false)] $env:housekeeping,
@@ -101,7 +101,7 @@ if ($env:createGuestConfigPackage) {
         }
     }
 
-    $configPath = (Get-ChildItem "$PSScriptRoot/dsc_examples/$env:config")
+    $configPath = (Get-ChildItem "$PSScriptRoot/dsc_examples/$env:configFile")
     $configName = $configPath.BaseName.Split('_')[-0]
     $configversion = $configPath.BaseName.Split('_')[-1]
 

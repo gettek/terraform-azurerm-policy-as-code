@@ -20,12 +20,6 @@ variable "re_evaluate_compliance" {
   default     = false
 }
 
-variable "build_packages" {
-  type        = bool
-  description = "Create and publish custom machine config polices with build_machine_config_packages.ps1"
-  default     = true
-}
-
 locals {
   resource_discovery_mode = var.re_evaluate_compliance == true ? "ReEvaluateCompliance" : "ExistingNonCompliant"
 }
