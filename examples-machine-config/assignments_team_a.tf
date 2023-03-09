@@ -18,7 +18,7 @@ module "team_a_mg_guest_config_prereqs_initiative" {
 }
 
 # Assign Custom Machine Configs Initiative
-module "team_a_mg_vm_custom_machine_configs" {
+module "team_a_mg_vm_custom_guest_configs" {
   source                  = "..//modules/set_assignment"
   initiative              = module.custom_guest_configs_initiative.initiative
   assignment_scope        = data.azurerm_management_group.team_a.id

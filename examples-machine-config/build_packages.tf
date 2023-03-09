@@ -4,7 +4,6 @@
 # requires PWSH >= 7
 
 resource "null_resource" "build_machine_config_packages" {
-  #count = var.build_packages ? 1 : 0
   for_each = { for dsc in fileset(path.module, "../scripts/dsc_examples/*.ps1") : basename(dsc) => filemd5(dsc) }
   provisioner "local-exec" {
     command     = "build_machine_config_packages.ps1"
@@ -12,8 +11,8 @@ resource "null_resource" "build_machine_config_packages" {
     working_dir = "${path.module}/../scripts"
 
     environment = {
+      configFile               = each.key
       connectAzAccount         = "true"
-      config                   = each.key
       checkDependancies        = "true"
       createGuestConfigPackage = "true"
       createGuestConfigPolicy  = "true"

@@ -17,7 +17,7 @@ module "custom_guest_configs" {
 module "custom_guest_configs_initiative" {
   source                  = "..//modules/initiative"
   initiative_name         = "custom_guest_configs_initiative"
-  initiative_display_name = "[CGC]: Custom Machine Configurations Initiative"
+  initiative_display_name = "[CGC]: Custom Guest Configurations Initiative"
   initiative_description  = "Collection of policies that deploy custom machine configurations"
   initiative_category     = "Guest Configuration"
   management_group_id     = data.azurerm_management_group.org.id
