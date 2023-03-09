@@ -66,24 +66,24 @@ if ($env:checkDependancies) {
         'SecurityPolicyDsc'
         'xWebAdministration'
         'nx'
-    ) | ForEach-Object -Parallel {
-        Write-Host "Checking dependancies for $_" -ForegroundColor Green
-        try {
-            Find-Module -Name $_ | Select-Object Version, Name | ForEach-Object {
-                $installedVersion = (Get-InstalledModule -Name $_.Name -ErrorAction SilentlyContinue).Version
-                if (!($installedVersion)) {
-                    Write-Host '🟢 Installing New Module' $_.Name $_.Version -ForegroundColor Green
-                    Install-Module $_.Name -Force -AcceptLicense -Confirm:$false -AllowClobber
+    ).ForEach({
+            Write-Host "Checking dependancies for $_" -ForegroundColor Green
+            try {
+                Find-Module -Name $_ | Select-Object Version, Name | ForEach-Object {
+                    $installedVersion = (Get-InstalledModule -Name $_.Name -ErrorAction SilentlyContinue).Version
+                    if (!($installedVersion)) {
+                        Write-Host '🟢 Installing New Module' $_.Name $_.Version -ForegroundColor Green
+                        Install-Module $_.Name -Force -AcceptLicense -Confirm:$false -AllowClobber
+                    }
+                    elseif ($installedVersion -lt $_.Version) {
+                        Write-Host '🔷 Updating' $_.Name 'to the latest version:' $_.Version -ForegroundColor Blue
+                        Update-Module -Name $_.Name -Force -AcceptLicense -Confirm:$false
+                    }
+                    Import-Module $_.Name
                 }
-                elseif ($installedVersion -lt $_.Version) {
-                    Write-Host '🔷 Updating' $_.Name 'to the latest version:' $_.Version -ForegroundColor Blue
-                    Update-Module -Name $_.Name -Force -AcceptLicense -Confirm:$false
-                }
-                Import-Module $_.Name
             }
-        }
-        catch { Write-Host "🥵 Could not install module: $_" -ForegroundColor Red }
-    }
+            catch { Write-Host "🥵 Could not install module: $_" -ForegroundColor Red }
+        })
 }
 
 if ($env:createGuestConfigPackage) {
