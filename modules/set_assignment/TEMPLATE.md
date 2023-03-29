@@ -28,8 +28,8 @@ module org_mg_configure_asc_initiative {
   ]
 
   non_compliance_messages = {
-    null                      = "The Default non-compliance message for all member definitions"
-    "AutoEnrollSubscriptions" = "The non-compliance message for the auto_enroll_subscriptions definition"
+    null                    = "The Default non-compliance message for all member definitions"
+    AutoEnrollSubscriptions = "The non-compliance message for the auto_enroll_subscriptions definition"
   }
 }
 ```

@@ -12,10 +12,10 @@ output remediation_tasks {
   description = "The Remediation Task Ids and related Policy Definition Ids"
   value = [
     for rem in local.remediation_tasks :
-    tomap({
-      "id"                   = rem.id
-      "policy_definition_id" = rem.policy_definition_id
-    })
+    {
+      id                             = rem.id
+      policy_definition_reference_id = rem.policy_definition_reference_id
+    }
   ]
 }
 

@@ -28,8 +28,8 @@ module org_mg_configure_asc_initiative {
   ]
 
   non_compliance_messages = {
-    null                      = "The Default non-compliance message for all member definitions"
-    "AutoEnrollSubscriptions" = "The non-compliance message for the auto_enroll_subscriptions definition"
+    null                    = "The Default non-compliance message for all member definitions"
+    AutoEnrollSubscriptions = "The non-compliance message for the auto_enroll_subscriptions definition"
   }
 }
 ```
@@ -126,7 +126,7 @@ No modules.
 | <a name="input_assignment_parameters"></a> [assignment\_parameters](#input\_assignment\_parameters) | The policy assignment parameters. Changing this forces a new resource to be created | `any` | `null` | no |
 | <a name="input_assignment_scope"></a> [assignment\_scope](#input\_assignment\_scope) | The scope at which the policy initiative will be assigned. Must be full resource IDs. Changing this forces a new resource to be created | `string` | n/a | yes |
 | <a name="input_failure_percentage"></a> [failure\_percentage](#input\_failure\_percentage) | (Optional) A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold. | `number` | `null` | no |
-| <a name="input_identity_ids"></a> [identity\_ids](#input\_identity\_ids) | Optional list of User Managed Identity IDs which should be assigned to the Policy Initiative | `list(any)` | `[]` | no |
+| <a name="input_identity_ids"></a> [identity\_ids](#input\_identity\_ids) | Optional list of User Managed Identity IDs which should be assigned to the Policy Initiative | `list(any)` | `null` | no |
 | <a name="input_initiative"></a> [initiative](#input\_initiative) | Policy Initiative resource node | `any` | n/a | yes |
 | <a name="input_location_filters"></a> [location\_filters](#input\_location\_filters) | Optional list of the resource locations that will be remediated | `list(any)` | `[]` | no |
 | <a name="input_non_compliance_messages"></a> [non\_compliance\_messages](#input\_non\_compliance\_messages) | The optional non-compliance message(s). Key/Value pairs map as policy\_definition\_reference\_id = 'content', use null = 'content' to specify the Default non-compliance message for all member definitions. | `any` | `{}` | no |

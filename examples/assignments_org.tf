@@ -8,7 +8,7 @@ module "org_mg_whitelist_regions" {
   assignment_effect = "Deny"
 
   assignment_parameters = {
-    "listOfRegionsAllowed" = [
+    listOfRegionsAllowed = [
       "UK South",
       "UK West",
       "Global"
@@ -32,6 +32,7 @@ module "org_mg_configure_asc_initiative" {
   initiative              = module.configure_asc_initiative.initiative
   assignment_scope        = data.azurerm_management_group.org.id
   assignment_effect       = "DeployIfNotExists"
+  assignment_location     = "ukwest"
   skip_remediation        = var.skip_remediation
   skip_role_assignment    = var.skip_role_assignment
   resource_discovery_mode = local.resource_discovery_mode
@@ -46,6 +47,12 @@ module "org_mg_configure_asc_initiative" {
     eventHubDetails       = local.dummy_resource_ids.azurerm_eventhub_namespace_authorization_rule
     securityContactsEmail = "admin@cloud.com"
     securityContactsPhone = "44897654987"
+  }
+
+  # optional non-compliance messages. Key/Value pairs map as policy_definition_reference_id = 'content'
+  non_compliance_messages = {
+    null                    = "The Default non-compliance message for all member definitions"
+    AutoEnrollSubscriptions = "The non-compliance message for the auto_enroll_subscriptions definition"
   }
 }
 
@@ -63,11 +70,6 @@ module "org_mg_platform_diagnostics_initiative" {
   role_definition_ids = [
     data.azurerm_role_definition.contributor.id # using explicit roles
   ]
-
-  non_compliance_messages = {
-    null                                        = "The Default non-compliance message for all member definitions"
-    "DeployApplicationGatewayDiagnosticSetting" = "The non-compliance message for the deploy_application_gateway_diagnostic_setting definition"
-  }
 
   assignment_parameters = {
     workspaceId                                        = local.dummy_resource_ids.azurerm_log_analytics_workspace

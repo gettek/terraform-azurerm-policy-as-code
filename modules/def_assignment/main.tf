@@ -9,7 +9,7 @@ resource azurerm_management_group_policy_assignment def {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message
@@ -38,7 +38,7 @@ resource azurerm_subscription_policy_assignment def {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message
@@ -68,7 +68,7 @@ resource azurerm_resource_group_policy_assignment def {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message
@@ -97,7 +97,7 @@ resource azurerm_resource_policy_assignment def {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.definition.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message

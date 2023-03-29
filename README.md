@@ -160,8 +160,8 @@ module org_mg_platform_diagnostics_initiative {
   ]
 
   non_compliance_messages = {
-    null                                        = "The Default non-compliance message for all member definitions"
-    "DeployApplicationGatewayDiagnosticSetting" = "The non-compliance message for the deploy_application_gateway_diagnostic_setting definition"
+    null                                      = "The Default non-compliance message for all member definitions"
+    DeployApplicationGatewayDiagnosticSetting = "The non-compliance message for the deploy_application_gateway_diagnostic_setting definition"
   }
 }
 ```
