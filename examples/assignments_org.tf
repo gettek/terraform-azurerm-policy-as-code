@@ -31,6 +31,7 @@ module "org_mg_configure_asc_initiative" {
   source                  = "..//modules/set_assignment"
   initiative              = module.configure_asc_initiative.initiative
   assignment_scope        = data.azurerm_management_group.org.id
+  assignment_description  = "WIP - Deploys and configures Defender settings and defines exports"
   assignment_effect       = "DeployIfNotExists"
   assignment_location     = "ukwest"
   skip_remediation        = var.skip_remediation

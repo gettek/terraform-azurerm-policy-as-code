@@ -17,19 +17,19 @@ variable assignment_not_scopes {
 variable assignment_name {
   type        = string
   description = "The name which should be used for this Policy Assignment, defaults to initiative name. Changing this forces a new Policy Assignment to be created"
-  default     = ""
+  default     = null
 }
 
 variable assignment_display_name {
   type        = string
   description = "The policy assignment display name, defaults to initiative display_name. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable assignment_description {
   type        = string
   description = "A description to use for the Policy Assignment, defaults to initiative description. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable assignment_effect {
@@ -88,7 +88,7 @@ variable resource_discovery_mode {
 variable remediation_scope {
   type        = string
   description = "The scope at which the remediation tasks will be created. Must be full resource IDs. Defaults to the policy assignment scope. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable location_filters {

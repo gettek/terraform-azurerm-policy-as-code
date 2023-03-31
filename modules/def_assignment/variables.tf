@@ -17,19 +17,19 @@ variable assignment_not_scopes {
 variable assignment_name {
   type        = string
   description = "The name which should be used for this Policy Assignment, defaults to definition name. Changing this forces a new Policy Assignment to be created"
-  default     = ""
+  default     = null
 }
 
 variable assignment_display_name {
   type        = string
   description = "The policy assignment display name, defaults to definition display_name. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable assignment_description {
   type        = string
   description = "A description to use for the Policy Assignment, defaults to definition description. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable assignment_effect {
@@ -65,7 +65,7 @@ variable assignment_location {
 variable non_compliance_message {
   type        = string
   description = "The optional non-compliance message text."
-  default     = ""
+  default     = null
 }
 
 variable identity_ids {
@@ -88,7 +88,7 @@ variable resource_discovery_mode {
 variable remediation_scope {
   type        = string
   description = "The scope at which the remediation tasks will be created. Must be full resource IDs. Defaults to the policy assignment scope. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable location_filters {
@@ -156,7 +156,7 @@ locals {
   parameters = local.parameter_values != null ? var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values) : null
 
   # create the optional non-compliance message contents block if present
-  non_compliance_message = var.non_compliance_message != "" ? { content = var.non_compliance_message } : {}
+  non_compliance_message = var.non_compliance_message != null ? { content = var.non_compliance_message } : {}
 
   # determine if a managed identity should be created with this assignment
   identity_type = length(try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), [])) > 0 ? var.identity_ids != null ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
