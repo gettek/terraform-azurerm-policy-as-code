@@ -74,15 +74,10 @@ variable identity_ids {
   default     = null
 }
 
-variable resource_discovery_mode {
-  type        = string
-  description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant. Applies to subscription scope and below"
-  default     = "ExistingNonCompliant"
-
-  validation {
-    condition     = var.resource_discovery_mode == "ExistingNonCompliant" || var.resource_discovery_mode == "ReEvaluateCompliance"
-    error_message = "Resource Discovery Mode possible values are: ExistingNonCompliant or ReEvaluateCompliance."
-  }
+variable re_evaluate_compliance {
+  type        = bool
+  description = "Sets the remediation task resource_discovery_mode for policies that DeployIfNotExists and Modify. false = 'ExistingNonCompliant' and true = 'ReEvaluateCompliance'. Defaults to false. Applies at subscription scope and below"
+  default     = false
 }
 
 variable remediation_scope {
@@ -182,6 +177,7 @@ locals {
   })
 
   # evaluate remediation scope from resource identifier
+  resource_discovery_mode = var.re_evaluate_compliance == true ? "ReEvaluateCompliance" : "ExistingNonCompliant"
   remediation_scope = try(coalesce(var.remediation_scope, var.assignment_scope), "")
   remediate = try({
     mg       = length(regexall("(\\/managementGroups\\/)", local.remediation_scope)) > 0 ? 1 : 0,

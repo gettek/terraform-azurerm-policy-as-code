@@ -141,7 +141,7 @@ resource azurerm_subscription_policy_remediation rem {
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   subscription_id         = local.remediation_scope
   policy_assignment_id    = local.assignment.id
-  resource_discovery_mode = var.resource_discovery_mode
+  resource_discovery_mode = local.resource_discovery_mode
   location_filters        = var.location_filters
   failure_percentage      = var.failure_percentage
   parallel_deployments    = var.parallel_deployments
@@ -153,7 +153,7 @@ resource azurerm_resource_group_policy_remediation rem {
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   resource_group_id       = local.remediation_scope
   policy_assignment_id    = local.assignment.id
-  resource_discovery_mode = var.resource_discovery_mode
+  resource_discovery_mode = local.resource_discovery_mode
   location_filters        = var.location_filters
   failure_percentage      = var.failure_percentage
   parallel_deployments    = var.parallel_deployments
@@ -165,7 +165,7 @@ resource azurerm_resource_policy_remediation rem {
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   resource_id             = local.remediation_scope
   policy_assignment_id    = local.assignment.id
-  resource_discovery_mode = var.resource_discovery_mode
+  resource_discovery_mode = local.resource_discovery_mode
   location_filters        = var.location_filters
   failure_percentage      = var.failure_percentage
   parallel_deployments    = var.parallel_deployments

@@ -141,10 +141,12 @@ module org_mg_platform_diagnostics_initiative {
   initiative              = module.platform_diagnostics_initiative.initiative
   assignment_scope        = data.azurerm_management_group.org.id
   assignment_effect       = "DeployIfNotExists"
+
+  # optional resource remediation inputs
+  re_evaluate_compliance  = false
   skip_remediation        = false
   skip_role_assignment    = false
   remediation_scope       = data.azurerm_subscription.current.id
-  resource_discovery_mode = "ReEvaluateCompliance"
 
   assignment_parameters = {
     workspaceId                 = data.azurerm_log_analytics_workspace.workspace.id

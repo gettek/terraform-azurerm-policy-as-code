@@ -34,14 +34,12 @@ module "org_mg_configure_asc_initiative" {
   assignment_description  = "WIP - Deploys and configures Defender settings and defines exports"
   assignment_effect       = "DeployIfNotExists"
   assignment_location     = "ukwest"
+
+  # resource remediation options
+  re_evaluate_compliance  = var.re_evaluate_compliance
   skip_remediation        = var.skip_remediation
   skip_role_assignment    = var.skip_role_assignment
-  resource_discovery_mode = local.resource_discovery_mode
-
-  role_assignment_scope = data.azurerm_management_group.team_a.id # using explicit scopes
-  role_definition_ids = [
-    data.azurerm_role_definition.contributor.id # using explicit roles
-  ]
+  role_assignment_scope   = data.azurerm_management_group.team_a.id # using explicit scopes
 
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
@@ -65,12 +63,12 @@ module "org_mg_platform_diagnostics_initiative" {
   source               = "..//modules/set_assignment"
   initiative           = module.platform_diagnostics_initiative.initiative
   assignment_scope     = data.azurerm_management_group.org.id
-  skip_remediation     = true
-  skip_role_assignment = false
 
-  role_definition_ids = [
-    data.azurerm_role_definition.contributor.id # using explicit roles
-  ]
+  # resource remediation options
+  re_evaluate_compliance  = var.re_evaluate_compliance
+  skip_remediation        = var.skip_remediation
+  skip_role_assignment    = var.skip_role_assignment
+  role_definition_ids     = [ data.azurerm_role_definition.contributor.id ] # using explicit roles
 
   assignment_parameters = {
     workspaceId                                        = local.dummy_resource_ids.azurerm_log_analytics_workspace
