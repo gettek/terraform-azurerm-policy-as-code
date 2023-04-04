@@ -1,4 +1,4 @@
-output exemption {
+output "exemption" {
   description = "The Policy Exemption Details"
   value = {
     name                     = var.name

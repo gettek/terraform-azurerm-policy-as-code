@@ -47,8 +47,8 @@ module "deny_nic_public_ip" {
 
 # create definitions by calling them explicitly from a local (as above)
 module "configure_asc" {
-  source              = "..//modules/definition"
-  for_each            = toset([
+  source = "..//modules/definition"
+  for_each = toset([
     "auto_enroll_subscriptions",
     "auto_provision_log_analytics_agent_custom_workspace",
     "auto_set_contact_details",
