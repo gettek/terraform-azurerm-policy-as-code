@@ -54,13 +54,14 @@ module team_a_mg_inherit_resource_group_tags_modify {
 ### Create a Built-In Policy Definition Assignment with Custom Non-Compliance Message
 
 ```hcl
-data azurerm_policy_definition deploy_law_on_linux_vms {
-  display_name = "Deploy Log Analytics extension for Linux VMs"
+# Should use name instead of display name, as Microsoft changes the display names.
+data azurerm_policy_definition_built_in deploy_law_on_linux_vms {
+  name =  "053d3325-282c-4e5c-b944-24faffd30d77" #"Deploy Log Analytics extension for Linux VMs"
 }
 
 module team_a_mg_inherit_resource_group_tags_modify {
   source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  definition        = data.azurerm_policy_definition.deploy_law_on_linux_vms
+  definition        = data.azurerm_policy_definition_built_in.deploy_law_on_linux_vms
   assignment_scope  = data.azurerm_management_group.org.id
   skip_remediation  = var.skip_remediation
 
@@ -110,13 +111,13 @@ resource "azuread_group_member" "remediate_team_a_mg_inherit_resource_group_tags
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.21.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.44.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=3.21.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=3.44.0 |
 
 ## Modules
 

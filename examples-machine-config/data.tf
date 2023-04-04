@@ -25,5 +25,5 @@ data "azurerm_storage_container" "guest_config_container" {
 #      [GA]: 12794019-7a00-42cf-95c2-882eed337cc8 "Deploy prerequisites to enable Guest Configuration policies on virtual machines" (SystemAssigned)
 # [Preview]: 2b0ce52e-301c-4221-ab38-1601e2b4cee3 "[Preview]: Deploy prerequisites to enable Guest Configuration policies on virtual machines using user-assigned managed identity" (UserAssigned)
 data "azurerm_policy_set_definition" "deploy_guest_config_prereqs_initiative" {
-  display_name = "Deploy prerequisites to enable Guest Configuration policies on virtual machines"
+  name = "12794019-7a00-42cf-95c2-882eed337cc8" #"Deploy prerequisites to enable Guest Configuration policies on virtual machines"
 }
