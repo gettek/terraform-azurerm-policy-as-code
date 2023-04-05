@@ -1,4 +1,4 @@
-resource azurerm_management_group_policy_assignment def {
+resource "azurerm_management_group_policy_assignment" "def" {
   count                = local.assignment_scope.mg
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -27,7 +27,7 @@ resource azurerm_management_group_policy_assignment def {
   }
 }
 
-resource azurerm_subscription_policy_assignment def {
+resource "azurerm_subscription_policy_assignment" "def" {
   count                = local.assignment_scope.sub
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -57,7 +57,7 @@ resource azurerm_subscription_policy_assignment def {
 }
 
 
-resource azurerm_resource_group_policy_assignment def {
+resource "azurerm_resource_group_policy_assignment" "def" {
   count                = local.assignment_scope.rg
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -86,7 +86,7 @@ resource azurerm_resource_group_policy_assignment def {
   }
 }
 
-resource azurerm_resource_policy_assignment def {
+resource "azurerm_resource_policy_assignment" "def" {
   count                = local.assignment_scope.resource
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -116,7 +116,7 @@ resource azurerm_resource_policy_assignment def {
 }
 
 ## role assignments ##
-resource azurerm_role_assignment rem_role {
+resource "azurerm_role_assignment" "rem_role" {
   for_each                         = toset(local.role_definition_ids)
   scope                            = local.role_assignment_scope
   role_definition_id               = each.value
@@ -125,18 +125,18 @@ resource azurerm_role_assignment rem_role {
 }
 
 ## remediation tasks ##
-resource azurerm_management_group_policy_remediation rem {
-  count                   = local.create_remediation + local.remediate.mg > 1 ? 1 : 0
-  name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
-  management_group_id     = local.remediation_scope
-  policy_assignment_id    = local.assignment.id
-  location_filters        = var.location_filters
-  failure_percentage      = var.failure_percentage
-  parallel_deployments    = var.parallel_deployments
-  resource_count          = var.resource_count
+resource "azurerm_management_group_policy_remediation" "rem" {
+  count                = local.create_remediation + local.remediate.mg > 1 ? 1 : 0
+  name                 = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
+  management_group_id  = local.remediation_scope
+  policy_assignment_id = local.assignment.id
+  location_filters     = var.location_filters
+  failure_percentage   = var.failure_percentage
+  parallel_deployments = var.parallel_deployments
+  resource_count       = var.resource_count
 }
 
-resource azurerm_subscription_policy_remediation rem {
+resource "azurerm_subscription_policy_remediation" "rem" {
   count                   = local.create_remediation + local.remediate.sub > 1 ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   subscription_id         = local.remediation_scope
@@ -148,7 +148,7 @@ resource azurerm_subscription_policy_remediation rem {
   resource_count          = var.resource_count
 }
 
-resource azurerm_resource_group_policy_remediation rem {
+resource "azurerm_resource_group_policy_remediation" "rem" {
   count                   = local.create_remediation + local.remediate.rg > 1 ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   resource_group_id       = local.remediation_scope
@@ -160,7 +160,7 @@ resource azurerm_resource_group_policy_remediation rem {
   resource_count          = var.resource_count
 }
 
-resource azurerm_resource_policy_remediation rem {
+resource "azurerm_resource_policy_remediation" "rem" {
   count                   = local.create_remediation + local.remediate.resource > 1 ? 1 : 0
   name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   resource_id             = local.remediation_scope

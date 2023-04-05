@@ -1,29 +1,29 @@
-output id {
+output "id" {
   description = "The Id of the Policy Set Definition"
   value       = local.initiative_id
 }
 
-output name {
+output "name" {
   description = "The name of the Policy Set Definition"
   value       = var.initiative_name
 }
 
-output parameters {
+output "parameters" {
   description = "The combined parameters of the Policy Set Definition"
   value       = local.parameters
 }
 
-output metadata {
+output "metadata" {
   description = "The metadata of the Policy Set Definition"
   value       = local.metadata
 }
 
-output role_definition_ids {
+output "role_definition_ids" {
   description = "Role definition IDs for remediation"
   value       = local.all_role_definition_ids
 }
 
-output initiative {
+output "initiative" {
   description = "The combined Policy Initiative resource node"
   value = {
     id                          = local.initiative_id

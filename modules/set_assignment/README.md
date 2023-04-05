@@ -9,12 +9,15 @@ Assignments can be scoped from overarching management groups right down to indiv
 ### Custom Policy Initiative Assignment with Not-Scope
 ```hcl
 module org_mg_configure_asc_initiative {
-  source               = "gettek/policy-as-code/azurerm//modules/set_assignment"
-  initiative           = module.configure_asc_initiative.initiative
-  assignment_scope     = data.azurerm_management_group.org.id
-  assignment_effect    = "DeployIfNotExists"
-  skip_remediation     = false
-  skip_role_assignment = false
+  source                 = "gettek/policy-as-code/azurerm//modules/set_assignment"
+  initiative             = module.configure_asc_initiative.initiative
+  assignment_scope       = data.azurerm_management_group.org.id
+  assignment_effect      = "DeployIfNotExists"
+
+  # resource remediation options
+  skip_role_assignment   = false
+  skip_remediation       = false
+  re_evaluate_compliance = true
 
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
@@ -85,13 +88,13 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.23.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.49.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=3.23.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.50.0 |
 
 ## Modules
 

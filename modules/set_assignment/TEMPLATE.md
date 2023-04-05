@@ -9,12 +9,15 @@ Assignments can be scoped from overarching management groups right down to indiv
 ### Custom Policy Initiative Assignment with Not-Scope
 ```hcl
 module org_mg_configure_asc_initiative {
-  source               = "gettek/policy-as-code/azurerm//modules/set_assignment"
-  initiative           = module.configure_asc_initiative.initiative
-  assignment_scope     = data.azurerm_management_group.org.id
-  assignment_effect    = "DeployIfNotExists"
-  skip_remediation     = false
-  skip_role_assignment = false
+  source                 = "gettek/policy-as-code/azurerm//modules/set_assignment"
+  initiative             = module.configure_asc_initiative.initiative
+  assignment_scope       = data.azurerm_management_group.org.id
+  assignment_effect      = "DeployIfNotExists"
+
+  # resource remediation options
+  skip_role_assignment   = false
+  skip_remediation       = false
+  re_evaluate_compliance = true
 
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace

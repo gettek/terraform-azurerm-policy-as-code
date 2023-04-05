@@ -217,7 +217,7 @@ Unless you specify `skip_remediation=true`, the `*_assignment` modules will auto
 
 ### ⏱️On-demand evaluation scan
 
-To trigger an on-demand [compliance scan](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data) with terraform, set `resource_discovery_mode=ReEvaluateCompliance` on `*_assignment` modules, defaults to `ExistingNonCompliant`.
+To trigger an on-demand [compliance scan](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data) with terraform, set `re_evaluate_compliance = true` on `*_assignment` modules, defaults to `false (ExistingNonCompliant)`.
 
 > 💡 **Note:** `ReEvaluateCompliance` only applies to remediation at Subscription scope and below and will take longer depending on the size of your environment.
 
@@ -253,8 +253,8 @@ To trigger an on-demand [compliance scan](https://learn.microsoft.com/en-us/azur
 - [Terraform Provider: azurerm_policy_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_definition)
 - [Terraform Provider: azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
 - [Terraform Provider: multiple assignment resources: azurerm_*_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment)
-- [Terraform Provider: multiple remediation resources: azurerm_*_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_remediation)
-- [Terraform Provider: multiple exemption resources: azurerm_*_policy_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_management_group_policy_exemption)
+- [Terraform Provider: multiple remediation resources: azurerm_*_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_remediation)
+- [Terraform Provider: multiple exemption resources: azurerm_*_policy_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_exemption)
 
 ## Limitations
 

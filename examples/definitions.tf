@@ -24,8 +24,8 @@ module "whitelist_regions" {
 # create definitions by looping around all files found under the Monitoring category folder
 module "deploy_resource_diagnostic_setting" {
   source              = "..//modules/definition"
-  for_each            = toset([for p in fileset(path.cwd, "../policies/Monitoring/*.json") : trimsuffix(basename(p), ".json")])
-  policy_name         = each.key
+  for_each            = toset([for p in fileset(path.cwd, "../policies/Monitoring/*.json") : basename(p)])
+  policy_name         = trimsuffix(each.key, ".json")
   policy_category     = "Monitoring"
   management_group_id = data.azurerm_management_group.org.id
 }
@@ -47,8 +47,8 @@ module "deny_nic_public_ip" {
 
 # create definitions by calling them explicitly from a local (as above)
 module "configure_asc" {
-  source              = "..//modules/definition"
-  for_each            = toset([
+  source = "..//modules/definition"
+  for_each = toset([
     "auto_enroll_subscriptions",
     "auto_provision_log_analytics_agent_custom_workspace",
     "auto_set_contact_details",
