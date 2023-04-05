@@ -8,11 +8,7 @@ module "org_mg_whitelist_regions" {
   assignment_effect = "Deny"
 
   assignment_parameters = {
-    listOfRegionsAllowed = [
-      "UK South",
-      "UK West",
-      "Global"
-    ]
+    listOfRegionsAllowed = ["uk", "uksouth", "ukwest", "europe", "northeurope", "westeurope", "global"] # Global is used in services such as Azure DNS
   }
 
   assignment_metadata = {
@@ -21,6 +17,17 @@ module "org_mg_whitelist_regions" {
     propertyA = "A"
     propertyB = "B"
   }
+
+  # optional resource selectors (preview)
+  resource_selectors = [
+    {
+      name = "SDPRegions"
+      selectors = {
+        kind = "resourceLocation"
+        in   = ["uk", "uksouth", "ukwest"]
+      }
+    }
+  ]
 }
 
 
@@ -53,6 +60,16 @@ module "org_mg_configure_asc_initiative" {
     null                    = "The Default non-compliance message for all member definitions"
     AutoEnrollSubscriptions = "The non-compliance message for the auto_enroll_subscriptions definition"
   }
+
+  # optional overrides (preview)
+  overrides = [
+    {
+      effect = "AuditIfNotExists"
+      selectors = {
+        in = ["ExportAscAlertsAndRecommendationsToEventhub", "ExportAscAlertsAndRecommendationsToLogAnalytics"]
+      }
+    }
+  ]
 }
 
 

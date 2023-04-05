@@ -2,11 +2,17 @@
 
 Assignments can be scoped from overarching management groups right down to individual resources
 
-> 💡 A role assignment and remediation task will be automatically created if any member definitions contain a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment = true`, or to assign roles at a different scope to that of the policy assignment use: `role_assignment_scope`. To successfully create Role-assignments (or group memberships) the deployment account may require the [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role at the `assignment_scope` or preferably the `definition_scope` to simplify workflows.
+> 💡 **Note:**  A role assignment and remediation task will be automatically created if any member definitions contain a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment = true`, or to assign roles at a different scope to that of the policy assignment use: `role_assignment_scope`. To successfully create Role-assignments (or group memberships) the deployment account may require the [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role at the `assignment_scope` or preferably the `definition_scope` to simplify workflows.
 
 ## Examples
 
-### Custom Policy Initiative Assignment with Not-Scope
+### Custom Policy Initiative Assignment with Not-Scope and Overrides (preview)
+
+The optional `overrides` property allows you to change the effect of a member definition without modifying the underlying policy definition or using a parameterized effect in the policy definition.
+
+> 📘 [Microsoft Docs: Azure Policy assignment structure (Overrides)](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/assignment-structure#overrides-preview)
+> 💡 **Note:** This module also supports Resource selectors (preview), see the [`def_assignment`](../def_assignment) module for an example input
+
 ```hcl
 module org_mg_configure_asc_initiative {
   source                 = "gettek/policy-as-code/azurerm//modules/set_assignment"
@@ -30,10 +36,27 @@ module org_mg_configure_asc_initiative {
     data.azurerm_management_group.team_a.id
   ]
 
+  # optional non-compliance messages. Key/Value pairs map as policy_definition_reference_id = 'content'
   non_compliance_messages = {
     null                    = "The Default non-compliance message for all member definitions"
     AutoEnrollSubscriptions = "The non-compliance message for the auto_enroll_subscriptions definition"
   }
+
+  # optional overrides (preview)
+  overrides = [
+    {
+      effect = "AuditIfNotExists"
+      selectors = {
+        in = [ "ExportAscAlertsAndRecommendationsToEventhub", "ExportAscAlertsAndRecommendationsToLogAnalytics" ]
+      }
+    },
+    {
+      effect = "Disabled"
+      selectors = {
+        in = [ "AutoSetContactDetails" ]
+      }
+    }
+  ]
 }
 ```
 

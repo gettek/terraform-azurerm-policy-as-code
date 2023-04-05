@@ -68,6 +68,12 @@ variable "non_compliance_message" {
   default     = null
 }
 
+variable "resource_selectors" {
+  type        = list(any)
+  description = "Optional list of Resource selectors (preview), max 10. These facilitate safe deployment practices (SDP) by enabling you to gradually roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location"
+  default     = []
+}
+
 variable "identity_ids" {
   type        = list(any)
   description = "Optional list of User Managed Identity IDs which should be assigned to the Policy Definition"
