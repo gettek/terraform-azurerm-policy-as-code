@@ -171,7 +171,8 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_definition_references"></a> [definition\_references](#output\_definition\_references) | The Member Definition Reference Ids |
+| <a name="output_definition_reference_ids"></a> [definition\_reference\_ids](#output\_definition\_reference\_ids) | The Member Definition Reference Ids |
+| <a name="output_definition_references"></a> [definition\_references](#output\_definition\_references) | The Member Definition References |
 | <a name="output_id"></a> [id](#output\_id) | The Policy Assignment Id |
 | <a name="output_principal_id"></a> [principal\_id](#output\_principal\_id) | The Principal Id of this Policy Assignment's Managed Identity if type is SystemAssigned |
 | <a name="output_remediation_tasks"></a> [remediation\_tasks](#output\_remediation\_tasks) | The Remediation Task Ids and related Policy Definition Ids |
