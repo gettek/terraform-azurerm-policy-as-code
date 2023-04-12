@@ -1,4 +1,4 @@
-resource azurerm_management_group_policy_assignment set {
+resource "azurerm_management_group_policy_assignment" "set" {
   count                = local.assignment_scope.mg
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -9,7 +9,7 @@ resource azurerm_management_group_policy_assignment set {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.initiative.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message
@@ -26,9 +26,32 @@ resource azurerm_management_group_policy_assignment set {
       identity_ids = var.identity_ids
     }
   }
+
+  dynamic "overrides" {
+    for_each = var.overrides
+    content {
+      value = overrides.value.effect
+      selectors {
+        in     = try(overrides.value.selectors.in, null)
+        not_in = try(overrides.value.selectors.not_in, null)
+      }
+    }
+  }
+
+  dynamic "resource_selectors" {
+    for_each = var.resource_selectors
+    content {
+      name = try(resource_selectors.value.name, null)
+      selectors {
+        kind   = resource_selectors.value.selectors.kind
+        in     = try(resource_selectors.value.selectors.in, null)
+        not_in = try(resource_selectors.value.selectors.not_in, null)
+      }
+    }
+  }
 }
 
-resource azurerm_subscription_policy_assignment set {
+resource "azurerm_subscription_policy_assignment" "set" {
   count                = local.assignment_scope.sub
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -39,7 +62,7 @@ resource azurerm_subscription_policy_assignment set {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.initiative.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message
@@ -56,10 +79,32 @@ resource azurerm_subscription_policy_assignment set {
       identity_ids = var.identity_ids
     }
   }
+
+  dynamic "overrides" {
+    for_each = var.overrides
+    content {
+      value = overrides.value.effect
+      selectors {
+        in     = try(overrides.value.selectors.in, null)
+        not_in = try(overrides.value.selectors.not_in, null)
+      }
+    }
+  }
+
+  dynamic "resource_selectors" {
+    for_each = var.resource_selectors
+    content {
+      name = try(resource_selectors.value.name, null)
+      selectors {
+        kind   = resource_selectors.value.selectors.kind
+        in     = try(resource_selectors.value.selectors.in, null)
+        not_in = try(resource_selectors.value.selectors.not_in, null)
+      }
+    }
+  }
 }
 
-
-resource azurerm_resource_group_policy_assignment set {
+resource "azurerm_resource_group_policy_assignment" "set" {
   count                = local.assignment_scope.rg
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -70,7 +115,7 @@ resource azurerm_resource_group_policy_assignment set {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.initiative.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message
@@ -87,9 +132,32 @@ resource azurerm_resource_group_policy_assignment set {
       identity_ids = var.identity_ids
     }
   }
+
+  dynamic "overrides" {
+    for_each = var.overrides
+    content {
+      value = overrides.value.effect
+      selectors {
+        in     = try(overrides.value.selectors.in, null)
+        not_in = try(overrides.value.selectors.not_in, null)
+      }
+    }
+  }
+
+  dynamic "resource_selectors" {
+    for_each = var.resource_selectors
+    content {
+      name = try(resource_selectors.value.name, null)
+      selectors {
+        kind   = resource_selectors.value.selectors.kind
+        in     = try(resource_selectors.value.selectors.in, null)
+        not_in = try(resource_selectors.value.selectors.not_in, null)
+      }
+    }
+  }
 }
 
-resource azurerm_resource_policy_assignment set {
+resource "azurerm_resource_policy_assignment" "set" {
   count                = local.assignment_scope.resource
   name                 = local.assignment_name
   display_name         = local.display_name
@@ -100,7 +168,7 @@ resource azurerm_resource_policy_assignment set {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.initiative.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message
@@ -117,10 +185,33 @@ resource azurerm_resource_policy_assignment set {
       identity_ids = var.identity_ids
     }
   }
+
+  dynamic "overrides" {
+    for_each = var.overrides
+    content {
+      value = overrides.value.effect
+      selectors {
+        in     = try(overrides.value.selectors.in, null)
+        not_in = try(overrides.value.selectors.not_in, null)
+      }
+    }
+  }
+
+  dynamic "resource_selectors" {
+    for_each = var.resource_selectors
+    content {
+      name = try(resource_selectors.value.name, null)
+      selectors {
+        kind   = resource_selectors.value.selectors.kind
+        in     = try(resource_selectors.value.selectors.in, null)
+        not_in = try(resource_selectors.value.selectors.not_in, null)
+      }
+    }
+  }
 }
 
 ## role assignments ##
-resource azurerm_role_assignment rem_role {
+resource "azurerm_role_assignment" "rem_role" {
   for_each                         = toset(local.role_definition_ids)
   scope                            = coalesce(var.role_assignment_scope, var.assignment_scope)
   role_definition_id               = each.value
@@ -129,7 +220,7 @@ resource azurerm_role_assignment rem_role {
 }
 
 ## remediation tasks ##
-resource azurerm_management_group_policy_remediation rem {
+resource "azurerm_management_group_policy_remediation" "rem" {
   for_each                       = { for dr in local.definition_reference.mg : basename(dr.reference_id) => dr }
   name                           = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   management_group_id            = local.remediation_scope
@@ -141,39 +232,39 @@ resource azurerm_management_group_policy_remediation rem {
   resource_count                 = var.resource_count
 }
 
-resource azurerm_subscription_policy_remediation rem {
+resource "azurerm_subscription_policy_remediation" "rem" {
   for_each                       = { for dr in local.definition_reference.sub : basename(dr.reference_id) => dr }
   name                           = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   subscription_id                = local.remediation_scope
   policy_assignment_id           = local.assignment.id
   policy_definition_reference_id = each.key
-  resource_discovery_mode        = var.resource_discovery_mode
+  resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
   parallel_deployments           = var.parallel_deployments
   resource_count                 = var.resource_count
 }
 
-resource azurerm_resource_group_policy_remediation rem {
+resource "azurerm_resource_group_policy_remediation" "rem" {
   for_each                       = { for dr in local.definition_reference.rg : basename(dr.reference_id) => dr }
   name                           = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   resource_group_id              = local.remediation_scope
   policy_assignment_id           = local.assignment.id
   policy_definition_reference_id = each.key
-  resource_discovery_mode        = var.resource_discovery_mode
+  resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
   parallel_deployments           = var.parallel_deployments
   resource_count                 = var.resource_count
 }
 
-resource azurerm_resource_policy_remediation rem {
+resource "azurerm_resource_policy_remediation" "rem" {
   for_each                       = { for dr in local.definition_reference.resource : basename(dr.reference_id) => dr }
   name                           = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
   resource_id                    = local.remediation_scope
   policy_assignment_id           = local.assignment.id
   policy_definition_reference_id = each.key
-  resource_discovery_mode        = var.resource_discovery_mode
+  resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
   parallel_deployments           = var.parallel_deployments

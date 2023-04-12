@@ -1,29 +1,29 @@
-output id {
+output "id" {
   description = "The Id of the Policy Definition"
   value       = local.definition_id
 }
 
-output name {
+output "name" {
   description = "The name of the Policy Definition"
   value       = var.policy_name
 }
 
-output rules {
+output "rules" {
   description = "The rules of the Policy Definition"
   value       = local.policy_rule
 }
 
-output parameters {
+output "parameters" {
   description = "The parameters of the Policy Definition"
   value       = local.parameters
 }
 
-output metadata {
+output "metadata" {
   description = "The metadata of the Policy Definition"
   value       = local.metadata
 }
 
-output definition {
+output "definition" {
   description = "The combined Policy Definition resource node"
   value = {
     id                  = local.definition_id
