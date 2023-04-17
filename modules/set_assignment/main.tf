@@ -9,7 +9,7 @@ resource "azurerm_management_group_policy_assignment" "set" {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.initiative.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message
@@ -24,6 +24,29 @@ resource "azurerm_management_group_policy_assignment" "set" {
     content {
       type         = identity.value
       identity_ids = var.identity_ids
+    }
+  }
+
+  dynamic "overrides" {
+    for_each = var.overrides
+    content {
+      value = overrides.value.effect
+      selectors {
+        in     = try(overrides.value.selectors.in, null)
+        not_in = try(overrides.value.selectors.not_in, null)
+      }
+    }
+  }
+
+  dynamic "resource_selectors" {
+    for_each = var.resource_selectors
+    content {
+      name = try(resource_selectors.value.name, null)
+      selectors {
+        kind   = resource_selectors.value.selectors.kind
+        in     = try(resource_selectors.value.selectors.in, null)
+        not_in = try(resource_selectors.value.selectors.not_in, null)
+      }
     }
   }
 }
@@ -39,7 +62,7 @@ resource "azurerm_subscription_policy_assignment" "set" {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.initiative.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message
@@ -56,8 +79,30 @@ resource "azurerm_subscription_policy_assignment" "set" {
       identity_ids = var.identity_ids
     }
   }
-}
 
+  dynamic "overrides" {
+    for_each = var.overrides
+    content {
+      value = overrides.value.effect
+      selectors {
+        in     = try(overrides.value.selectors.in, null)
+        not_in = try(overrides.value.selectors.not_in, null)
+      }
+    }
+  }
+
+  dynamic "resource_selectors" {
+    for_each = var.resource_selectors
+    content {
+      name = try(resource_selectors.value.name, null)
+      selectors {
+        kind   = resource_selectors.value.selectors.kind
+        in     = try(resource_selectors.value.selectors.in, null)
+        not_in = try(resource_selectors.value.selectors.not_in, null)
+      }
+    }
+  }
+}
 
 resource "azurerm_resource_group_policy_assignment" "set" {
   count                = local.assignment_scope.rg
@@ -70,7 +115,7 @@ resource "azurerm_resource_group_policy_assignment" "set" {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.initiative.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message
@@ -85,6 +130,29 @@ resource "azurerm_resource_group_policy_assignment" "set" {
     content {
       type         = identity.value
       identity_ids = var.identity_ids
+    }
+  }
+
+  dynamic "overrides" {
+    for_each = var.overrides
+    content {
+      value = overrides.value.effect
+      selectors {
+        in     = try(overrides.value.selectors.in, null)
+        not_in = try(overrides.value.selectors.not_in, null)
+      }
+    }
+  }
+
+  dynamic "resource_selectors" {
+    for_each = var.resource_selectors
+    content {
+      name = try(resource_selectors.value.name, null)
+      selectors {
+        kind   = resource_selectors.value.selectors.kind
+        in     = try(resource_selectors.value.selectors.in, null)
+        not_in = try(resource_selectors.value.selectors.not_in, null)
+      }
     }
   }
 }
@@ -100,7 +168,7 @@ resource "azurerm_resource_policy_assignment" "set" {
   not_scopes           = var.assignment_not_scopes
   enforce              = var.assignment_enforcement_mode
   policy_definition_id = var.initiative.id
-  location             = var.assignment_location
+  location             = local.assignment_location
 
   dynamic "non_compliance_message" {
     for_each = local.non_compliance_message
@@ -115,6 +183,29 @@ resource "azurerm_resource_policy_assignment" "set" {
     content {
       type         = identity.value
       identity_ids = var.identity_ids
+    }
+  }
+
+  dynamic "overrides" {
+    for_each = var.overrides
+    content {
+      value = overrides.value.effect
+      selectors {
+        in     = try(overrides.value.selectors.in, null)
+        not_in = try(overrides.value.selectors.not_in, null)
+      }
+    }
+  }
+
+  dynamic "resource_selectors" {
+    for_each = var.resource_selectors
+    content {
+      name = try(resource_selectors.value.name, null)
+      selectors {
+        kind   = resource_selectors.value.selectors.kind
+        in     = try(resource_selectors.value.selectors.in, null)
+        not_in = try(resource_selectors.value.selectors.not_in, null)
+      }
     }
   }
 }
@@ -147,7 +238,7 @@ resource "azurerm_subscription_policy_remediation" "rem" {
   subscription_id                = local.remediation_scope
   policy_assignment_id           = local.assignment.id
   policy_definition_reference_id = each.key
-  resource_discovery_mode        = var.resource_discovery_mode
+  resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
   parallel_deployments           = var.parallel_deployments
@@ -160,7 +251,7 @@ resource "azurerm_resource_group_policy_remediation" "rem" {
   resource_group_id              = local.remediation_scope
   policy_assignment_id           = local.assignment.id
   policy_definition_reference_id = each.key
-  resource_discovery_mode        = var.resource_discovery_mode
+  resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
   parallel_deployments           = var.parallel_deployments
@@ -173,7 +264,7 @@ resource "azurerm_resource_policy_remediation" "rem" {
   resource_id                    = local.remediation_scope
   policy_assignment_id           = local.assignment.id
   policy_definition_reference_id = each.key
-  resource_discovery_mode        = var.resource_discovery_mode
+  resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
   parallel_deployments           = var.parallel_deployments

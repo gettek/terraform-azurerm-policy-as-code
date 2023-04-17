@@ -19,7 +19,3 @@ variable "re_evaluate_compliance" {
   description = "Should the module re-evaluate compliant resources for policies that DeployIfNotExists and Modify"
   default     = false
 }
-
-locals {
-  resource_discovery_mode = var.re_evaluate_compliance == true ? "ReEvaluateCompliance" : "ExistingNonCompliant"
-}

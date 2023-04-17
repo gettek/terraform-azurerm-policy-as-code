@@ -9,13 +9,13 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.23.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.49.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.44.1 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.50.0 |
 
 ## Modules
 

@@ -8,11 +8,7 @@ module "org_mg_whitelist_regions" {
   assignment_effect = "Deny"
 
   assignment_parameters = {
-    "listOfRegionsAllowed" = [
-      "UK South",
-      "UK West",
-      "Global"
-    ]
+    listOfRegionsAllowed = ["uk", "uksouth", "ukwest", "europe", "northeurope", "westeurope", "global"] # Global is used in services such as Azure DNS
   }
 
   assignment_metadata = {
@@ -21,6 +17,17 @@ module "org_mg_whitelist_regions" {
     propertyA = "A"
     propertyB = "B"
   }
+
+  # optional resource selectors (preview)
+  resource_selectors = [
+    {
+      name = "SDPRegions"
+      selectors = {
+        kind = "resourceLocation"
+        in   = ["uk", "uksouth", "ukwest"]
+      }
+    }
+  ]
 }
 
 
@@ -28,18 +35,18 @@ module "org_mg_whitelist_regions" {
 # Security Center
 ##################
 module "org_mg_configure_asc_initiative" {
-  source                  = "..//modules/set_assignment"
-  initiative              = module.configure_asc_initiative.initiative
-  assignment_scope        = data.azurerm_management_group.org.id
-  assignment_effect       = "DeployIfNotExists"
-  skip_remediation        = var.skip_remediation
-  skip_role_assignment    = var.skip_role_assignment
-  resource_discovery_mode = local.resource_discovery_mode
+  source                 = "..//modules/set_assignment"
+  initiative             = module.configure_asc_initiative.initiative
+  assignment_scope       = data.azurerm_management_group.org.id
+  assignment_description = "WIP - Deploys and configures Defender settings and defines exports"
+  assignment_effect      = "DeployIfNotExists"
+  assignment_location    = "ukwest"
 
-  role_assignment_scope = data.azurerm_management_group.team_a.id # using explicit scopes
-  role_definition_ids = [
-    data.azurerm_role_definition.contributor.id # using explicit roles
-  ]
+  # resource remediation options
+  re_evaluate_compliance = var.re_evaluate_compliance
+  skip_remediation       = var.skip_remediation
+  skip_role_assignment   = var.skip_role_assignment
+  role_assignment_scope  = data.azurerm_management_group.team_a.id # using explicit scopes
 
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
@@ -47,6 +54,22 @@ module "org_mg_configure_asc_initiative" {
     securityContactsEmail = "admin@cloud.com"
     securityContactsPhone = "44897654987"
   }
+
+  # optional non-compliance messages. Key/Value pairs map as policy_definition_reference_id = 'content'
+  non_compliance_messages = {
+    null                    = "The Default non-compliance message for all member definitions"
+    AutoEnrollSubscriptions = "The non-compliance message for the auto_enroll_subscriptions definition"
+  }
+
+  # optional overrides (preview)
+  overrides = [
+    {
+      effect = "AuditIfNotExists"
+      selectors = {
+        in = ["ExportAscAlertsAndRecommendationsToEventhub", "ExportAscAlertsAndRecommendationsToLogAnalytics"]
+      }
+    }
+  ]
 }
 
 
@@ -54,20 +77,15 @@ module "org_mg_configure_asc_initiative" {
 # Monitoring
 ##################
 module "org_mg_platform_diagnostics_initiative" {
-  source               = "..//modules/set_assignment"
-  initiative           = module.platform_diagnostics_initiative.initiative
-  assignment_scope     = data.azurerm_management_group.org.id
-  skip_remediation     = true
-  skip_role_assignment = false
+  source           = "..//modules/set_assignment"
+  initiative       = module.platform_diagnostics_initiative.initiative
+  assignment_scope = data.azurerm_management_group.org.id
 
-  role_definition_ids = [
-    data.azurerm_role_definition.contributor.id # using explicit roles
-  ]
-
-  non_compliance_messages = {
-    null                                        = "The Default non-compliance message for all member definitions"
-    "DeployApplicationGatewayDiagnosticSetting" = "The non-compliance message for the deploy_application_gateway_diagnostic_setting definition"
-  }
+  # resource remediation options
+  re_evaluate_compliance = var.re_evaluate_compliance
+  skip_remediation       = var.skip_remediation
+  skip_role_assignment   = var.skip_role_assignment
+  role_definition_ids    = [data.azurerm_role_definition.contributor.id] # using explicit roles
 
   assignment_parameters = {
     workspaceId                                        = local.dummy_resource_ids.azurerm_log_analytics_workspace
