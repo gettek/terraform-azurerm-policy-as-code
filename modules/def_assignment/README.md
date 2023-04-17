@@ -115,7 +115,7 @@ The example below demonstrates the acceptable format for this module:
 
 ```hcl
 module "org_mg_whitelist_regions" {
-  source            = "..//modules/def_assignment"
+  source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
   definition        = module.whitelist_regions.definition
   assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
@@ -212,4 +212,4 @@ No modules.
 | <a name="output_id"></a> [id](#output\_id) | The Policy Assignment Id |
 | <a name="output_identity_id"></a> [identity\_id](#output\_identity\_id) | The Managed Identity block containing Principal Id & Tenant Id of this Policy Assignment if type is SystemAssigned |
 | <a name="output_remediation_id"></a> [remediation\_id](#output\_remediation\_id) | The Id of the remediation task |
-| <a name="output_role_definition_ids"></a> [role\_definition\_ids](#output\_role\_definition\_ids) | The List of Role Defenition Ids assignable to the managed identity |
+| <a name="output_role_definition_ids"></a> [role\_definition\_ids](#output\_role\_definition\_ids) | The List of Role Definition Ids assignable to the managed identity |
