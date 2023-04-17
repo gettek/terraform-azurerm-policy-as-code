@@ -190,15 +190,12 @@ if ($env:createGuestConfigPackage) {
         if ($env:publishGuestConfigPolicyMG) {
             try {
                 $publishDefinition = New-AzPolicyDefinition -Name $configName -Policy $libraryPath -ManagementGroupName $env:publishGuestConfigPolicyMG
-                $policyDefinitionId = $publishDefinition.PolicyDefinitionId
-                Write-Host "📜 Policy Definition Published: $policyDefinitionId" -ForegroundColor DarkCyan
+                Write-Host "📜 Policy Definition Published: $($publishDefinition.PolicyDefinitionId)" -ForegroundColor DarkCyan
             }
             catch {
                 Write-Host "🔴 Could not Publish Policy Definition: $_" -ForegroundColor Red
-                $policyDefinitionId = $null
             }
         }
-        else { $policyDefinitionId = $null }
     }
 
     # Clear Az PowerShell Context

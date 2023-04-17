@@ -104,3 +104,42 @@ resource "azuread_group_member" "remediate_team_a_mg_inherit_resource_group_tags
   member_object_id = module.team_a_mg_inherit_resource_group_tags_modify.principal_id
 }
 ```
+
+### Resource selectors (preview)
+
+The optional `resource_selectors` property facilitates safe deployment practices (SDP) by enabling you to gradually roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location.
+
+> 📘 [Microsoft Docs: Azure Policy assignment structure (Resource selectors)](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/assignment-structure#resource-selectors-preview)
+
+The example below demonstrates the acceptable format for this module:
+
+```hcl
+module "org_mg_whitelist_regions" {
+  source            = "..//modules/def_assignment"
+  definition        = module.whitelist_regions.definition
+  assignment_scope  = data.azurerm_management_group.org.id
+  assignment_effect = "Deny"
+
+  assignment_parameters = {
+    listOfRegionsAllowed = [ "uk", "uksouth", "ukwest", "europe", "northeurope", "westeurope", "global" ]
+  }
+
+  # optional resource selectors (preview)
+  resource_selectors = [
+    {
+      name = "SDPRegions"
+      selectors = {
+        kind = "resourceLocation"
+        in = [ "uk", "uksouth", "ukwest" ]
+      }
+    },
+    {
+      name = "SDPResourceTypes"
+      selectors = {
+        kind = "resourceType"
+        in = [ "Microsoft.Storage/storageAccounts", "Microsoft.EventHub/namespaces", "Microsoft.OperationalInsights/workspaces" ]
+      }
+    }
+  ]
+}
+```

@@ -17,19 +17,19 @@ variable "assignment_not_scopes" {
 variable "assignment_name" {
   type        = string
   description = "The name which should be used for this Policy Assignment, defaults to initiative name. Changing this forces a new Policy Assignment to be created"
-  default     = ""
+  default     = null
 }
 
 variable "assignment_display_name" {
   type        = string
   description = "The policy assignment display name, defaults to initiative display_name. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable "assignment_description" {
   type        = string
   description = "A description to use for the Policy Assignment, defaults to initiative description. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable "assignment_effect" {
@@ -68,27 +68,34 @@ variable "non_compliance_messages" {
   default     = {}
 }
 
-variable "identity_ids" {
+variable "overrides" {
   type        = list(any)
-  description = "Optional list of User Managed Identity IDs which should be assigned to the Policy Initiative"
+  description = "Optional list of assignment Overrides (preview), max 10. Allows you to change the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition"
   default     = []
 }
 
-variable "resource_discovery_mode" {
-  type        = string
-  description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant. Applies to subscription scope and below"
-  default     = "ExistingNonCompliant"
+variable "resource_selectors" {
+  type        = list(any)
+  description = "Optional list of Resource selectors (preview), max 10. These facilitate safe deployment practices (SDP) by enabling you to gradually roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location"
+  default     = []
+}
 
-  validation {
-    condition     = var.resource_discovery_mode == "ExistingNonCompliant" || var.resource_discovery_mode == "ReEvaluateCompliance"
-    error_message = "Resource Discovery Mode possible values are: ExistingNonCompliant or ReEvaluateCompliance."
-  }
+variable "identity_ids" {
+  type        = list(any)
+  description = "Optional list of User Managed Identity IDs which should be assigned to the Policy Initiative"
+  default     = null
+}
+
+variable "re_evaluate_compliance" {
+  type        = bool
+  description = "Sets the remediation task resource_discovery_mode for policies that DeployIfNotExists and Modify. false = 'ExistingNonCompliant' and true = 'ReEvaluateCompliance'. Defaults to false. Applies at subscription scope and below"
+  default     = false
 }
 
 variable "remediation_scope" {
   type        = string
   description = "The scope at which the remediation tasks will be created. Must be full resource IDs. Defaults to the policy assignment scope. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable "location_filters" {
@@ -162,10 +169,13 @@ locals {
   } : {}
 
   # determine if a managed identity should be created with this assignment
-  identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? length(var.identity_ids) > 0 ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
+  identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? var.identity_ids != null ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
 
   # try to use policy definition roles if explicit roles are ommitted
   role_definition_ids = var.skip_role_assignment == false && try(values(local.identity_type)[0], "") == "SystemAssigned" ? try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), []) : []
+
+  # assignment location is required when identity is specified
+  assignment_location = length(local.identity_type) > 0 ? var.assignment_location : null
 
   # evaluate policy assignment scope from resource identifier
   assignment_scope = try({
@@ -176,7 +186,8 @@ locals {
   })
 
   # evaluate remediation scope from resource identifier
-  remediation_scope = try(coalesce(var.remediation_scope, var.assignment_scope), "")
+  resource_discovery_mode = var.re_evaluate_compliance == true ? "ReEvaluateCompliance" : "ExistingNonCompliant"
+  remediation_scope       = try(coalesce(var.remediation_scope, var.assignment_scope), "")
   remediate = try({
     mg       = length(regexall("(\\/managementGroups\\/)", local.remediation_scope)) > 0 ? 1 : 0,
     sub      = length(split("/", local.remediation_scope)) == 3 ? 1 : 0,

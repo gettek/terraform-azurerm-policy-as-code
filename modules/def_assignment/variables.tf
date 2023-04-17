@@ -17,19 +17,19 @@ variable "assignment_not_scopes" {
 variable "assignment_name" {
   type        = string
   description = "The name which should be used for this Policy Assignment, defaults to definition name. Changing this forces a new Policy Assignment to be created"
-  default     = ""
+  default     = null
 }
 
 variable "assignment_display_name" {
   type        = string
   description = "The policy assignment display name, defaults to definition display_name. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable "assignment_description" {
   type        = string
   description = "A description to use for the Policy Assignment, defaults to definition description. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable "assignment_effect" {
@@ -65,30 +65,31 @@ variable "assignment_location" {
 variable "non_compliance_message" {
   type        = string
   description = "The optional non-compliance message text."
-  default     = ""
+  default     = null
+}
+
+variable "resource_selectors" {
+  type        = list(any)
+  description = "Optional list of Resource selectors (preview), max 10. These facilitate safe deployment practices (SDP) by enabling you to gradually roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location"
+  default     = []
 }
 
 variable "identity_ids" {
   type        = list(any)
   description = "Optional list of User Managed Identity IDs which should be assigned to the Policy Definition"
-  default     = []
+  default     = null
 }
 
-variable "resource_discovery_mode" {
-  type        = string
-  description = "The way that resources to remediate are discovered. Possible values are ExistingNonCompliant or ReEvaluateCompliance. Defaults to ExistingNonCompliant. Applies to subscription scope and below"
-  default     = "ExistingNonCompliant"
-
-  validation {
-    condition     = var.resource_discovery_mode == "ExistingNonCompliant" || var.resource_discovery_mode == "ReEvaluateCompliance"
-    error_message = "Resource Discovery Mode possible values are: ExistingNonCompliant or ReEvaluateCompliance."
-  }
+variable "re_evaluate_compliance" {
+  type        = bool
+  description = "Sets the remediation task resource_discovery_mode for policies that DeployIfNotExists and Modify. false = 'ExistingNonCompliant' and true = 'ReEvaluateCompliance'. Defaults to false. Applies at subscription scope and below"
+  default     = false
 }
 
 variable "remediation_scope" {
   type        = string
   description = "The scope at which the remediation tasks will be created. Must be full resource IDs. Defaults to the policy assignment scope. Changing this forces a new resource to be created"
-  default     = ""
+  default     = null
 }
 
 variable "location_filters" {
@@ -156,10 +157,10 @@ locals {
   parameters = local.parameter_values != null ? var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values) : null
 
   # create the optional non-compliance message contents block if present
-  non_compliance_message = var.non_compliance_message != "" ? { content = var.non_compliance_message } : {}
+  non_compliance_message = var.non_compliance_message != null ? { content = var.non_compliance_message } : {}
 
   # determine if a managed identity should be created with this assignment
-  identity_type = length(try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), [])) > 0 ? length(var.identity_ids) > 0 ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
+  identity_type = length(try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), [])) > 0 ? var.identity_ids != null ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
 
   # try to use policy definition roles if explicit roles are ommitted
   role_definition_ids = var.skip_role_assignment == false && try(values(local.identity_type)[0], "") == "SystemAssigned" ? try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), []) : []
@@ -170,6 +171,9 @@ locals {
   # if creating role assignments also create a remediation task for policies with DeployIfNotExists and Modify effects
   create_remediation = var.assignment_enforcement_mode == true && var.skip_remediation == false && length(local.identity_type) > 0 ? 1 : 0
 
+  # assignment location is required when identity is specified
+  assignment_location = length(local.identity_type) > 0 ? var.assignment_location : null
+
   # evaluate policy assignment scope from resource identifier
   assignment_scope = try({
     mg       = length(regexall("(\\/managementGroups\\/)", var.assignment_scope)) > 0 ? 1 : 0,
@@ -179,7 +183,8 @@ locals {
   })
 
   # evaluate remediation scope from resource identifier
-  remediation_scope = try(coalesce(var.remediation_scope, var.assignment_scope), "")
+  resource_discovery_mode = var.re_evaluate_compliance == true ? "ReEvaluateCompliance" : "ExistingNonCompliant"
+  remediation_scope       = try(coalesce(var.remediation_scope, var.assignment_scope), "")
   remediate = try({
     mg       = length(regexall("(\\/managementGroups\\/)", local.remediation_scope)) > 0 ? 1 : 0,
     sub      = length(split("/", local.remediation_scope)) == 3 ? 1 : 0,
