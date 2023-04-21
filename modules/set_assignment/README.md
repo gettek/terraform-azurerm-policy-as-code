@@ -119,7 +119,7 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.50.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=3.49.0 |
 
 ## Modules
 

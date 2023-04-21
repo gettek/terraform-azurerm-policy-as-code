@@ -80,7 +80,6 @@ resource "azurerm_subscription_policy_assignment" "def" {
   }
 }
 
-
 resource "azurerm_resource_group_policy_assignment" "def" {
   count                = local.assignment_scope.rg
   policy_definition_id = var.definition.id
