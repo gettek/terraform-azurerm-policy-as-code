@@ -12,14 +12,14 @@ Push-Location -Path $PSScriptRoot/../modules
 (Get-ChildItem -Directory).BaseName | Foreach-Object {
     try {
         Push-Location -Path $_
-        Write-Host "📜 Generating '$_' Docs..." -ForegroundColor Magenta
-        Get-Content TEMPLATE.md > README.md; "`n" >> README.md; terraform-docs md . >> README.md
         if ($tf) {
             terraform init -backend=false -upgrade
             Write-Host "✅ Terraform fmt & validate '$_'..." -ForegroundColor Magenta
             terraform fmt
             terraform validate
         }
+        Write-Host "📜 Generating '$_' Docs..." -ForegroundColor Magenta
+        Get-Content TEMPLATE.md > README.md; "`n" >> README.md; terraform-docs md . >> README.md
     }
     catch {
         Write-Host "🥵 Could not complete precommit tasks: $_" -ForegroundColor Red
@@ -33,14 +33,14 @@ Push-Location -Path $PSScriptRoot/../
 (Get-ChildItem -Directory -Path examples*).BaseName | Foreach-Object {
     try {
         Push-Location -Path $_
-        Write-Host "📜 Generating '$_' Docs..." -ForegroundColor Magenta
-        Get-Content TEMPLATE.md > README.md; "`n" >> README.md; terraform-docs md . >> README.md
         if ($tf) {
             terraform init -backend=false -upgrade
             Write-Host "✅ Terraform fmt & validate '$_'..." -ForegroundColor Magenta
             terraform fmt
             terraform validate
         }
+        Write-Host "📜 Generating '$_' Docs..." -ForegroundColor Magenta
+        Get-Content TEMPLATE.md > README.md; "`n" >> README.md; terraform-docs md . >> README.md
     }
     catch {
         Write-Host "🥵 Could not complete precommit tasks: $_" -ForegroundColor Red
