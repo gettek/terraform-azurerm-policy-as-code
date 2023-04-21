@@ -1,4 +1,4 @@
-resource azurerm_management_group_policy_assignment def {
+resource "azurerm_management_group_policy_assignment" "def" {
   count                = local.assignment_scope.mg
   policy_definition_id = var.definition.id
   name                 = local.assignment_name
@@ -39,7 +39,7 @@ resource azurerm_management_group_policy_assignment def {
   }
 }
 
-resource azurerm_subscription_policy_assignment def {
+resource "azurerm_subscription_policy_assignment" "def" {
   count                = local.assignment_scope.sub
   policy_definition_id = var.definition.id
   name                 = local.assignment_name
@@ -81,7 +81,7 @@ resource azurerm_subscription_policy_assignment def {
 }
 
 
-resource azurerm_resource_group_policy_assignment def {
+resource "azurerm_resource_group_policy_assignment" "def" {
   count                = local.assignment_scope.rg
   policy_definition_id = var.definition.id
   name                 = local.assignment_name
@@ -122,7 +122,7 @@ resource azurerm_resource_group_policy_assignment def {
   }
 }
 
-resource azurerm_resource_policy_assignment def {
+resource "azurerm_resource_policy_assignment" "def" {
   count                = local.assignment_scope.resource
   policy_definition_id = var.definition.id
   name                 = local.assignment_name

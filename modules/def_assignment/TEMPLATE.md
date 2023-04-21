@@ -115,7 +115,7 @@ The example below demonstrates the acceptable format for this module:
 
 ```hcl
 module "org_mg_whitelist_regions" {
-  source            = "..//modules/def_assignment"
+  source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
   definition        = module.whitelist_regions.definition
   assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"

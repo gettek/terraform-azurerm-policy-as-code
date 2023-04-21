@@ -47,7 +47,7 @@ module "configure_asc" {
 
 ```hcl
 module "file_path_test" {
-  source              = "..//modules/definition"
+  source              = "gettek/policy-as-code/azurerm//modules/definition"
   file_path           = "../path/to/file/onboard_to_automation_dsc_linux.json"
   management_group_id = data.azurerm_management_group.org.id
 }
@@ -60,7 +60,7 @@ locals {
 }
 
 module "parameterised_test" {
-  source              = "..//modules/definition"
+  source              = "gettek/policy-as-code/azurerm//modules/definition"
   policy_name         = "Custom Name"
   display_name        = "Custom Display Name"
   policy_description  = "Custom Description"
