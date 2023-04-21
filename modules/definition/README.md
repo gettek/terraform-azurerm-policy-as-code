@@ -86,7 +86,7 @@ module "parameterised_test" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=3.23.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
 
 ## Modules
 
