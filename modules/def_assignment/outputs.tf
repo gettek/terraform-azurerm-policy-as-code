@@ -14,6 +14,6 @@ output "remediation_id" {
 }
 
 output "role_definition_ids" {
-  description = "The List of Role Defenition Ids assignable to the managed identity"
+  description = "The List of Role Definition Ids assignable to the managed identity"
   value       = local.role_definition_ids
 }

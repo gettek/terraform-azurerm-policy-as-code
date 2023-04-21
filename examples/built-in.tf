@@ -2,7 +2,7 @@
 # Built-In Initiative
 ##################
 data "azurerm_policy_set_definition" "configure_az_monitor_and_security_vm_initiative" {
-  display_name = "[Preview]: Configure machines to automatically install the Azure Monitor and Azure Security agents on virtual machines"
+  name = "a15f3269-2e10-458c-87a4-d5989e678a73" #"[Preview]: Configure machines to automatically install the Azure Monitor and Azure Security agents on virtual machines"
 }
 
 

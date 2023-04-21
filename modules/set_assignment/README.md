@@ -62,8 +62,9 @@ module org_mg_configure_asc_initiative {
 
 ### Built-In Policy Initiative Assignment
 ```hcl
+# Should use name instead of display name, as Microsoft changes the display names.
 data "azurerm_policy_set_definition" "cis_1_3_0" {
-  display_name = "CIS Microsoft Azure Foundations Benchmark v1.3.0"
+  name = "612b5213-9160-4969-8578-1518bd2a000c" #"CIS Microsoft Azure Foundations Benchmark v1.3.0"
 }
 
 module org_mg_cis_1_3_0_benchmark {
@@ -80,8 +81,9 @@ module org_mg_cis_1_3_0_benchmark {
 ### Built-In Policy Initiative Containing DINE/Modify Assignment
 
 ```hcl
+# Should use name instead of display name, as Microsoft changes the display names.
 data "azurerm_policy_set_definition" "configure_az_monitor_linux_vm_initiative" {
-  display_name = "Configure Linux machines to run Azure Monitor Agent and associate them to a Data Collection Rule"
+  name = "118f04da-0375-44d1-84e3-0fd9e1849403" #"Configure Linux machines to run Azure Monitor Agent and associate them to a Data Collection Rule"
 }
 
 data "azurerm_role_definition" "vm_contributor" {
@@ -117,7 +119,7 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.50.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
 
 ## Modules
 

@@ -54,13 +54,14 @@ module team_a_mg_inherit_resource_group_tags_modify {
 ### Create a Built-In Policy Definition Assignment with Custom Non-Compliance Message
 
 ```hcl
-data azurerm_policy_definition deploy_law_on_linux_vms {
-  display_name = "Deploy Log Analytics extension for Linux VMs"
+# Should use name instead of display name, as Microsoft changes the display names.
+data azurerm_policy_definition_built_in deploy_law_on_linux_vms {
+  name =  "053d3325-282c-4e5c-b944-24faffd30d77" #"Deploy Log Analytics extension for Linux VMs"
 }
 
 module team_a_mg_inherit_resource_group_tags_modify {
   source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  definition        = data.azurerm_policy_definition.deploy_law_on_linux_vms
+  definition        = data.azurerm_policy_definition_built_in.deploy_law_on_linux_vms
   assignment_scope  = data.azurerm_management_group.org.id
   skip_remediation  = var.skip_remediation
 
@@ -114,7 +115,7 @@ The example below demonstrates the acceptable format for this module:
 
 ```hcl
 module "org_mg_whitelist_regions" {
-  source            = "..//modules/def_assignment"
+  source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
   definition        = module.whitelist_regions.definition
   assignment_scope  = data.azurerm_management_group.org.id
   assignment_effect = "Deny"
@@ -155,7 +156,7 @@ module "org_mg_whitelist_regions" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.50.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
 
 ## Modules
 
@@ -211,4 +212,4 @@ No modules.
 | <a name="output_id"></a> [id](#output\_id) | The Policy Assignment Id |
 | <a name="output_identity_id"></a> [identity\_id](#output\_identity\_id) | The Managed Identity block containing Principal Id & Tenant Id of this Policy Assignment if type is SystemAssigned |
 | <a name="output_remediation_id"></a> [remediation\_id](#output\_remediation\_id) | The Id of the remediation task |
-| <a name="output_role_definition_ids"></a> [role\_definition\_ids](#output\_role\_definition\_ids) | The List of Role Defenition Ids assignable to the managed identity |
+| <a name="output_role_definition_ids"></a> [role\_definition\_ids](#output\_role\_definition\_ids) | The List of Role Definition Ids assignable to the managed identity |
