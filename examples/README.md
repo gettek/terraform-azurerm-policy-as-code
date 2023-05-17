@@ -34,6 +34,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 | <a name="module_org_mg_storage_enforce_https"></a> [org\_mg\_storage\_enforce\_https](#module\_org\_mg\_storage\_enforce\_https) | ..//modules/def_assignment | n/a |
 | <a name="module_org_mg_storage_enforce_minimum_tls1_2"></a> [org\_mg\_storage\_enforce\_minimum\_tls1\_2](#module\_org\_mg\_storage\_enforce\_minimum\_tls1\_2) | ..//modules/def_assignment | n/a |
 | <a name="module_org_mg_whitelist_regions"></a> [org\_mg\_whitelist\_regions](#module\_org\_mg\_whitelist\_regions) | ..//modules/def_assignment | n/a |
+| <a name="module_parameterised_test"></a> [parameterised\_test](#module\_parameterised\_test) | ..//modules/definition | n/a |
 | <a name="module_platform_diagnostics_initiative"></a> [platform\_diagnostics\_initiative](#module\_platform\_diagnostics\_initiative) | ..//modules/initiative | n/a |
 | <a name="module_storage_enforce_https"></a> [storage\_enforce\_https](#module\_storage\_enforce\_https) | ..//modules/definition | n/a |
 | <a name="module_storage_enforce_minimum_tls1_2"></a> [storage\_enforce\_minimum\_tls1\_2](#module\_storage\_enforce\_minimum\_tls1\_2) | ..//modules/definition | n/a |
