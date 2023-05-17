@@ -91,7 +91,8 @@ locals {
     file("${path.cwd}/policies/${title(var.policy_category)}/${var.policy_name}.json"),
     file("${path.root}/policies/${title(var.policy_category)}/${var.policy_name}.json"),
     file("${path.root}/../policies/${title(var.policy_category)}/${var.policy_name}.json"),
-    file("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}.json")
+    file("${path.module}/../../policies/${title(var.policy_category)}/${var.policy_name}.json"),
+    "{}"
   )))
 
   # fallbacks
