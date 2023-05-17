@@ -93,3 +93,24 @@ module "inherit_resource_group_tags_modify" {
   policy_mode         = "Indexed"
   management_group_id = data.azurerm_management_group.org.id
 }
+
+##################
+# object properties at runtime:
+##################
+locals {
+  policy_file = jsondecode(file("${path.module}/../policies/Automation/onboard_to_automation_dsc_linux.json"))
+}
+
+module "parameterised_test" {
+  source              = "..//modules/definition"
+  policy_name         = "Custom Name"
+  display_name        = "Custom Display Name"
+  policy_description  = "Custom Description"
+  policy_category     = "Custom Category"
+  policy_version      = "Custom Version"
+  management_group_id = data.azurerm_management_group.org.id
+
+  policy_rule       = (local.policy_file).properties.policyRule
+  policy_parameters = (local.policy_file).properties.parameters
+  policy_metadata   = (local.policy_file).properties.metadata
+}
