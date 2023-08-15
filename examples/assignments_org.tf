@@ -12,10 +12,13 @@ module "org_mg_whitelist_regions" {
   }
 
   assignment_metadata = {
-    version   = "1.0.0"
-    category  = "Batch"
-    propertyA = "A"
-    propertyB = "B"
+    version  = "1.0.0"
+    category = "Batch"
+    cloud_envs = [
+      "AzureCloud",
+      "AzureChinaCloud",
+      "AzureUSGovernment"
+    ]
   }
 
   # optional resource selectors (preview)

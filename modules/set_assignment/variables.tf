@@ -149,10 +149,10 @@ variable "skip_role_assignment" {
 locals {
   # assignment_name at MG scope will be trimmed if exceeds 24 characters
   assignment_name_trim = local.assignment_scope.mg > 0 ? 24 : 64
-  assignment_name = try(lower(substr(coalesce(var.assignment_name, var.initiative.name), 0, local.assignment_name_trim)), "")
-  display_name    = try(coalesce(var.assignment_display_name, var.initiative.display_name), "")
-  description     = try(coalesce(var.assignment_description, var.initiative.description), "")
-  metadata        = jsonencode(try(coalesce(var.assignment_metadata, jsondecode(var.initiative.metadata)), {}))
+  assignment_name      = try(lower(substr(coalesce(var.assignment_name, var.initiative.name), 0, local.assignment_name_trim)), "")
+  display_name         = try(coalesce(var.assignment_display_name, var.initiative.display_name), "")
+  description          = try(coalesce(var.assignment_description, var.initiative.description), "")
+  metadata             = jsonencode(try(coalesce(var.assignment_metadata, jsondecode(var.initiative.metadata)), {}))
 
   # convert assignment parameters to the required assignment structure
   parameter_values = var.assignment_parameters != null ? {
