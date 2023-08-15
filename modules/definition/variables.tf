@@ -105,8 +105,8 @@ locals {
   policy_name  = coalesce(var.policy_name, try((local.policy_object).name, null))
   display_name = coalesce(var.display_name, try((local.policy_object).properties.displayName, local.title))
   description  = coalesce(var.policy_description, try((local.policy_object).properties.description, local.title))
-  metadata     = coalesce(var.policy_metadata, try((local.policy_object).properties.metadata, merge({ category = local.category }, { version = local.version })))
-  parameters   = coalesce(var.policy_parameters, try((local.policy_object).properties.parameters, null))
+  metadata     = coalesce(null, var.policy_metadata, try((local.policy_object).properties.metadata, merge({ category = local.category }, { version = local.version })))
+  parameters   = coalesce(null, var.policy_parameters, try((local.policy_object).properties.parameters, {}))
   policy_rule  = coalesce(var.policy_rule, try((local.policy_object).properties.policyRule, null))
 
   # manually generate the definition Id to prevent "Invalid for_each argument" on set_assignment plan/apply
