@@ -4,7 +4,7 @@ Dynamically creates a policy set based on multiple custom or built-in policy def
 
 > ⚠️ **Warning:** To simplify assignments, if any `member_definitions` contain the same parameter names they will be [merged](https://www.terraform.io/language/functions/merge) unless you specify `merge_effects = false` or `merge_parameters = false` as described in the second example below.
 
-> 💡 **Note:** Multiple entries of the same `member_definitions` are not currently supported, if you require the same definition to be present more than once you may use this module to create the initiative json which you can then edit to add unique parameter and definition references.
+> 💡 **Note:** Multiple entries of the same `member_definitions` are not currently supported, if you require the same definition to be present more than once you may use this module to create the initiative json which you can then edit to add unique parameter and definition references. Some examples can be found in discussion [#67](https://github.com/gettek/terraform-azurerm-policy-as-code/discussions/67)
 
 ## Examples
 
@@ -55,6 +55,11 @@ module configure_asc_initiative {
     module.configure_asc["export_asc_alerts_and_recommendations_to_log_analytics"].definition,
     data.azurerm_policy_definition.deploy_law_on_linux_vms,
   ]
+}
+
+# get all the generated parameter names so we know what to use during assignment
+output "list_of_initiative_parameters" {
+  value = keys(module.configure_asc_initiative.parameters)
 }
 ```
 
