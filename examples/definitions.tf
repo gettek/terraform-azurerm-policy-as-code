@@ -23,8 +23,11 @@ module "whitelist_regions" {
 
 # create definitions by looping around all files found under the Monitoring category folder
 module "deploy_resource_diagnostic_setting" {
-  source              = "..//modules/definition"
-  for_each            = toset([for p in fileset(path.cwd, "../policies/Monitoring/*.json") : trimsuffix(basename(p), ".json")])
+  source = "..//modules/definition"
+  for_each = toset([
+    for p in fileset(path.module, "../policies/Monitoring/*.json") :
+    trimsuffix(basename(p), ".json")
+  ])
   policy_name         = each.key
   policy_category     = "Monitoring"
   management_group_id = data.azurerm_management_group.org.id

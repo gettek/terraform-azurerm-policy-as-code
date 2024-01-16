@@ -58,8 +58,8 @@ variable "assignment_enforcement_mode" {
 
 variable "assignment_location" {
   type        = string
-  description = "The Azure location where this policy assignment should exist, required when an Identity is assigned. Defaults to UK South. Changing this forces a new resource to be created"
-  default     = "uksouth"
+  description = "The Azure location where this policy assignment should exist, required when an Identity is assigned. Defaults to West Europe. Changing this forces a new resource to be created"
+  default     = "westeurope"
 }
 
 variable "non_compliance_messages" {
@@ -211,7 +211,7 @@ locals {
     azurerm_subscription_policy_assignment.set[0],
     azurerm_resource_group_policy_assignment.set[0],
     azurerm_resource_policy_assignment.set[0],
-  "")
+  {})
   remediation_tasks = try(
     azurerm_management_group_policy_remediation.rem,
     azurerm_subscription_policy_remediation.rem,

@@ -53,7 +53,22 @@ module "file_path_test" {
 }
 ```
 
+Loop around a folders contents to create multiple definitions:
+
+```hcl
+module "iam_test" {
+  source = "gettek/policy-as-code/azurerm//modules/definition"
+  for_each = {
+    for p in fileset(path.module, "../../azure/governance/policies/Storage/*.json") :
+    trimsuffix(basename(p), ".json") => pathexpand(p)
+  }
+  file_path           = each.value
+  management_group_id = data.azurerm_management_group.org.id
+}
+```
+
 You will also be able to supply object properties at runtime such as:
+
 ```hcl
 locals {
   policy_file = jsondecode(file("onboard_to_automation_dsc_linux.json"))

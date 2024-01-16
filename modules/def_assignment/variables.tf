@@ -59,7 +59,7 @@ variable "assignment_enforcement_mode" {
 variable "assignment_location" {
   type        = string
   description = "The Azure location where this policy assignment should exist, required when an Identity is assigned. Defaults to UK South. Changing this forces a new resource to be created"
-  default     = "uksouth"
+  default     = "westeurope"
 }
 
 variable "non_compliance_message" {

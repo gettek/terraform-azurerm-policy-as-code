@@ -1,0 +1,28 @@
+---
+formatter: "markdown"
+
+settings:
+  anchor: false
+  lockfile: false
+  escape: false
+  hide-empty: true
+
+output:
+  file: "README.md"
+
+sections:
+  hide: [providers]
+
+content: |-
+  {{ .Header }}
+
+  {{ .Requirements }}
+
+  {{ .Modules }}
+
+  {{ .Resources }}
+
+  {{ .Inputs }}
+
+  {{ .Outputs }}
+...

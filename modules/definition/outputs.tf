@@ -30,7 +30,7 @@ output "definition" {
     name                = local.policy_name
     display_name        = local.display_name
     description         = local.description
-    mode                = var.policy_mode
+    mode                = local.mode
     management_group_id = var.management_group_id
     metadata            = jsonencode(local.metadata)
     parameters          = jsonencode(local.parameters)
