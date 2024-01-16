@@ -109,6 +109,17 @@ locals {
 
   metadata = coalesce(null, var.initiative_metadata, merge({ category = var.initiative_category }, { version = var.initiative_version }))
 
+  # attempt to build non-compliance messages
+  non_compliance_messages = merge(
+    # Default non-compliance message
+    { null = "Flagged by Initiative: ${var.initiative_name}" },
+    # try to get member messages from metadata, or default to description/display_name if not present
+    { for d in var.member_definitions :
+      "${replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" => try(jsondecode(d.metadata).non_compliance_message, d.description, d.display_name, "Flagged by Policy: ${d.name}")
+      if contains(["All", "Indexed"], try(d.mode, "")) # messages fail on other modes
+    }
+  )
+
   # manually generate the initiative Id to prevent "Invalid for_each argument" on potential consumer modules
   initiative_id = var.management_group_id != null ? "${var.management_group_id}/providers/Microsoft.Authorization/policySetDefinitions/${var.initiative_name}" : azurerm_policy_set_definition.set.id
 }
