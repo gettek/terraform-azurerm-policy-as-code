@@ -259,7 +259,7 @@ To trigger an on-demand [compliance scan](https://learn.microsoft.com/en-us/azur
 
 ## Limitations
 
-- `DefinitionName` and `InitiativeName` has a maximum length of **64** characters
+- `DefinitionName` and `InitiativeName` have a maximum length of **64** characters
 - `AssignmentName` has maximum length of **24** characters at Management Group Scope and **64** characters at all other Scopes
 - `DisplayName` has a maximum length of **128** characters and `description` a maximum length of **512** characters
 - There's a [maximum count](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-policy-limits) for each object type for Azure Policy. For definitions, an entry of Scope means the management group or subscription. For assignments and exemptions, an entry of Scope means the management group, subscription, resource group, or individual resource:

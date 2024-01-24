@@ -10,10 +10,10 @@ resource "azurerm_policy_set_definition" "set" {
   parameters = length(local.parameters) > 0 ? jsonencode(local.parameters) : null
 
   dynamic "policy_definition_reference" {
-    for_each = [for d in var.member_definitions : {
+    for_each = [for d in local.member_properties : {
       id         = d.id
-      ref_id     = replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")
-      parameters = coalesce(null, jsondecode(d.parameters), null)
+      ref_id     = d.reference
+      parameters = d.parameters
       groups     = []
     }]
 
@@ -23,7 +23,7 @@ resource "azurerm_policy_set_definition" "set" {
       parameter_values = length(policy_definition_reference.value.parameters) > 0 ? jsonencode({
         for k in keys(policy_definition_reference.value.parameters) :
         k => {
-          value = k == "effect" && var.merge_effects == false ? "[parameters('${format("%s_%s", k, policy_definition_reference.value.ref_id)}')]" : var.merge_parameters == false ? "[parameters('${format("%s_%s", k, policy_definition_reference.value.ref_id)}')]" : "[parameters('${k}')]"
+          value = k == "effect" && var.merge_effects == false ? "[parameters('${k}_${policy_definition_reference.value.ref_id}')]" : var.merge_parameters == false ? "[parameters('${k}_${policy_definition_reference.value.ref_id}')]" : "[parameters('${k}')]"
         }
       }) : null
       policy_group_names = policy_definition_reference.value.groups

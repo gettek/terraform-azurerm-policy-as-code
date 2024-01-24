@@ -41,7 +41,7 @@ variable "assignment_effect" {
 variable "assignment_parameters" {
   type        = any
   description = "The policy assignment parameters. Changing this forces a new resource to be created"
-  default     = null
+  default     = {}
 }
 
 variable "assignment_metadata" {
@@ -158,7 +158,7 @@ locals {
   parameters = local.parameter_values != null ? var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values) : null
 
   # create the optional non-compliance message contents block if present
-  non_compliance_message = var.non_compliance_message != null ? { content = var.non_compliance_message } : {}
+  non_compliance_message = contains(["All", "Indexed"], try(var.definition.mode, "")) ? { content = try(coalesce(var.non_compliance_message, local.description, local.display_name, "Flagged by Policy: ${local.assignment_name}", "")) } : {}
 
   # determine if a managed identity should be created with this assignment
   identity_type = length(try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), [])) > 0 ? var.identity_ids != null ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}

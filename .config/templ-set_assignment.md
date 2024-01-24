@@ -36,11 +36,8 @@ module org_mg_configure_asc_initiative {
     data.azurerm_management_group.team_a.id
   ]
 
-  # optional non-compliance messages. Key/Value pairs map as policy_definition_reference_id = 'content'
-  non_compliance_messages = {
-    null                    = "The Default non-compliance message for all member definitions"
-    AutoEnrollSubscriptions = "The non-compliance message for the auto_enroll_subscriptions definition"
-  }
+  # use the `non_compliance_messages` output from the initiative module to use auto generated messages based off policy properties: descriptions/display names/custom ones found in metadata
+  non_compliance_messages = module.configure_asc_initiative.non_compliance_messages
 
   # optional overrides (preview)
   overrides = [

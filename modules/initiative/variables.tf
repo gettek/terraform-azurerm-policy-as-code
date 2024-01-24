@@ -48,7 +48,7 @@ variable "initiative_version" {
 }
 
 variable "member_definitions" {
-  type        = any
+  type        = list(any)
   description = "Policy Defenition resource nodes that will be members of this initiative"
 }
 
@@ -71,41 +71,42 @@ variable "merge_parameters" {
 }
 
 locals {
-  # colate all definition parameters into a single object
-  member_parameters = {
+  # colate all definition properties into a single reusable object
+  member_properties = {
     for d in var.member_definitions :
-    d.name => try(jsondecode(d.parameters), {})
+    d.name => {
+      id         = d.id
+      reference  = "${replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}"
+      parameters = coalesce(null, jsondecode(d.parameters), null)
+    }
   }
 
   # combine all discovered definition parameters using interpolation
   parameters = merge(values({
-    for definition, params in local.member_parameters :
+    for definition, properties in local.member_properties :
     definition => {
-      for parameter_name, parameter_value in params :
+      for parameter_name, parameter_value in properties.parameters :
       # if do not merge parameters (or only effects) then suffix parameters with definition references
       var.merge_parameters == false || parameter_name == "effect" && var.merge_effects == false ?
-      "${parameter_name}_${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" :
+      "${parameter_name}_${properties.reference}" :
 
       parameter_name => {
         for k, v in parameter_value :
         k => (
           # if do not merge parameters (or only effects) then suffix displayNames with definition references
           k == "metadata" && var.merge_parameters == false || var.merge_effects == false && try(v.displayName, "") == "Effect" ?
-          merge(v, { displayName = "${v.displayName} For Policy: ${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" }) :
+          merge(v, { displayName = "${v.displayName} For Policy: ${properties.reference}" }) :
           v
         )
       }
     }
   })...)
 
-  # get role definition IDs
-  role_definition_ids = {
+  # combine all role definition IDs present in the policyRule
+  all_role_definition_ids = try(distinct([for v in flatten(values({
     for d in var.member_definitions :
     d.name => try(jsondecode(d.policy_rule).then.details.roleDefinitionIds, [])
-  }
-
-  # combine all discovered role definition IDs
-  all_role_definition_ids = try(distinct([for v in flatten(values(local.role_definition_ids)) : lower(v)]), [])
+  })) : lower(v)]), [])
 
   metadata = coalesce(null, var.initiative_metadata, merge({ category = var.initiative_category }, { version = var.initiative_version }))
 
@@ -115,7 +116,7 @@ locals {
     { null = "Flagged by Initiative: ${var.initiative_name}" },
     # try to get member messages from metadata, or default to description/display_name if not present
     { for d in var.member_definitions :
-      "${replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" => try(jsondecode(d.metadata).non_compliance_message, d.description, d.display_name, "Flagged by Policy: ${d.name}")
+      local.member_properties[d.name].reference => try(jsondecode(d.metadata).non_compliance_message, d.description, d.display_name, "Flagged by Policy: ${d.name}")
       if contains(["All", "Indexed"], try(d.mode, "")) # messages fail on other modes
     }
   )

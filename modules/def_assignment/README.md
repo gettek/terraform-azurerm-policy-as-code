@@ -176,7 +176,7 @@ module "org_mg_whitelist_regions" {
 | assignment_metadata | The optional metadata for the policy assignment. | `any` | `null` | no |
 | assignment_name | The name which should be used for this Policy Assignment, defaults to definition name. Changing this forces a new Policy Assignment to be created | `string` | `null` | no |
 | assignment_not_scopes | A list of the Policy Assignment's excluded scopes. Must be full resource IDs | `list(any)` | `[]` | no |
-| assignment_parameters | The policy assignment parameters. Changing this forces a new resource to be created | `any` | `null` | no |
+| assignment_parameters | The policy assignment parameters. Changing this forces a new resource to be created | `any` | `{}` | no |
 | assignment_scope | The scope at which the policy will be assigned. Must be full resource IDs. Changing this forces a new resource to be created | `string` | n/a | yes |
 | definition | Policy Definition resource node | `any` | n/a | yes |
 | failure_percentage | (Optional) A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold. | `number` | `null` | no |

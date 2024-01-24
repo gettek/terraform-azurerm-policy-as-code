@@ -12,7 +12,7 @@ resource "azurerm_management_group_policy_assignment" "set" {
   location             = local.assignment_location
 
   dynamic "non_compliance_message" {
-    for_each = local.non_compliance_message
+    for_each = var.non_compliance_messages
     content {
       content                        = non_compliance_message.value
       policy_definition_reference_id = non_compliance_message.key == "null" ? null : non_compliance_message.key
@@ -65,7 +65,7 @@ resource "azurerm_subscription_policy_assignment" "set" {
   location             = local.assignment_location
 
   dynamic "non_compliance_message" {
-    for_each = local.non_compliance_message
+    for_each = var.non_compliance_messages
     content {
       content                        = non_compliance_message.value
       policy_definition_reference_id = non_compliance_message.key == "null" ? null : non_compliance_message.key
@@ -118,7 +118,7 @@ resource "azurerm_resource_group_policy_assignment" "set" {
   location             = local.assignment_location
 
   dynamic "non_compliance_message" {
-    for_each = local.non_compliance_message
+    for_each = var.non_compliance_messages
     content {
       content                        = non_compliance_message.value
       policy_definition_reference_id = non_compliance_message.key == "null" ? null : non_compliance_message.key
@@ -171,7 +171,7 @@ resource "azurerm_resource_policy_assignment" "set" {
   location             = local.assignment_location
 
   dynamic "non_compliance_message" {
-    for_each = local.non_compliance_message
+    for_each = var.non_compliance_messages
     content {
       content                        = non_compliance_message.value
       policy_definition_reference_id = non_compliance_message.key == "null" ? null : non_compliance_message.key
