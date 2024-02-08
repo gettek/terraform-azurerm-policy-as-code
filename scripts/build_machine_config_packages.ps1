@@ -61,17 +61,19 @@ if ($env:checkDependancies) {
         'xWebAdministration'
         'nx'
     ).ForEach({
-            Write-Host "Checking dependancies for $_" -ForegroundColor Green
             try {
-                Find-Module -Name $_ | Select-Object Version, Name | ForEach-Object {
+                Find-Module -Name $_ -Verbose | ForEach-Object {
                     $installedVersion = (Get-InstalledModule -Name $_.Name -ErrorAction SilentlyContinue).Version
                     if (!($installedVersion)) {
                         Write-Host '🟢 Installing New Module' $_.Name $_.Version -ForegroundColor Green
-                        Install-Module $_.Name -Force -AcceptLicense -Confirm:$false -AllowClobber
+                        $_ | Install-Module -Force -AcceptLicense -Confirm:$false -AllowClobber -Verbose
                     }
                     elseif ($installedVersion -lt $_.Version) {
-                        Write-Host '🔷 Updating' $_.Name 'to the latest version:' $_.Version -ForegroundColor Blue
-                        Update-Module -Name $_.Name -Force -AcceptLicense -Confirm:$false
+                        Write-Host '🔷 Updating' $_.Name $installedVersion '->' $_.Version -ForegroundColor Blue
+                        $_ | Update-Module -Force -AcceptLicense -Confirm:$false -Verbose
+                    }
+                    else {
+                        Write-Host $_.Name $_.Version 'is the latest version' -ForegroundColor Green
                     }
                     Import-Module $_.Name
                 }
