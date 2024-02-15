@@ -66,16 +66,20 @@ if ($env:checkDependancies) {
                     $installedVersion = (Get-InstalledModule -Name $_.Name -ErrorAction SilentlyContinue).Version
                     if (!($installedVersion)) {
                         Write-Host '🟢 Installing New Module' $_.Name $_.Version -ForegroundColor Green
-                        $_ | Install-Module -Force -AcceptLicense -Confirm:$false -AllowClobber -Verbose
                     }
                     elseif ($installedVersion -lt $_.Version) {
                         Write-Host '🔷 Updating' $_.Name $installedVersion '->' $_.Version -ForegroundColor Blue
-                        $_ | Update-Module -Force -AcceptLicense -Confirm:$false -Verbose
                     }
-                    else {
-                        Write-Host $_.Name $_.Version 'is the latest version' -ForegroundColor Green
+                    $command = @{
+                        Name            = $_.Name
+                        RequiredVersion = $_.Version
+                        Scope           = 'AllUsers'
+                        Force           = $true
+                        AcceptLicense   = $true
+                        Confirm         = $false
+                        Verbose         = $true
                     }
-                    Import-Module $_.Name
+                    Install-Module @command
                 }
             }
             catch { Write-Host "🥵 Could not install module: $_" -ForegroundColor Red }
