@@ -12,6 +12,7 @@ jobs:
     env:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
+      TF_CLI_ARGS_init: "-backend-config=storage_account_name=${{ secrets.STORAGE_NAME }} -backend-config=resource_group_name=cgc-cd -backend-config=container_name=tfstate -backend-config=key=policy.tfstate"
       TF_CLI_ARGS_apply: "-auto-approve -parallelism=30"
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
