@@ -112,13 +112,13 @@ module "parameterised_test" {
 | display_name | Display Name to be used for this policy | `string` | `""` | no |
 | file_path | The filepath to the custom policy. Omitting this assumes the policy is located in the module library | `any` | `null` | no |
 | management_group_id | The management group scope at which the policy will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. | `string` | `null` | no |
-| policy_category | The category of the policy, when using the module library this should correspond to the correct category folder under /policies/var.policy_category | `string` | `null` | no |
+| policy_category | The category of the policy, when using the module library this should correspond to the correct category folder under /policies/<policy_category> | `string` | `null` | no |
 | policy_description | Policy definition description | `string` | `""` | no |
 | policy_metadata | The metadata for the policy definition. This is a JSON object representing additional metadata that should be stored with the policy definition. Omitting this will fallback to meta in the definition or merge var.policy_category and var.policy_version | `any` | `null` | no |
 | policy_mode | Specify which Resource Provider modes will be evaluated, defaults to All. Possible values are All, Indexed, Microsoft.Kubernetes.Data, Microsoft.KeyVault.Data or Microsoft.Network.Data | `string` | `null` | no |
 | policy_name | Name to be used for this policy, when using the module library this should correspond to the correct category folder under /policies/policy_category/policy_name. Changing this forces a new resource to be created. | `string` | `""` | no |
-| policy_parameters | Parameters for the policy definition. This field is a JSON object that allows you to parameterise your policy definition. Omitting this assumes the parameters are located in /policies/var.policy_category/var.policy_name.json | `any` | `null` | no |
-| policy_rule | The policy rule for the policy definition. This is a JSON object representing the rule that contains an if and a then block. Omitting this assumes the rules are located in /policies/var.policy_category/var.policy_name.json | `any` | `null` | no |
+| policy_parameters | Parameters for the policy definition. This field is a JSON object representing the parameters of your policy definition. Omitting this assumes the parameters are located in the policy file | `any` | `null` | no |
+| policy_rule | The policy rule for the policy definition. This is a JSON object representing the rule that contains an if and a then block. Omitting this assumes the rules are located in the policy file | `any` | `null` | no |
 | policy_version | The version for this policy, if different from the one stored in the definition metadata, defaults to 1.0.0 | `string` | `null` | no |
 
 ## Outputs

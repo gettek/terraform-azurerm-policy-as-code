@@ -49,7 +49,7 @@ module "org_mg_configure_asc_initiative" {
   re_evaluate_compliance = var.re_evaluate_compliance
   skip_remediation       = var.skip_remediation
   skip_role_assignment   = var.skip_role_assignment
-  role_assignment_scope  = data.azurerm_management_group.team_a.id # using explicit scopes
+  role_assignment_scope  = data.azurerm_management_group.team_a.id # set explicit scopes (defaults to assignment scope)
 
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
@@ -88,6 +88,7 @@ module "org_mg_platform_diagnostics_initiative" {
   skip_role_assignment   = var.skip_role_assignment
   role_definition_ids    = [data.azurerm_role_definition.contributor.id] # using explicit roles
 
+  # NOTE: You may omit parameters at assignment to use the definitions 'defaultValue'
   assignment_parameters = {
     workspaceId                                        = local.dummy_resource_ids.azurerm_log_analytics_workspace
     storageAccountId                                   = local.dummy_resource_ids.azurerm_storage_account

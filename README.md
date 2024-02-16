@@ -153,7 +153,7 @@ module org_mg_platform_diagnostics_initiative {
     workspaceId                 = data.azurerm_log_analytics_workspace.workspace.id
     storageAccountId            = data.azurerm_storage_account.sa.id
     eventHubName                = data.azurerm_eventhub_namespace.ehn.name
-    eventHubAuthorizationRuleId = data.azurerm_eventhub_namespace_authorization_rule.ehnar.id
+    eventHubAuthorizationRuleId = data.azurerm_eventhub_namespace_authorization_rule.ehr.id
     metricsEnabled              = "True"
     logsEnabled                 = "True"
   }

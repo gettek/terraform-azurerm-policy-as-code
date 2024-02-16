@@ -130,11 +130,11 @@ module exemption_team_a_mg_key_vaults_require_purge_protection {
 | display_name | Display name for the Policy Exemption | `string` | n/a | yes |
 | exemption_category | The policy exemption category. Possible values are Waiver or Mitigated. Defaults to Waiver | `string` | `"Waiver"` | no |
 | expires_on | Optional expiration date (format yyyy-mm-dd) of the policy exemption. Defaults to no expiry | `string` | `null` | no |
-| member_definition_names | Generate the definition reference Ids from the member definition names when 'policy_definition_reference_ids' are unknown. Ommit to exempt all member definitions | `list(string)` | `[]` | no |
+| member_definition_names | Generate the definition reference Ids from the member definition names when 'policy_definition_reference_ids' are unknown. Omit to exempt all member definitions | `list(string)` | `[]` | no |
 | metadata | Optional policy exemption metadata. For example but not limited to; requestedBy, approvedBy, approvedOn, ticketRef, etc | `any` | `null` | no |
 | name | Name for the Policy Exemption | `string` | n/a | yes |
 | policy_assignment_id | The ID of the policy assignment that is being exempted | `string` | n/a | yes |
-| policy_definition_reference_ids | The optional policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition. Ommit to exempt all member definitions | `list(string)` | `[]` | no |
+| policy_definition_reference_ids | The optional policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition. Omit to exempt all member definitions | `list(string)` | `[]` | no |
 | scope | Scope for the Policy Exemption | `string` | n/a | yes |
 
 ## Outputs

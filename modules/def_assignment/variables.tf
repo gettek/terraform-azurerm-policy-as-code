@@ -163,7 +163,7 @@ locals {
   # determine if a managed identity should be created with this assignment
   identity_type = length(try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), [])) > 0 ? var.identity_ids != null ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
 
-  # try to use policy definition roles if explicit roles are ommitted
+  # try to use policy definition roles if explicit roles are omitted
   role_definition_ids = var.skip_role_assignment == false && try(values(local.identity_type)[0], "") == "SystemAssigned" ? try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), []) : []
 
   # policy assignment scope will be used if omitted

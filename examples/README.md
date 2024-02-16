@@ -21,6 +21,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 | deny_resource_types | ..//modules/definition | n/a |
 | deploy_resource_diagnostic_setting | ..//modules/definition | n/a |
 | exemption_subscription_diagnostics_settings | ..//modules/exemption | n/a |
+| file_path_test | ..//modules/definition | n/a |
 | inherit_resource_group_tags_modify | ..//modules/definition | n/a |
 | org_mg_configure_asc_initiative | ..//modules/set_assignment | n/a |
 | org_mg_configure_az_monitor_and_security_vm_initiative | ..//modules/set_assignment | n/a |
@@ -30,11 +31,13 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 | org_mg_whitelist_regions | ..//modules/def_assignment | n/a |
 | parameterised_test | ..//modules/definition | n/a |
 | platform_diagnostics_initiative | ..//modules/initiative | n/a |
+| require_resource_group_tags | ..//modules/definition | n/a |
+| resource_group_tags | ..//modules/initiative | n/a |
 | storage_enforce_https | ..//modules/definition | n/a |
 | storage_enforce_minimum_tls1_2 | ..//modules/definition | n/a |
 | team_a_mg_deny_nic_public_ip | ..//modules/def_assignment | n/a |
 | team_a_mg_deny_resource_types | ..//modules/def_assignment | n/a |
-| team_a_mg_inherit_resource_group_tags_modify | ..//modules/def_assignment | n/a |
+| team_a_mg_resource_group_tags | ..//modules/set_assignment | n/a |
 | whitelist_regions | ..//modules/definition | n/a |
 
 ## Resources

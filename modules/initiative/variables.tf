@@ -49,7 +49,7 @@ variable "initiative_version" {
 
 variable "member_definitions" {
   type        = list(any)
-  description = "Policy Defenition resource nodes that will be members of this initiative"
+  description = "Policy Definition resource nodes that will be members of this initiative"
 }
 
 variable "initiative_metadata" {
@@ -60,24 +60,34 @@ variable "initiative_metadata" {
 
 variable "merge_effects" {
   type        = bool
-  description = "Should the module merge all member definition effects? Defauls to true"
+  description = "Should the module merge all member definition effects? Defaults to true"
   default     = true
 }
 
 variable "merge_parameters" {
   type        = bool
-  description = "Should the module merge all member definition parameters? Defauls to true"
+  description = "Should the module merge all member definition parameters? Defaults to true"
   default     = true
+}
+
+variable "duplicate_members" {
+  type        = bool
+  description = "Does the Initiative contain duplicate member definitions? Defaults to false"
+  default     = false
 }
 
 locals {
   # colate all definition properties into a single reusable object
+  # index numbers (idx) will be prefixed to references when using duplicate member definitions
   member_properties = {
-    for d in var.member_definitions :
-    d.name => {
-      id         = d.id
-      reference  = "${replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}"
-      parameters = coalesce(null, jsondecode(d.parameters), null)
+    for idx, d in var.member_definitions :
+    var.duplicate_members == false ? d.name : "${idx}_${d.name}" => {
+      id                     = d.id
+      reference              = var.duplicate_members == false ? "${replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" : "${idx}_${replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 61), "/\\s/", "")}"
+      parameters             = coalesce(null, jsondecode(d.parameters), null)
+      mode                   = try(d.mode, "")
+      role_definition_ids    = try(jsondecode(d.policy_rule).then.details.roleDefinitionIds, [])
+      non_compliance_message = try(jsondecode(d.metadata).non_compliance_message, d.description, d.display_name, "Flagged by Policy: ${d.name}")
     }
   }
 
@@ -104,20 +114,18 @@ locals {
 
   # combine all role definition IDs present in the policyRule
   all_role_definition_ids = try(distinct([for v in flatten(values({
-    for d in var.member_definitions :
-    d.name => try(jsondecode(d.policy_rule).then.details.roleDefinitionIds, [])
+    for k, v in local.member_properties :
+    k => v.role_definition_ids
   })) : lower(v)]), [])
 
   metadata = coalesce(null, var.initiative_metadata, merge({ category = var.initiative_category }, { version = var.initiative_version }))
 
-  # attempt to build non-compliance messages
+  # build non-compliance messages from metadata, or default to description/display_name if not present
   non_compliance_messages = merge(
-    # Default non-compliance message
-    { null = "Flagged by Initiative: ${var.initiative_name}" },
-    # try to get member messages from metadata, or default to description/display_name if not present
-    { for d in var.member_definitions :
-      local.member_properties[d.name].reference => try(jsondecode(d.metadata).non_compliance_message, d.description, d.display_name, "Flagged by Policy: ${d.name}")
-      if contains(["All", "Indexed"], try(d.mode, "")) # messages fail on other modes
+    { null = "Flagged by Initiative: ${var.initiative_name}" }, # default non-compliance message
+    { for k, v in local.member_properties :
+      v.reference => v.non_compliance_message
+      if contains(["All", "Indexed"], v.mode) && var.duplicate_members == false # messages fail on other modes
     }
   )
 

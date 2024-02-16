@@ -5,9 +5,16 @@ Dynamically creates a policy set based on multiple custom or built-in policy def
 
 > ⚠️ **Warning:** To simplify assignments, if any `member_definitions` contain the same parameter names they will be [merged](https://www.terraform.io/language/functions/merge) unless you specify `merge_effects = false` or `merge_parameters = false` as described in the second example below.
 
-> 💡 **Note:** Multiple entries of the same `member_definitions` are not currently supported, if you require the same definition to be present more than once you may use this module to create the initiative json which you can then edit to add unique parameter and definition references. Some examples can be found in discussion [#67](https://github.com/gettek/terraform-azurerm-policy-as-code/discussions/67)
-
 ## Examples
+
+### Create an Initiative with a duplicate member definitions
+
+In many cases, some initiatives such as those for tagging, may need to reuse the same definition multiple times but with different parameters to simplify assignments.
+
+Please see [duplicate_members.tf](../../examples/duplicate_members.tf) as en example use case.
+
+> 💡 **Note:** you must set `duplicate_members=true` and `merge_parameters=false` when building initiatives with duplicate members.
+> 💡 **Note:** Be cautious when changing the position of `member_definitions` as these reflect the index numbers used in `assignment_parameters`.
 
 ### Create an Initiative with custom Policy definitions
 
@@ -64,7 +71,7 @@ output "list_of_initiative_parameters" {
 }
 ```
 
-### Populate member_definitions with a for loop (not explicit)
+### Populate member_definitions with a for loop
 
 ```hcl
 locals {
@@ -113,11 +120,13 @@ module guest_config_prereqs_initiative {
 | Name | Type |
 |------|------|
 | [azurerm_policy_set_definition.set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition) | resource |
+| [terraform_data.set_replace](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| duplicate_members | Does the Initiative contain duplicate member definitions? Defaults to false | `bool` | `false` | no |
 | initiative_category | The category of the initiative | `string` | `"General"` | no |
 | initiative_description | Policy initiative description | `string` | `""` | no |
 | initiative_display_name | Policy initiative display name | `string` | n/a | yes |
@@ -125,9 +134,9 @@ module guest_config_prereqs_initiative {
 | initiative_name | Policy initiative name. Changing this forces a new resource to be created | `string` | n/a | yes |
 | initiative_version | The version for this initiative, defaults to 1.0.0 | `string` | `"1.0.0"` | no |
 | management_group_id | The management group scope at which the initiative will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. Note: if you are using azurerm_management_group to assign a value to management_group_id, be sure to use name or group_id attribute, but not id. | `string` | `null` | no |
-| member_definitions | Policy Defenition resource nodes that will be members of this initiative | `list(any)` | n/a | yes |
-| merge_effects | Should the module merge all member definition effects? Defauls to true | `bool` | `true` | no |
-| merge_parameters | Should the module merge all member definition parameters? Defauls to true | `bool` | `true` | no |
+| member_definitions | Policy Definition resource nodes that will be members of this initiative | `list(any)` | n/a | yes |
+| merge_effects | Should the module merge all member definition effects? Defaults to true | `bool` | `true` | no |
+| merge_parameters | Should the module merge all member definition parameters? Defaults to true | `bool` | `true` | no |
 
 ## Outputs
 

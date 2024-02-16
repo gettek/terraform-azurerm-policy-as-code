@@ -1,3 +1,7 @@
+resource "terraform_data" "set_assign_replace" {
+  input = md5(jsonencode(var.initiative.parameters))
+}
+
 resource "azurerm_management_group_policy_assignment" "set" {
   count                = local.assignment_scope.mg
   name                 = local.assignment_name
@@ -48,6 +52,10 @@ resource "azurerm_management_group_policy_assignment" "set" {
         not_in = try(resource_selectors.value.selectors.not_in, null)
       }
     }
+  }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.set_assign_replace]
   }
 }
 
@@ -102,6 +110,10 @@ resource "azurerm_subscription_policy_assignment" "set" {
       }
     }
   }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.set_assign_replace]
+  }
 }
 
 resource "azurerm_resource_group_policy_assignment" "set" {
@@ -155,6 +167,10 @@ resource "azurerm_resource_group_policy_assignment" "set" {
       }
     }
   }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.set_assign_replace]
+  }
 }
 
 resource "azurerm_resource_policy_assignment" "set" {
@@ -207,6 +223,10 @@ resource "azurerm_resource_policy_assignment" "set" {
         not_in = try(resource_selectors.value.selectors.not_in, null)
       }
     }
+  }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.set_assign_replace]
   }
 }
 

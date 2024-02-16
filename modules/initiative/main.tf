@@ -1,33 +1,33 @@
+resource "terraform_data" "set_replace" {
+  input = md5(jsonencode(local.parameters))
+}
+
 resource "azurerm_policy_set_definition" "set" {
-  name         = var.initiative_name
-  display_name = var.initiative_display_name
-  description  = var.initiative_description
-  policy_type  = "Custom"
-
+  name                = var.initiative_name
+  display_name        = var.initiative_display_name
+  description         = var.initiative_description
   management_group_id = var.management_group_id
-
-  metadata   = jsonencode(local.metadata)
-  parameters = length(local.parameters) > 0 ? jsonencode(local.parameters) : null
+  policy_type         = "Custom"
+  metadata            = jsonencode(local.metadata)
+  parameters          = length(local.parameters) > 0 ? jsonencode(local.parameters) : null
 
   dynamic "policy_definition_reference" {
-    for_each = [for d in local.member_properties : {
-      id         = d.id
-      ref_id     = d.reference
-      parameters = d.parameters
-      groups     = []
-    }]
-
+    for_each = local.member_properties
     content {
       policy_definition_id = policy_definition_reference.value.id
-      reference_id         = policy_definition_reference.value.ref_id
+      reference_id         = policy_definition_reference.value.reference
       parameter_values = length(policy_definition_reference.value.parameters) > 0 ? jsonencode({
         for k in keys(policy_definition_reference.value.parameters) :
         k => {
-          value = k == "effect" && var.merge_effects == false ? "[parameters('${k}_${policy_definition_reference.value.ref_id}')]" : var.merge_parameters == false ? "[parameters('${k}_${policy_definition_reference.value.ref_id}')]" : "[parameters('${k}')]"
+          value = k == "effect" && var.merge_effects == false ? "[parameters('${k}_${policy_definition_reference.value.reference}')]" : var.merge_parameters == false ? "[parameters('${k}_${policy_definition_reference.value.reference}')]" : "[parameters('${k}')]"
         }
       }) : null
-      policy_group_names = policy_definition_reference.value.groups
+      policy_group_names = []
     }
+  }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.set_replace]
   }
 
   timeouts {

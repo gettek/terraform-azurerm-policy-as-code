@@ -48,7 +48,7 @@ module "deny_nic_public_ip" {
 # Security Center
 ##################
 
-# create definitions by calling them explicitly from a local (as above)
+# create definitions by listing them explicitly
 module "configure_asc" {
   source = "..//modules/definition"
   for_each = toset([
@@ -85,20 +85,16 @@ module "storage_enforce_minimum_tls1_2" {
 }
 
 ##################
-# Tags
+# Point to a specific filepath
 ##################
-
-module "inherit_resource_group_tags_modify" {
+module "file_path_test" {
   source              = "..//modules/definition"
-  policy_name         = "inherit_resource_group_tags_modify"
-  display_name        = "Resources should inherit Resource Group Tags and Values with Modify Remediation"
-  policy_category     = "Tags"
-  policy_mode         = "Indexed"
+  file_path           = "${path.module}/../policies/Automation/onboard_to_automation_dsc_windows.json"
   management_group_id = data.azurerm_management_group.org.id
 }
 
 ##################
-# object properties at runtime:
+# Supply some or all policy object properties at runtime
 ##################
 locals {
   policy_file = jsondecode(file("${path.module}/../policies/Automation/onboard_to_automation_dsc_linux.json"))

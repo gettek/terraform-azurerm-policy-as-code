@@ -9,7 +9,7 @@ module "configure_asc_initiative" {
   initiative_category     = "Security Center"
   management_group_id     = data.azurerm_management_group.org.id
 
-  # Populate member_definitions with a for loop (explicit)
+  # Populate member_definitions
   member_definitions = [
     module.configure_asc["auto_enroll_subscriptions"].definition,
     module.configure_asc["auto_provision_log_analytics_agent_custom_workspace"].definition,
@@ -31,6 +31,6 @@ module "platform_diagnostics_initiative" {
   merge_effects           = false # will not merge "effect" parameters
   management_group_id     = data.azurerm_management_group.org.id
 
-  # Populate member_definitions with a for loop (not explicit)
+  # Populate member_definitions with a for loop
   member_definitions = [for mon in module.deploy_resource_diagnostic_setting : mon.definition]
 }

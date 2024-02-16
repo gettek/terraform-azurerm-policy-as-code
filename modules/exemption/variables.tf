@@ -25,13 +25,13 @@ variable "policy_assignment_id" {
 
 variable "policy_definition_reference_ids" {
   type        = list(string)
-  description = "The optional policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition. Ommit to exempt all member definitions"
+  description = "The optional policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition. Omit to exempt all member definitions"
   default     = []
 }
 
 variable "member_definition_names" {
   type        = list(string)
-  description = "Generate the definition reference Ids from the member definition names when 'policy_definition_reference_ids' are unknown. Ommit to exempt all member definitions"
+  description = "Generate the definition reference Ids from the member definition names when 'policy_definition_reference_ids' are unknown. Omit to exempt all member definitions"
   default     = []
 }
 
