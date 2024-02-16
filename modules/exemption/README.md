@@ -1,3 +1,4 @@
+<!-- BEGIN_TF_DOCS -->
 # POLICY EXEMPTION MODULE
 
 Exemptions can be used where `not_scopes` become time sensitive or require alternative methods of approval for audit trails. Learn more about Azure Policy [exemption structure](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure).
@@ -103,23 +104,14 @@ module exemption_team_a_mg_key_vaults_require_purge_protection {
 }
 ```
 
-
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.23.0 |
+| terraform | >= 0.13 |
+| azurerm | >=3.23.0 |
 
-## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
-
-## Modules
-
-No modules.
 
 ## Resources
 
@@ -134,19 +126,20 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_description"></a> [description](#input\_description) | Description for the Policy Exemption | `string` | n/a | yes |
-| <a name="input_display_name"></a> [display\_name](#input\_display\_name) | Display name for the Policy Exemption | `string` | n/a | yes |
-| <a name="input_exemption_category"></a> [exemption\_category](#input\_exemption\_category) | The policy exemption category. Possible values are Waiver or Mitigated. Defaults to Waiver | `string` | `"Waiver"` | no |
-| <a name="input_expires_on"></a> [expires\_on](#input\_expires\_on) | Optional expiration date (format yyyy-mm-dd) of the policy exemption. Defaults to no expiry | `string` | `null` | no |
-| <a name="input_member_definition_names"></a> [member\_definition\_names](#input\_member\_definition\_names) | Generate the definition reference Ids from the member definition names when 'policy\_definition\_reference\_ids' are unknown. Ommit to exempt all member definitions | `list(string)` | `[]` | no |
-| <a name="input_metadata"></a> [metadata](#input\_metadata) | Optional policy exemption metadata. For example but not limited to; requestedBy, approvedBy, approvedOn, ticketRef, etc | `any` | `null` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name for the Policy Exemption | `string` | n/a | yes |
-| <a name="input_policy_assignment_id"></a> [policy\_assignment\_id](#input\_policy\_assignment\_id) | The ID of the policy assignment that is being exempted | `string` | n/a | yes |
-| <a name="input_policy_definition_reference_ids"></a> [policy\_definition\_reference\_ids](#input\_policy\_definition\_reference\_ids) | The optional policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition. Ommit to exempt all member definitions | `list(string)` | `[]` | no |
-| <a name="input_scope"></a> [scope](#input\_scope) | Scope for the Policy Exemption | `string` | n/a | yes |
+| description | Description for the Policy Exemption | `string` | n/a | yes |
+| display_name | Display name for the Policy Exemption | `string` | n/a | yes |
+| exemption_category | The policy exemption category. Possible values are Waiver or Mitigated. Defaults to Waiver | `string` | `"Waiver"` | no |
+| expires_on | Optional expiration date (format yyyy-mm-dd) of the policy exemption. Defaults to no expiry | `string` | `null` | no |
+| member_definition_names | Generate the definition reference Ids from the member definition names when 'policy_definition_reference_ids' are unknown. Omit to exempt all member definitions | `list(string)` | `[]` | no |
+| metadata | Optional policy exemption metadata. For example but not limited to; requestedBy, approvedBy, approvedOn, ticketRef, etc | `any` | `null` | no |
+| name | Name for the Policy Exemption | `string` | n/a | yes |
+| policy_assignment_id | The ID of the policy assignment that is being exempted | `string` | n/a | yes |
+| policy_definition_reference_ids | The optional policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition. Omit to exempt all member definitions | `list(string)` | `[]` | no |
+| scope | Scope for the Policy Exemption | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_exemption"></a> [exemption](#output\_exemption) | The Policy Exemption Details |
+| exemption | The Policy Exemption Details |
+<!-- END_TF_DOCS -->

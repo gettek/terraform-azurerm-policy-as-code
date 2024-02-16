@@ -41,7 +41,7 @@ module "org_mg_configure_asc_initiative" {
   source                 = "..//modules/set_assignment"
   initiative             = module.configure_asc_initiative.initiative
   assignment_scope       = data.azurerm_management_group.org.id
-  assignment_description = "WIP - Deploys and configures Defender settings and defines exports"
+  assignment_description = "Deploys and configures Defender settings and defines exports"
   assignment_effect      = "DeployIfNotExists"
   assignment_location    = "ukwest"
 
@@ -49,7 +49,7 @@ module "org_mg_configure_asc_initiative" {
   re_evaluate_compliance = var.re_evaluate_compliance
   skip_remediation       = var.skip_remediation
   skip_role_assignment   = var.skip_role_assignment
-  role_assignment_scope  = data.azurerm_management_group.team_a.id # using explicit scopes
+  role_assignment_scope  = data.azurerm_management_group.team_a.id # set explicit scopes (defaults to assignment scope)
 
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
@@ -58,11 +58,9 @@ module "org_mg_configure_asc_initiative" {
     securityContactsPhone = "44897654987"
   }
 
-  # optional non-compliance messages. Key/Value pairs map as policy_definition_reference_id = 'content'
-  non_compliance_messages = {
-    null                    = "The Default non-compliance message for all member definitions"
-    AutoEnrollSubscriptions = "The non-compliance message for the auto_enroll_subscriptions definition"
-  }
+  # use the `non_compliance_messages` output from the initiative module to set auto generated messages based off policy properties: descriptions/display names/custom ones found in metadata
+  # or overried with you own Key/Value pairs map e.g. policy_definition_reference_id = 'message content'
+  non_compliance_messages = module.configure_asc_initiative.non_compliance_messages
 
   # optional overrides (preview)
   overrides = [
@@ -90,6 +88,7 @@ module "org_mg_platform_diagnostics_initiative" {
   skip_role_assignment   = var.skip_role_assignment
   role_definition_ids    = [data.azurerm_role_definition.contributor.id] # using explicit roles
 
+  # NOTE: You may omit parameters at assignment to use the definitions 'defaultValue'
   assignment_parameters = {
     workspaceId                                        = local.dummy_resource_ids.azurerm_log_analytics_workspace
     storageAccountId                                   = local.dummy_resource_ids.azurerm_storage_account
@@ -110,6 +109,8 @@ module "org_mg_platform_diagnostics_initiative" {
     effect_DeployVnetDiagnosticSetting                 = "AuditIfNotExists"
     effect_DeployVnetGatewayDiagnosticSetting          = "AuditIfNotExists"
   }
+
+  non_compliance_messages = module.platform_diagnostics_initiative.non_compliance_messages
 }
 
 

@@ -23,6 +23,11 @@ output "role_definition_ids" {
   value       = local.all_role_definition_ids
 }
 
+output "non_compliance_messages" {
+  description = "Generated Key/Value map of non-compliance messages"
+  value       = local.non_compliance_messages
+}
+
 output "initiative" {
   description = "The combined Policy Initiative resource node"
   value = {

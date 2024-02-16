@@ -50,7 +50,7 @@ variable "policy_mode" {
 
 variable "policy_category" {
   type        = string
-  description = "The category of the policy, when using the module library this should correspond to the correct category folder under /policies/var.policy_category"
+  description = "The category of the policy, when using the module library this should correspond to the correct category folder under /policies/<policy_category>"
   default     = null
 }
 
@@ -62,13 +62,13 @@ variable "policy_version" {
 
 variable "policy_rule" {
   type        = any
-  description = "The policy rule for the policy definition. This is a JSON object representing the rule that contains an if and a then block. Omitting this assumes the rules are located in /policies/var.policy_category/var.policy_name.json"
+  description = "The policy rule for the policy definition. This is a JSON object representing the rule that contains an if and a then block. Omitting this assumes the rules are located in the policy file"
   default     = null
 }
 
 variable "policy_parameters" {
   type        = any
-  description = "Parameters for the policy definition. This field is a JSON object that allows you to parameterise your policy definition. Omitting this assumes the parameters are located in /policies/var.policy_category/var.policy_name.json"
+  description = "Parameters for the policy definition. This field is a JSON object representing the parameters of your policy definition. Omitting this assumes the parameters are located in the policy file"
   default     = null
 }
 

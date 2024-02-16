@@ -58,8 +58,8 @@ variable "assignment_enforcement_mode" {
 
 variable "assignment_location" {
   type        = string
-  description = "The Azure location where this policy assignment should exist, required when an Identity is assigned. Defaults to UK South. Changing this forces a new resource to be created"
-  default     = "uksouth"
+  description = "The Azure location where this policy assignment should exist, required when an Identity is assigned. Defaults to West Europe. Changing this forces a new resource to be created"
+  default     = "westeurope"
 }
 
 variable "non_compliance_messages" {
@@ -163,16 +163,10 @@ locals {
   # merge effect and parameter_values if specified, will use definition default effects if omitted
   parameters = local.parameter_values != null ? var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values) : null
 
-  # create the optional non-compliance message content block(s) if present
-  non_compliance_message = var.non_compliance_messages != {} ? {
-    for reference_id, message in var.non_compliance_messages :
-    reference_id => message
-  } : {}
-
   # determine if a managed identity should be created with this assignment
   identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? var.identity_ids != null ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
 
-  # try to use policy definition roles if explicit roles are ommitted
+  # try to use policy definition roles if explicit roles are omitted
   role_definition_ids = var.skip_role_assignment == false && try(values(local.identity_type)[0], "") == "SystemAssigned" ? try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), []) : []
 
   # assignment location is required when identity is specified
@@ -211,7 +205,7 @@ locals {
     azurerm_subscription_policy_assignment.set[0],
     azurerm_resource_group_policy_assignment.set[0],
     azurerm_resource_policy_assignment.set[0],
-  "")
+  {})
   remediation_tasks = try(
     azurerm_management_group_policy_remediation.rem,
     azurerm_subscription_policy_remediation.rem,

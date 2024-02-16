@@ -1,3 +1,4 @@
+<!-- BEGIN_TF_DOCS -->
 # Azure Policy Machine Configuration for Virtual Machines
 
 [![cd-machine-config](https://github.com/gettek/terraform-azurerm-policy-as-code/actions/workflows/cd-guest-config.yml/badge.svg)](https://github.com/gettek/terraform-azurerm-policy-as-code/actions/workflows/cd-guest-config.yml)
@@ -31,28 +32,20 @@ Definitions will stored in the local repo library under [Guest Configuration](..
 - 📙 [DSC GitHub Community](https://github.com/dsccommunity)
 - 📙 [Terraform Provider: azurerm_policy_virtual_machine_configuration_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_virtual_machine_configuration_assignment)
 
-
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.49.0 |
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
+| azurerm | >=3.49.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_custom_guest_configs"></a> [custom\_guest\_configs](#module\_custom\_guest\_configs) | ..//modules/definition | n/a |
-| <a name="module_custom_guest_configs_initiative"></a> [custom\_guest\_configs\_initiative](#module\_custom\_guest\_configs\_initiative) | ..//modules/initiative | n/a |
-| <a name="module_team_a_mg_guest_config_prereqs_initiative"></a> [team\_a\_mg\_guest\_config\_prereqs\_initiative](#module\_team\_a\_mg\_guest\_config\_prereqs\_initiative) | ..//modules/set_assignment | n/a |
-| <a name="module_team_a_mg_vm_custom_guest_configs"></a> [team\_a\_mg\_vm\_custom\_guest\_configs](#module\_team\_a\_mg\_vm\_custom\_guest\_configs) | ..//modules/set_assignment | n/a |
+| custom_guest_configs | ..//modules/definition | n/a |
+| custom_guest_configs_initiative | ..//modules/initiative | n/a |
+| team_a_mg_guest_config_prereqs_initiative | ..//modules/set_assignment | n/a |
+| team_a_mg_vm_custom_guest_configs | ..//modules/set_assignment | n/a |
 
 ## Resources
 
@@ -70,10 +63,9 @@ Definitions will stored in the local repo library under [Guest Configuration](..
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_re_evaluate_compliance"></a> [re\_evaluate\_compliance](#input\_re\_evaluate\_compliance) | Should the module re-evaluate compliant resources for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
-| <a name="input_skip_remediation"></a> [skip\_remediation](#input\_skip\_remediation) | Skip creation of all remediation tasks for policies that DeployIfNotExists and Modify | `bool` | `true` | no |
-| <a name="input_skip_role_assignment"></a> [skip\_role\_assignment](#input\_skip\_role\_assignment) | Should the module skip creation of role assignment for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
+| re_evaluate_compliance | Should the module re-evaluate compliant resources for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
+| skip_remediation | Skip creation of all remediation tasks for policies that DeployIfNotExists and Modify | `bool` | `true` | no |
+| skip_role_assignment | Should the module skip creation of role assignment for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 
-## Outputs
 
-No outputs.
+<!-- END_TF_DOCS -->

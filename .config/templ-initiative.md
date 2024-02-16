@@ -4,9 +4,18 @@ Dynamically creates a policy set based on multiple custom or built-in policy def
 
 > ⚠️ **Warning:** To simplify assignments, if any `member_definitions` contain the same parameter names they will be [merged](https://www.terraform.io/language/functions/merge) unless you specify `merge_effects = false` or `merge_parameters = false` as described in the second example below.
 
-> 💡 **Note:** Multiple entries of the same `member_definitions` are not currently supported, if you require the same definition to be present more than once you may use this module to create the initiative json which you can then edit to add unique parameter and definition references. Some examples can be found in discussion [#67](https://github.com/gettek/terraform-azurerm-policy-as-code/discussions/67)
-
 ## Examples
+
+
+### Create an Initiative with a duplicate member definitions
+
+In many cases, some initiatives such as those for tagging, may need to reuse the same definition multiple times but with different parameters to simplify assignments.
+
+Please see [duplicate_members.tf](../../examples/duplicate_members.tf) as en example use case.
+
+> 💡 **Note:** you must set `duplicate_members=true` and `merge_parameters=false` when building initiatives with duplicate members.
+> 💡 **Note:** Be cautious when changing the position of `member_definitions` as these reflect the index numbers used in `assignment_parameters`.
+
 
 ### Create an Initiative with custom Policy definitions
 
@@ -63,7 +72,7 @@ output "list_of_initiative_parameters" {
 }
 ```
 
-### Populate member_definitions with a for loop (not explicit)
+### Populate member_definitions with a for loop
 
 ```hcl
 locals {

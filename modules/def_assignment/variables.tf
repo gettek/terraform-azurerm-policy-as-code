@@ -41,7 +41,7 @@ variable "assignment_effect" {
 variable "assignment_parameters" {
   type        = any
   description = "The policy assignment parameters. Changing this forces a new resource to be created"
-  default     = null
+  default     = {}
 }
 
 variable "assignment_metadata" {
@@ -59,7 +59,7 @@ variable "assignment_enforcement_mode" {
 variable "assignment_location" {
   type        = string
   description = "The Azure location where this policy assignment should exist, required when an Identity is assigned. Defaults to UK South. Changing this forces a new resource to be created"
-  default     = "uksouth"
+  default     = "westeurope"
 }
 
 variable "non_compliance_message" {
@@ -158,12 +158,12 @@ locals {
   parameters = local.parameter_values != null ? var.assignment_effect != null ? jsonencode(merge(local.parameter_values, { effect = { value = var.assignment_effect } })) : jsonencode(local.parameter_values) : null
 
   # create the optional non-compliance message contents block if present
-  non_compliance_message = var.non_compliance_message != null ? { content = var.non_compliance_message } : {}
+  non_compliance_message = contains(["All", "Indexed"], try(var.definition.mode, "")) ? { content = try(coalesce(var.non_compliance_message, local.description, local.display_name, "Flagged by Policy: ${local.assignment_name}", "")) } : {}
 
   # determine if a managed identity should be created with this assignment
   identity_type = length(try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), [])) > 0 ? var.identity_ids != null ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
 
-  # try to use policy definition roles if explicit roles are ommitted
+  # try to use policy definition roles if explicit roles are omitted
   role_definition_ids = var.skip_role_assignment == false && try(values(local.identity_type)[0], "") == "SystemAssigned" ? try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), []) : []
 
   # policy assignment scope will be used if omitted

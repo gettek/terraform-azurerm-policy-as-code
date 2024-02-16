@@ -1,47 +1,45 @@
+<!-- BEGIN_TF_DOCS -->
 # Azure Policy Deployments
 
 This examples folder demonstrates an effective deployment of Azure Policy Definitions and Assignments. The order of execution is generally from `definitions.tf` -> `initiatives.tf` -> `assignments_<scope>.tf` -> `exemptions.tf`
 
 > 💡 **Note:** `built-in.tf` demonstrates how to assign Built-In definitions.
 
-
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.49.0 |
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.53.0 |
+| terraform | >= 1.4 |
+| azurerm | >=3.49.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_configure_asc"></a> [configure\_asc](#module\_configure\_asc) | ..//modules/definition | n/a |
-| <a name="module_configure_asc_initiative"></a> [configure\_asc\_initiative](#module\_configure\_asc\_initiative) | ..//modules/initiative | n/a |
-| <a name="module_deny_nic_public_ip"></a> [deny\_nic\_public\_ip](#module\_deny\_nic\_public\_ip) | ..//modules/definition | n/a |
-| <a name="module_deny_resource_types"></a> [deny\_resource\_types](#module\_deny\_resource\_types) | ..//modules/definition | n/a |
-| <a name="module_deploy_resource_diagnostic_setting"></a> [deploy\_resource\_diagnostic\_setting](#module\_deploy\_resource\_diagnostic\_setting) | ..//modules/definition | n/a |
-| <a name="module_exemption_subscription_diagnostics_settings"></a> [exemption\_subscription\_diagnostics\_settings](#module\_exemption\_subscription\_diagnostics\_settings) | ..//modules/exemption | n/a |
-| <a name="module_inherit_resource_group_tags_modify"></a> [inherit\_resource\_group\_tags\_modify](#module\_inherit\_resource\_group\_tags\_modify) | ..//modules/definition | n/a |
-| <a name="module_org_mg_configure_asc_initiative"></a> [org\_mg\_configure\_asc\_initiative](#module\_org\_mg\_configure\_asc\_initiative) | ..//modules/set_assignment | n/a |
-| <a name="module_org_mg_configure_az_monitor_and_security_vm_initiative"></a> [org\_mg\_configure\_az\_monitor\_and\_security\_vm\_initiative](#module\_org\_mg\_configure\_az\_monitor\_and\_security\_vm\_initiative) | ..//modules/set_assignment | n/a |
-| <a name="module_org_mg_platform_diagnostics_initiative"></a> [org\_mg\_platform\_diagnostics\_initiative](#module\_org\_mg\_platform\_diagnostics\_initiative) | ..//modules/set_assignment | n/a |
-| <a name="module_org_mg_storage_enforce_https"></a> [org\_mg\_storage\_enforce\_https](#module\_org\_mg\_storage\_enforce\_https) | ..//modules/def_assignment | n/a |
-| <a name="module_org_mg_storage_enforce_minimum_tls1_2"></a> [org\_mg\_storage\_enforce\_minimum\_tls1\_2](#module\_org\_mg\_storage\_enforce\_minimum\_tls1\_2) | ..//modules/def_assignment | n/a |
-| <a name="module_org_mg_whitelist_regions"></a> [org\_mg\_whitelist\_regions](#module\_org\_mg\_whitelist\_regions) | ..//modules/def_assignment | n/a |
-| <a name="module_parameterised_test"></a> [parameterised\_test](#module\_parameterised\_test) | ..//modules/definition | n/a |
-| <a name="module_platform_diagnostics_initiative"></a> [platform\_diagnostics\_initiative](#module\_platform\_diagnostics\_initiative) | ..//modules/initiative | n/a |
-| <a name="module_storage_enforce_https"></a> [storage\_enforce\_https](#module\_storage\_enforce\_https) | ..//modules/definition | n/a |
-| <a name="module_storage_enforce_minimum_tls1_2"></a> [storage\_enforce\_minimum\_tls1\_2](#module\_storage\_enforce\_minimum\_tls1\_2) | ..//modules/definition | n/a |
-| <a name="module_team_a_mg_deny_nic_public_ip"></a> [team\_a\_mg\_deny\_nic\_public\_ip](#module\_team\_a\_mg\_deny\_nic\_public\_ip) | ..//modules/def_assignment | n/a |
-| <a name="module_team_a_mg_deny_resource_types"></a> [team\_a\_mg\_deny\_resource\_types](#module\_team\_a\_mg\_deny\_resource\_types) | ..//modules/def_assignment | n/a |
-| <a name="module_team_a_mg_inherit_resource_group_tags_modify"></a> [team\_a\_mg\_inherit\_resource\_group\_tags\_modify](#module\_team\_a\_mg\_inherit\_resource\_group\_tags\_modify) | ..//modules/def_assignment | n/a |
-| <a name="module_whitelist_regions"></a> [whitelist\_regions](#module\_whitelist\_regions) | ..//modules/definition | n/a |
+| configure_asc | ..//modules/definition | n/a |
+| configure_asc_initiative | ..//modules/initiative | n/a |
+| deny_nic_public_ip | ..//modules/definition | n/a |
+| deny_resource_types | ..//modules/definition | n/a |
+| deploy_resource_diagnostic_setting | ..//modules/definition | n/a |
+| exemption_subscription_diagnostics_settings | ..//modules/exemption | n/a |
+| file_path_test | ..//modules/definition | n/a |
+| inherit_resource_group_tags_modify | ..//modules/definition | n/a |
+| org_mg_configure_asc_initiative | ..//modules/set_assignment | n/a |
+| org_mg_configure_az_monitor_and_security_vm_initiative | ..//modules/set_assignment | n/a |
+| org_mg_platform_diagnostics_initiative | ..//modules/set_assignment | n/a |
+| org_mg_storage_enforce_https | ..//modules/def_assignment | n/a |
+| org_mg_storage_enforce_minimum_tls1_2 | ..//modules/def_assignment | n/a |
+| org_mg_whitelist_regions | ..//modules/def_assignment | n/a |
+| parameterised_test | ..//modules/definition | n/a |
+| platform_diagnostics_initiative | ..//modules/initiative | n/a |
+| require_resource_group_tags | ..//modules/definition | n/a |
+| resource_group_tags | ..//modules/initiative | n/a |
+| storage_enforce_https | ..//modules/definition | n/a |
+| storage_enforce_minimum_tls1_2 | ..//modules/definition | n/a |
+| team_a_mg_deny_nic_public_ip | ..//modules/def_assignment | n/a |
+| team_a_mg_deny_resource_types | ..//modules/def_assignment | n/a |
+| team_a_mg_resource_group_tags | ..//modules/set_assignment | n/a |
+| whitelist_regions | ..//modules/definition | n/a |
 
 ## Resources
 
@@ -60,10 +58,9 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_re_evaluate_compliance"></a> [re\_evaluate\_compliance](#input\_re\_evaluate\_compliance) | Should the module re-evaluate compliant resources for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
-| <a name="input_skip_remediation"></a> [skip\_remediation](#input\_skip\_remediation) | Skip creation of all remediation tasks for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
-| <a name="input_skip_role_assignment"></a> [skip\_role\_assignment](#input\_skip\_role\_assignment) | Should the module skip creation of role assignment for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
+| re_evaluate_compliance | Should the module re-evaluate compliant resources for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
+| skip_remediation | Skip creation of all remediation tasks for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
+| skip_role_assignment | Should the module skip creation of role assignment for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 
-## Outputs
 
-No outputs.
+<!-- END_TF_DOCS -->

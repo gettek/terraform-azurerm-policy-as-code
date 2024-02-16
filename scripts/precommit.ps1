@@ -7,8 +7,12 @@ Param(
     [switch] [Parameter(Mandatory = $False)] $library
 )
 
+$docConfigs = Resolve-Path -Path "$PSScriptRoot/../.config"
+$modules = Resolve-Path -Path "$PSScriptRoot/../modules"
+$examples = Resolve-Path -Path "$PSScriptRoot/../"
+
 # Modules
-Push-Location -Path $PSScriptRoot/../modules
+Push-Location $modules
 (Get-ChildItem -Directory).BaseName | Foreach-Object {
     try {
         Push-Location -Path $_
@@ -19,7 +23,11 @@ Push-Location -Path $PSScriptRoot/../modules
             terraform validate
         }
         Write-Host "📜 Generating '$_' Docs..." -ForegroundColor Magenta
-        Get-Content TEMPLATE.md > README.md; "`n" >> README.md; terraform-docs md . >> README.md
+        terraform-docs `
+            -c "$docConfigs\terraform-docs.yml" . `
+            --header-from "$docConfigs\templ-$_.md" `
+            --hide modules `
+            --output-mode replace | Out-Null
     }
     catch {
         Write-Host "🥵 Could not complete precommit tasks: $_" -ForegroundColor Red
@@ -29,7 +37,7 @@ Push-Location -Path $PSScriptRoot/../modules
     }
 }
 # Examples
-Push-Location -Path $PSScriptRoot/../
+Push-Location $examples
 (Get-ChildItem -Directory -Path examples*).BaseName | Foreach-Object {
     try {
         Push-Location -Path $_
@@ -40,7 +48,10 @@ Push-Location -Path $PSScriptRoot/../
             terraform validate
         }
         Write-Host "📜 Generating '$_' Docs..." -ForegroundColor Magenta
-        Get-Content TEMPLATE.md > README.md; "`n" >> README.md; terraform-docs md . >> README.md
+        terraform-docs `
+            -c "$docConfigs\terraform-docs.yml" . `
+            --header-from "$docConfigs\templ-$_.md" `
+            --output-mode replace | Out-Null
     }
     catch {
         Write-Host "🥵 Could not complete precommit tasks: $_" -ForegroundColor Red
@@ -51,6 +62,7 @@ Push-Location -Path $PSScriptRoot/../
 }
 # Return to original working directory
 Pop-Location; Pop-Location
+
 
 # Update custom definition library readme
 if ($library) {

@@ -48,8 +48,8 @@ variable "initiative_version" {
 }
 
 variable "member_definitions" {
-  type        = any
-  description = "Policy Defenition resource nodes that will be members of this initiative"
+  type        = list(any)
+  description = "Policy Definition resource nodes that will be members of this initiative"
 }
 
 variable "initiative_metadata" {
@@ -60,54 +60,74 @@ variable "initiative_metadata" {
 
 variable "merge_effects" {
   type        = bool
-  description = "Should the module merge all member definition effects? Defauls to true"
+  description = "Should the module merge all member definition effects? Defaults to true"
   default     = true
 }
 
 variable "merge_parameters" {
   type        = bool
-  description = "Should the module merge all member definition parameters? Defauls to true"
+  description = "Should the module merge all member definition parameters? Defaults to true"
   default     = true
 }
 
+variable "duplicate_members" {
+  type        = bool
+  description = "Does the Initiative contain duplicate member definitions? Defaults to false"
+  default     = false
+}
+
 locals {
-  # colate all definition parameters into a single object
-  member_parameters = {
-    for d in var.member_definitions :
-    d.name => try(jsondecode(d.parameters), {})
+  # colate all definition properties into a single reusable object
+  # index numbers (idx) will be prefixed to references when using duplicate member definitions
+  member_properties = {
+    for idx, d in var.member_definitions :
+    var.duplicate_members == false ? d.name : "${idx}_${d.name}" => {
+      id                     = d.id
+      reference              = var.duplicate_members == false ? "${replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" : "${idx}_${replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 61), "/\\s/", "")}"
+      parameters             = coalesce(null, jsondecode(d.parameters), null)
+      mode                   = try(d.mode, "")
+      role_definition_ids    = try(jsondecode(d.policy_rule).then.details.roleDefinitionIds, [])
+      non_compliance_message = try(jsondecode(d.metadata).non_compliance_message, d.description, d.display_name, "Flagged by Policy: ${d.name}")
+    }
   }
 
   # combine all discovered definition parameters using interpolation
   parameters = merge(values({
-    for definition, params in local.member_parameters :
+    for definition, properties in local.member_properties :
     definition => {
-      for parameter_name, parameter_value in params :
+      for parameter_name, parameter_value in properties.parameters :
       # if do not merge parameters (or only effects) then suffix parameters with definition references
       var.merge_parameters == false || parameter_name == "effect" && var.merge_effects == false ?
-      "${parameter_name}_${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" :
+      "${parameter_name}_${properties.reference}" :
 
       parameter_name => {
         for k, v in parameter_value :
         k => (
           # if do not merge parameters (or only effects) then suffix displayNames with definition references
           k == "metadata" && var.merge_parameters == false || var.merge_effects == false && try(v.displayName, "") == "Effect" ?
-          merge(v, { displayName = "${v.displayName} For Policy: ${replace(substr(title(replace(definition, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" }) :
+          merge(v, { displayName = "${v.displayName} For Policy: ${properties.reference}" }) :
           v
         )
       }
     }
   })...)
 
-  # get role definition IDs
-  role_definition_ids = {
-    for d in var.member_definitions :
-    d.name => try(jsondecode(d.policy_rule).then.details.roleDefinitionIds, [])
-  }
-
-  # combine all discovered role definition IDs
-  all_role_definition_ids = try(distinct([for v in flatten(values(local.role_definition_ids)) : lower(v)]), [])
+  # combine all role definition IDs present in the policyRule
+  all_role_definition_ids = try(distinct([for v in flatten(values({
+    for k, v in local.member_properties :
+    k => v.role_definition_ids
+  })) : lower(v)]), [])
 
   metadata = coalesce(null, var.initiative_metadata, merge({ category = var.initiative_category }, { version = var.initiative_version }))
+
+  # build non-compliance messages from metadata, or default to description/display_name if not present
+  non_compliance_messages = merge(
+    { null = "Flagged by Initiative: ${var.initiative_name}" }, # default non-compliance message
+    { for k, v in local.member_properties :
+      v.reference => v.non_compliance_message
+      if contains(["All", "Indexed"], v.mode) && var.duplicate_members == false # messages fail on other modes
+    }
+  )
 
   # manually generate the initiative Id to prevent "Invalid for_each argument" on potential consumer modules
   initiative_id = var.management_group_id != null ? "${var.management_group_id}/providers/Microsoft.Authorization/policySetDefinitions/${var.initiative_name}" : azurerm_policy_set_definition.set.id
