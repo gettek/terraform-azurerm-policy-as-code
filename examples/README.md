@@ -9,6 +9,7 @@ This examples folder demonstrates an effective deployment of Azure Policy Defini
 
 | Name | Version |
 |------|---------|
+| terraform | >= 1.4 |
 | azurerm | >=3.49.0 |
 
 ## Modules

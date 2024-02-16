@@ -110,7 +110,7 @@ module guest_config_prereqs_initiative {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.13 |
+| terraform | >= 1.4 |
 | azurerm | >=3.23.0 |
 
 

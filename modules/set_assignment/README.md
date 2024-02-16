@@ -110,7 +110,7 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.13 |
+| terraform | >= 1.4 |
 | azurerm | >=3.49.0 |
 
 
