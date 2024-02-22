@@ -112,6 +112,8 @@ locals {
     }
   })...)
 
+  replace_trigger = md5(jsonencode(local.parameters))
+
   # combine all role definition IDs present in the policyRule
   all_role_definition_ids = try(distinct([for v in flatten(values({
     for k, v in local.member_properties :

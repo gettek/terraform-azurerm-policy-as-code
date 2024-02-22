@@ -41,5 +41,6 @@ output "initiative" {
     policy_definition_reference = azurerm_policy_set_definition.set.policy_definition_reference
     reference_ids               = try(azurerm_policy_set_definition.set.policy_definition_reference.*.reference_id, [])
     role_definition_ids         = local.all_role_definition_ids
+    replace_trigger             = local.replace_trigger
   }
 }

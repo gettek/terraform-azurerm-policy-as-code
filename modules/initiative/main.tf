@@ -1,5 +1,5 @@
 resource "terraform_data" "set_replace" {
-  input = md5(jsonencode(local.parameters))
+  input = local.replace_trigger
 }
 
 resource "azurerm_policy_set_definition" "set" {
