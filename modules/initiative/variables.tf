@@ -48,7 +48,7 @@ variable "initiative_version" {
 }
 
 variable "member_definitions" {
-  type        = list(any)
+  type        = any
   description = "Policy Definition resource nodes that will be members of this initiative"
 }
 
@@ -112,6 +112,7 @@ locals {
     }
   })...)
 
+  # generate replacement trigger by hashing parameters, included as an output to prevent regen at assignment
   replace_trigger = md5(jsonencode(local.parameters))
 
   # combine all role definition IDs present in the policyRule
