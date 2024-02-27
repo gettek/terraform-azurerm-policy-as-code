@@ -1,16 +1,31 @@
 variable "name" {
   type        = string
   description = "Name for the Policy Exemption"
+
+  validation {
+    condition     = length(var.name) <= 64
+    error_message = "Exemption names have a maximum 64 character limit."
+  }
 }
 
 variable "display_name" {
   type        = string
   description = "Display name for the Policy Exemption"
+
+  validation {
+    condition     = length(var.display_name) <= 128
+    error_message = "Exemption display names have a maximum 128 character limit."
+  }
 }
 
 variable "description" {
   type        = string
   description = "Description for the Policy Exemption"
+
+  validation {
+    condition     = length(var.description) <= 512
+    error_message = "Exemption descriptions have a maximum 512 character limit."
+  }
 }
 
 variable "scope" {
@@ -72,7 +87,7 @@ locals {
 
   # generate reference Ids when unknown, assumes the set was created with the initiative module
   policy_definition_reference_ids = length(var.member_definition_names) > 0 ? [for name in var.member_definition_names :
-    replace(substr(title(replace(name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")
+    replace(title(replace(name, "/-|_|\\s/", " ")), "/\\s/", "")
   ] : var.policy_definition_reference_ids
 
   exemption_id = try(

@@ -37,35 +37,12 @@
 
 ```bash
 📦examples
-  ├──📜assignments_mg.tf
-  ├──📜backend.tf
-  ├──📜built-in.tf
-  ├──📜data.tf
-  ├──📜definitions.tf
-  ├──📜exemptions.tf
-  ├──📜initiatives.tf
-  ├──📜variables.tf
 📦modules
   └──📂def_assignment
-      ├──📜main.tf
-      ├──📜outputs.tf
-      └──📜variables.tf
   └──📂definition
-      ├──📜main.tf
-      ├──📜outputs.tf
-      └──📜variables.tf
   └──📂exemption
-      ├──📜main.tf
-      ├──📜outputs.tf
-      └──📜variables.tf
   └──📂initiative
-      ├──📜main.tf
-      ├──📜outputs.tf
-      └──📜variables.tf
   └──📂set_assignment
-      ├──📜main.tf
-      ├──📜outputs.tf
-      └──📜variables.tf
 📦policies
   └──📂policy_category (e.g. General, should correspond to [var.policy_category])
       └──📜policy_name.json (e.g. whitelist_regions, should correspond to [var.policy_name])
@@ -162,10 +139,7 @@ module org_mg_platform_diagnostics_initiative {
     data.azurerm_management_group.team_a.id
   ]
 
-  non_compliance_messages = {
-    null                                      = "The Default non-compliance message for all member definitions"
-    DeployApplicationGatewayDiagnosticSetting = "The non-compliance message for the deploy_application_gateway_diagnostic_setting definition"
-  }
+  non_compliance_messages = module.platform_diagnostics_initiative.non_compliance_messages
 }
 ```
 

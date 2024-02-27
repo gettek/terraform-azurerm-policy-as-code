@@ -1,5 +1,5 @@
 resource "terraform_data" "set_assign_replace" {
-  input = md5(jsonencode(var.initiative.parameters))
+  input = try(var.initiative.replace_trigger, md5(jsonencode(var.initiative.parameters)))
 }
 
 resource "azurerm_management_group_policy_assignment" "set" {
