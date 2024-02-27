@@ -77,17 +77,20 @@ variable "duplicate_members" {
 }
 
 locals {
-  # colate all definition properties into a single reusable object
-  # index numbers (idx) will be prefixed to references when using duplicate member definitions
+  # colate all definition properties into a single reusable object:
+  # - definition references take their policy name transformed to upper camel case
+  # - index numbers (idx) will be prefixed to references when using duplicate member definitions
   member_properties = {
     for idx, d in var.member_definitions :
     var.duplicate_members == false ? d.name : "${idx}_${d.name}" => {
       id                     = d.id
-      reference              = var.duplicate_members == false ? "${replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 64), "/\\s/", "")}" : "${idx}_${replace(substr(title(replace(d.name, "/-|_|\\s/", " ")), 0, 61), "/\\s/", "")}"
-      parameters             = coalesce(null, jsondecode(d.parameters), null)
       mode                   = try(d.mode, "")
-      role_definition_ids    = try(jsondecode(d.policy_rule).then.details.roleDefinitionIds, [])
+      reference              = var.duplicate_members == false ? replace(title(replace(d.name, "/-|_|\\s/", " ")), "/\\s/", "") : "${idx}_${replace(title(replace(d.name, "/-|_|\\s/", " ")), "/\\s/", "")}"
+      parameters             = coalesce(null, jsondecode(d.parameters), null)
+      category               = try(jsondecode(d.metadata).category, "")
+      version                = try(jsondecode(d.metadata).version, "1.*.*")
       non_compliance_message = try(jsondecode(d.metadata).non_compliance_message, d.description, d.display_name, "Flagged by Policy: ${d.name}")
+      role_definition_ids    = try(jsondecode(d.policy_rule).then.details.roleDefinitionIds, [])
     }
   }
 

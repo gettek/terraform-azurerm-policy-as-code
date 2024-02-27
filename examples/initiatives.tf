@@ -7,6 +7,7 @@ module "configure_asc_initiative" {
   initiative_display_name = "[Security]: Configure Azure Security Center"
   initiative_description  = "Deploys and configures Azure Security Center settings and defines exports"
   initiative_category     = "Security Center"
+  initiative_version      = "2.0.0"
   management_group_id     = data.azurerm_management_group.org.id
 
   # Populate member_definitions
