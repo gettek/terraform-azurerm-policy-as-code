@@ -134,7 +134,7 @@ module guest_config_prereqs_initiative {
 | initiative_name | Policy initiative name. Changing this forces a new resource to be created | `string` | n/a | yes |
 | initiative_version | The version for this initiative, defaults to 1.0.0 | `string` | `"1.0.0"` | no |
 | management_group_id | The management group scope at which the initiative will be defined. Defaults to current Subscription if omitted. Changing this forces a new resource to be created. Note: if you are using azurerm_management_group to assign a value to management_group_id, be sure to use name or group_id attribute, but not id. | `string` | `null` | no |
-| member_definitions | Policy Definition resource nodes that will be members of this initiative | `list(any)` | n/a | yes |
+| member_definitions | Policy Definition resource nodes that will be members of this initiative | `any` | n/a | yes |
 | merge_effects | Should the module merge all member definition effects? Defaults to true | `bool` | `true` | no |
 | merge_parameters | Should the module merge all member definition parameters? Defaults to true | `bool` | `true` | no |
 
