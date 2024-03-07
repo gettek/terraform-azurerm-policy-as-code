@@ -86,7 +86,7 @@ locals {
       id                     = d.id
       mode                   = try(d.mode, "")
       reference              = var.duplicate_members == false ? replace(title(replace(d.name, "/-|_|\\s/", " ")), "/\\s/", "") : "${idx}_${replace(title(replace(d.name, "/-|_|\\s/", " ")), "/\\s/", "")}"
-      parameters             = coalesce(null, jsondecode(d.parameters), null)
+      parameters             = try(jsondecode(d.parameters), {})
       category               = try(jsondecode(d.metadata).category, "")
       version                = try(jsondecode(d.metadata).version, "1.*.*")
       non_compliance_message = try(jsondecode(d.metadata).non_compliance_message, d.description, d.display_name, "Flagged by Policy: ${d.name}")
