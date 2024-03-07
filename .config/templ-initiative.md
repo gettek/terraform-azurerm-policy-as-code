@@ -2,18 +2,19 @@
 
 Dynamically creates a policy set based on multiple custom or built-in policy definitions
 
-> ⚠️ **Warning:** To simplify assignments, if any `member_definitions` contain the same parameter names they will be [merged](https://www.terraform.io/language/functions/merge) unless you specify `merge_effects = false` or `merge_parameters = false` as described in the second example below.
+> ⚠️ **Warning:** To simplify assignments, if any `member_definitions` contain the same parameter names they will be [merged](https://www.terraform.io/language/functions/merge) unless you specify `merge_effects = false` or `merge_parameters = false` as described in the third example below. When `false` parameters will be suffixed with their respective reference Ids e.g. `"effect_AutoEnrollSubscriptions"`.
+
 
 ## Examples
 
 
-### Create an Initiative with a duplicate member definitions
+### Create an Initiative with duplicate member definitions
 
 In many cases, some initiatives such as those for tagging, may need to reuse the same definition multiple times but with different parameters to simplify assignments.
 
 Please see [duplicate_members.tf](../../examples/duplicate_members.tf) as en example use case.
 
-> 💡 **Note:** you must set `duplicate_members=true` and `merge_parameters=false` when building initiatives with duplicate members.
+> 💡 **Note:** you must set `duplicate_members=true` and `merge_parameters=false` when building initiatives with duplicate members.</br>
 > 💡 **Note:** Be cautious when changing the position of `member_definitions` as these reflect the index numbers used in `assignment_parameters`.
 
 
@@ -39,8 +40,6 @@ module configure_asc_initiative {
 ```
 
 ### Create an Initiative with a mix of custom & built-in Policy definitions without merging effects
-
-When setting `merge_effects = false` each definition effect parameter will be suffixed with its respective policy definition reference Id e.g. `"effect_AutoEnrollSubscriptions"`.
 
 ```hcl
 data azurerm_policy_definition deploy_law_on_linux_vms {
