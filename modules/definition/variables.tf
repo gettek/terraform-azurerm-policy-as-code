@@ -110,5 +110,5 @@ locals {
   policy_rule  = coalesce(var.policy_rule, try((local.policy_object).properties.policyRule, null))
 
   # manually generate the definition Id to prevent "Invalid for_each argument" on set_assignment plan/apply
-  definition_id = var.management_group_id != null ? "${var.management_group_id}/providers/Microsoft.Authorization/policyDefinitions/${local.policy_name}" : azurerm_policy_definition.def.id
+  definition_id = var.management_group_id != null ? "${var.management_group_id}/providers/Microsoft.Authorization/policyDefinitions/${azurerm_policy_definition.def.name}" : azurerm_policy_definition.def.id
 }

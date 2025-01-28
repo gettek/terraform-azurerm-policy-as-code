@@ -1,3 +1,5 @@
+data "azurerm_subscription" "current" {}
+
 resource "terraform_data" "set_replace" {
   input = local.replace_trigger
 }
@@ -12,17 +14,13 @@ resource "azurerm_policy_set_definition" "set" {
   parameters          = length(local.parameters) > 0 ? jsonencode(local.parameters) : null
 
   dynamic "policy_definition_reference" {
-    for_each = local.member_properties
+    for_each = local.policy_definition_reference
+
     content {
-      policy_definition_id = policy_definition_reference.value.id
-      reference_id         = policy_definition_reference.value.reference
-      parameter_values = length(policy_definition_reference.value.parameters) > 0 ? jsonencode({
-        for k in keys(policy_definition_reference.value.parameters) :
-        k => {
-          value = k == "effect" && var.merge_effects == false ? "[parameters('${k}_${policy_definition_reference.value.reference}')]" : var.merge_parameters == false ? "[parameters('${k}_${policy_definition_reference.value.reference}')]" : "[parameters('${k}')]"
-        }
-      }) : null
-      policy_group_names = []
+      policy_definition_id = policy_definition_reference.value.policy_definition_id
+      reference_id         = policy_definition_reference.value.reference_id
+      parameter_values     = policy_definition_reference.value.parameter_values
+      policy_group_names   = []
     }
   }
 
