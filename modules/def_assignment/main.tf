@@ -1,3 +1,11 @@
+resource "terraform_data" "def_assign_replace_def" {
+  input = md5(jsonencode(var.definition))
+}
+
+resource "terraform_data" "def_assign_replace_param" {
+  input = md5(jsonencode(local.parameters))
+}
+
 resource "azurerm_management_group_policy_assignment" "def" {
   count                = local.assignment_scope.mg
   policy_definition_id = var.definition.id
@@ -22,7 +30,7 @@ resource "azurerm_management_group_policy_assignment" "def" {
     for_each = local.identity_type
     content {
       type         = identity.value
-      identity_ids = var.identity_ids
+      identity_ids = var.identity_ids != null ? var.identity_ids : []
     }
   }
 
@@ -36,6 +44,10 @@ resource "azurerm_management_group_policy_assignment" "def" {
         not_in = try(resource_selectors.value.selectors.not_in, null)
       }
     }
+  }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.def_assign_replace_param]
   }
 }
 
@@ -78,6 +90,10 @@ resource "azurerm_subscription_policy_assignment" "def" {
       }
     }
   }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.def_assign_replace_param]
+  }
 }
 
 resource "azurerm_resource_group_policy_assignment" "def" {
@@ -118,6 +134,10 @@ resource "azurerm_resource_group_policy_assignment" "def" {
         not_in = try(resource_selectors.value.selectors.not_in, null)
       }
     }
+  }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.def_assign_replace_param]
   }
 }
 
@@ -160,13 +180,17 @@ resource "azurerm_resource_policy_assignment" "def" {
       }
     }
   }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.def_assign_replace_param]
+  }
 }
 
 ## role assignments ##
 resource "azurerm_role_assignment" "rem_role" {
   for_each                         = toset(local.role_definition_ids)
   scope                            = local.role_assignment_scope
-  role_definition_id               = each.value
+  role_definition_id               = join("", [local.role_assignment_scope, each.value])
   principal_id                     = local.assignment.identity[0].principal_id
   skip_service_principal_aad_check = true
 }
@@ -174,18 +198,22 @@ resource "azurerm_role_assignment" "rem_role" {
 ## remediation tasks ##
 resource "azurerm_management_group_policy_remediation" "rem" {
   count                = local.create_remediation + local.remediate.mg > 1 ? 1 : 0
-  name                 = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
+  name                 = lower(var.definition.name)
   management_group_id  = local.remediation_scope
   policy_assignment_id = local.assignment.id
   location_filters     = var.location_filters
   failure_percentage   = var.failure_percentage
   parallel_deployments = var.parallel_deployments
   resource_count       = var.resource_count
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.def_assign_replace_def]
+  }
 }
 
 resource "azurerm_subscription_policy_remediation" "rem" {
   count                   = local.create_remediation + local.remediate.sub > 1 ? 1 : 0
-  name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
+  name                    = lower(var.definition.name)
   subscription_id         = local.remediation_scope
   policy_assignment_id    = local.assignment.id
   resource_discovery_mode = local.resource_discovery_mode
@@ -193,11 +221,15 @@ resource "azurerm_subscription_policy_remediation" "rem" {
   failure_percentage      = var.failure_percentage
   parallel_deployments    = var.parallel_deployments
   resource_count          = var.resource_count
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.def_assign_replace_def]
+  }
 }
 
 resource "azurerm_resource_group_policy_remediation" "rem" {
   count                   = local.create_remediation + local.remediate.rg > 1 ? 1 : 0
-  name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
+  name                    = lower(var.definition.name)
   resource_group_id       = local.remediation_scope
   policy_assignment_id    = local.assignment.id
   resource_discovery_mode = local.resource_discovery_mode
@@ -205,11 +237,15 @@ resource "azurerm_resource_group_policy_remediation" "rem" {
   failure_percentage      = var.failure_percentage
   parallel_deployments    = var.parallel_deployments
   resource_count          = var.resource_count
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.def_assign_replace_def]
+  }
 }
 
 resource "azurerm_resource_policy_remediation" "rem" {
   count                   = local.create_remediation + local.remediate.resource > 1 ? 1 : 0
-  name                    = lower("${var.definition.name}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
+  name                    = lower(var.definition.name)
   resource_id             = local.remediation_scope
   policy_assignment_id    = local.assignment.id
   resource_discovery_mode = local.resource_discovery_mode
@@ -217,4 +253,8 @@ resource "azurerm_resource_policy_remediation" "rem" {
   failure_percentage      = var.failure_percentage
   parallel_deployments    = var.parallel_deployments
   resource_count          = var.resource_count
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.def_assign_replace_def]
+  }
 }

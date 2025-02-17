@@ -77,7 +77,7 @@ variable "duplicate_members" {
 }
 
 locals {
-  # colate all definition properties into a single reusable object:
+  # collate all definition properties into a single reusable object:
   # - definition references take their policy name transformed to upper camel case
   # - index numbers (idx) will be prefixed to references when using duplicate member definitions
   member_properties = {
@@ -91,6 +91,22 @@ locals {
       version                = try(jsondecode(d.metadata).version, "1.*.*")
       non_compliance_message = try(jsondecode(d.metadata).non_compliance_message, d.description, d.display_name, "Flagged by Policy: ${d.name}")
       role_definition_ids    = try(jsondecode(d.policy_rule).then.details.roleDefinitionIds, [])
+    }
+  }
+
+  # shift the dynamic 'policy_definition_reference' block to locals so that params can be created and exported without waiting for resource to deploy
+  # useful as a dependency for assignment modules
+  policy_definition_reference = {
+    for k, v in local.member_properties :
+    k => {
+      policy_definition_id = v.id
+      reference_id         = v.reference
+      parameter_values = length(v.parameters) > 0 ? jsonencode({
+        for i in keys(v.parameters) :
+        i => {
+          value = i == "effect" && var.merge_effects == false ? "[parameters('${i}_${v.reference}')]" : var.merge_parameters == false ? "[parameters('${i}_${v.reference}')]" : "[parameters('${i}')]"
+        }
+      }) : null
     }
   }
 
@@ -136,5 +152,9 @@ locals {
   )
 
   # manually generate the initiative Id to prevent "Invalid for_each argument" on potential consumer modules
-  initiative_id = var.management_group_id != null ? "${var.management_group_id}/providers/Microsoft.Authorization/policySetDefinitions/${var.initiative_name}" : azurerm_policy_set_definition.set.id
+  initiative_id = (
+    var.management_group_id != null ?
+    "${var.management_group_id}/providers/Microsoft.Authorization/policySetDefinitions/${var.initiative_name}" :
+    "${data.azurerm_subscription.current.id}/providers/Microsoft.Authorization/policySetDefinitions/${var.initiative_name}"
+  )
 }

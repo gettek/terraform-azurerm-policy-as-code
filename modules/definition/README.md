@@ -95,7 +95,7 @@ module "parameterised_test" {
 | Name | Version |
 |------|---------|
 | terraform | >= 0.13 |
-| azurerm | >=3.23.0 |
+| azurerm | >=4.12.0 |
 
 
 
@@ -104,6 +104,7 @@ module "parameterised_test" {
 | Name | Type |
 |------|------|
 | [azurerm_policy_definition.def](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_definition) | resource |
+| [random_string.set_replace](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 
 ## Inputs
 

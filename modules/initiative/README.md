@@ -109,7 +109,7 @@ module guest_config_prereqs_initiative {
 | Name | Version |
 |------|---------|
 | terraform | >= 1.4 |
-| azurerm | >=3.23.0 |
+| azurerm | >=4.12.0 |
 
 
 
@@ -119,6 +119,7 @@ module guest_config_prereqs_initiative {
 |------|------|
 | [azurerm_policy_set_definition.set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition) | resource |
 | [terraform_data.set_replace](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
 ## Inputs
 

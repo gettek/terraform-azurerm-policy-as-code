@@ -20,10 +20,9 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Install Terraform
-        id: tfinstall
-        run: choco install terraform
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ~1.10.0
 
       - name: Terraform Init
         id: init

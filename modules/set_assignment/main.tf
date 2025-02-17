@@ -234,59 +234,96 @@ resource "azurerm_resource_policy_assignment" "set" {
 resource "azurerm_role_assignment" "rem_role" {
   for_each                         = toset(local.role_definition_ids)
   scope                            = coalesce(var.role_assignment_scope, var.assignment_scope)
-  role_definition_id               = each.value
+  role_definition_id               = join("", [coalesce(var.role_assignment_scope, var.assignment_scope), each.value])
   principal_id                     = local.assignment.identity[0].principal_id
   skip_service_principal_aad_check = true
 }
 
 ## remediation tasks ##
+resource "terraform_data" "remediation" {
+  for_each = { for dr in flatten(values(local.definition_reference)) : dr.reference_id => dr }
+  input    = md5(jsonencode(each.key))
+}
+
 resource "azurerm_management_group_policy_remediation" "rem" {
-  for_each                       = { for dr in local.definition_reference.mg : basename(dr.reference_id) => dr }
-  name                           = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
+  for_each                       = { for dr in local.definition_reference.mg : dr.reference_id => dr }
+  name                           = lower(each.key)
   management_group_id            = local.remediation_scope
   policy_assignment_id           = local.assignment.id
-  policy_definition_reference_id = each.key
+  policy_definition_reference_id = lower(each.key) # https://github.com/hashicorp/terraform-provider-azurerm/issues/18846
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
   parallel_deployments           = var.parallel_deployments
   resource_count                 = var.resource_count
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.remediation[each.key]]
+    ignore_changes = [
+      parallel_deployments,
+      resource_count
+    ]
+  }
 }
 
 resource "azurerm_subscription_policy_remediation" "rem" {
-  for_each                       = { for dr in local.definition_reference.sub : basename(dr.reference_id) => dr }
-  name                           = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
+  for_each                       = { for dr in local.definition_reference.sub : dr.reference_id => dr }
+  name                           = lower(each.key)
   subscription_id                = local.remediation_scope
   policy_assignment_id           = local.assignment.id
-  policy_definition_reference_id = each.key
+  policy_definition_reference_id = lower(each.key) # https://github.com/hashicorp/terraform-provider-azurerm/issues/18846
   resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
   parallel_deployments           = var.parallel_deployments
   resource_count                 = var.resource_count
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.remediation[each.key]]
+    ignore_changes = [
+      parallel_deployments,
+      resource_count
+    ]
+  }
 }
 
 resource "azurerm_resource_group_policy_remediation" "rem" {
-  for_each                       = { for dr in local.definition_reference.rg : basename(dr.reference_id) => dr }
-  name                           = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
+  for_each                       = { for dr in local.definition_reference.rg : dr.reference_id => dr }
+  name                           = lower(each.key)
   resource_group_id              = local.remediation_scope
   policy_assignment_id           = local.assignment.id
-  policy_definition_reference_id = each.key
+  policy_definition_reference_id = lower(each.key) # https://github.com/hashicorp/terraform-provider-azurerm/issues/18846
   resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
   parallel_deployments           = var.parallel_deployments
   resource_count                 = var.resource_count
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.remediation[each.key]]
+    ignore_changes = [
+      parallel_deployments,
+      resource_count
+    ]
+  }
 }
 
 resource "azurerm_resource_policy_remediation" "rem" {
-  for_each                       = { for dr in local.definition_reference.resource : basename(dr.reference_id) => dr }
-  name                           = lower("${each.key}-${formatdate("DD-MM-YYYY-hh:mm:ss", timestamp())}")
+  for_each                       = { for dr in local.definition_reference.resource : dr.reference_id => dr }
+  name                           = lower(each.key)
   resource_id                    = local.remediation_scope
   policy_assignment_id           = local.assignment.id
-  policy_definition_reference_id = each.key
+  policy_definition_reference_id = lower(each.key) # https://github.com/hashicorp/terraform-provider-azurerm/issues/18846
   resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
   parallel_deployments           = var.parallel_deployments
   resource_count                 = var.resource_count
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.remediation[each.key]]
+    ignore_changes = [
+      parallel_deployments,
+      resource_count
+    ]
+  }
 }

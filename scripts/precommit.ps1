@@ -4,6 +4,7 @@
 [CmdletBinding()]
 Param(
     [switch] [Parameter(Mandatory = $False)] $tf,
+    [switch] [Parameter(Mandatory = $False)] $checksums,
     [switch] [Parameter(Mandatory = $False)] $library
 )
 
@@ -17,7 +18,12 @@ Push-Location $modules
     try {
         Push-Location -Path $_
         if ($tf) {
+            Write-Host "🟪 Running TF Init on '$_'..." -ForegroundColor Magenta
             terraform init -backend=false -upgrade
+            if ($checksums) {
+                Write-Host "🔢 Calculating Provider Checksums..." -ForegroundColor Magenta
+                terraform providers lock -platform=windows_amd64 -platform=linux_amd64
+            }
             Write-Host "✅ Terraform fmt & validate '$_'..." -ForegroundColor Magenta
             terraform fmt
             terraform validate
@@ -42,7 +48,12 @@ Push-Location $examples
     try {
         Push-Location -Path $_
         if ($tf) {
+            Write-Host "🟪 Running TF Init on '$_'..." -ForegroundColor Magenta
             terraform init -backend=false -upgrade
+            if ($checksums) {
+                Write-Host "🔢 Calculating Provider Checksums..." -ForegroundColor Magenta
+                terraform providers lock -platform=windows_amd64 -platform=linux_amd64
+            }
             Write-Host "✅ Terraform fmt & validate '$_'..." -ForegroundColor Magenta
             terraform fmt
             terraform validate
