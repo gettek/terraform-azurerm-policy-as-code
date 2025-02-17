@@ -178,9 +178,9 @@ locals {
   # evaluate policy assignment scope from resource identifier
   assignment_scope = {
     mg       = length(regexall("(\\/managementGroups\\/)", var.assignment_scope)) > 0 ? 1 : 0,
-    sub      = length(split("/", var.assignment_scope)) == 3                          ? 1 : 0,
+    sub      = length(split("/", var.assignment_scope)) == 3 ? 1 : 0,
     rg       = length(regexall("(\\/managementGroups\\/)", var.assignment_scope)) < 1 ? length(split("/", var.assignment_scope)) == 5 ? 1 : 0 : 0,
-    resource = length(split("/", var.assignment_scope)) >= 6                          ? 1 : 0,
+    resource = length(split("/", var.assignment_scope)) >= 6 ? 1 : 0,
   }
 
   # evaluate remediation scope from resource identifier
@@ -188,9 +188,9 @@ locals {
   remediation_scope       = coalesce(var.remediation_scope, var.assignment_scope)
   remediate = {
     mg       = length(regexall("(\\/managementGroups\\/)", local.remediation_scope)) > 0 ? 1 : 0,
-    sub      = length(split("/", local.remediation_scope)) == 3                          ? 1 : 0,
+    sub      = length(split("/", local.remediation_scope)) == 3 ? 1 : 0,
     rg       = length(regexall("(\\/managementGroups\\/)", local.remediation_scope)) < 1 ? length(split("/", local.remediation_scope)) == 5 ? 1 : 0 : 0,
-    resource = length(split("/", local.remediation_scope)) >= 6                          ? 1 : 0,
+    resource = length(split("/", local.remediation_scope)) >= 6 ? 1 : 0,
   }
 
   # evaluate assignment outputs

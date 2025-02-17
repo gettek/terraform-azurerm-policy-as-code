@@ -146,7 +146,7 @@ module "org_mg_whitelist_regions" {
 | Name | Version |
 |------|---------|
 | terraform | >= 0.13 |
-| azurerm | >=3.49.0 |
+| azurerm | >=4.12.0 |
 
 
 
@@ -163,6 +163,8 @@ module "org_mg_whitelist_regions" {
 | [azurerm_role_assignment.rem_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_subscription_policy_assignment.def](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subscription_policy_assignment) | resource |
 | [azurerm_subscription_policy_remediation.rem](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subscription_policy_remediation) | resource |
+| [terraform_data.def_assign_replace_def](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.def_assign_replace_param](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 
 ## Inputs
 
