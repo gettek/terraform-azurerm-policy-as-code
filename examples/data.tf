@@ -12,6 +12,12 @@ data "azurerm_management_group" "team_a" {
   name = "team_a"
 }
 
+# AAD Group
+data "azuread_group" "rem" {
+  display_name     = "Policy Remediators"
+  security_enabled = true
+}
+
 # Contributor role
 data "azurerm_role_definition" "contributor" {
   name = "Contributor"

@@ -46,10 +46,10 @@ module "org_mg_configure_asc_initiative" {
   assignment_location    = "ukwest"
 
   # resource remediation options
-  re_evaluate_compliance = var.re_evaluate_compliance
-  skip_remediation       = var.skip_remediation
-  skip_role_assignment   = var.skip_role_assignment
-  role_assignment_scope  = data.azurerm_management_group.team_a.id # set explicit scopes (defaults to assignment scope)
+  re_evaluate_compliance           = var.re_evaluate_compliance
+  skip_remediation                 = var.skip_remediation
+  skip_role_assignment             = var.skip_role_assignment
+  aad_group_remediation_object_ids = [data.azuread_group.rem.object_id] # add assignment identity to aad group(s)
 
   assignment_parameters = {
     workspaceId           = local.dummy_resource_ids.azurerm_log_analytics_workspace
@@ -59,7 +59,7 @@ module "org_mg_configure_asc_initiative" {
   }
 
   # use the `non_compliance_messages` output from the initiative module to set auto generated messages based off policy properties: descriptions/display names/custom ones found in metadata
-  # or overried with you own Key/Value pairs map e.g. policy_definition_reference_id = 'message content'
+  # or override with you own Key/Value pairs map e.g. policy_definition_reference_id = 'message content'
   non_compliance_messages = module.configure_asc_initiative.non_compliance_messages
 
   # optional overrides (preview)
@@ -86,7 +86,8 @@ module "org_mg_platform_diagnostics_initiative" {
   re_evaluate_compliance = var.re_evaluate_compliance
   skip_remediation       = var.skip_remediation
   skip_role_assignment   = var.skip_role_assignment
-  role_definition_ids    = [data.azurerm_role_definition.contributor.id] # using explicit roles
+  role_assignment_scope  = data.azurerm_management_group.team_a.id       # set explicit scopes, omit to use the assignment scope
+  role_definition_ids    = [data.azurerm_role_definition.contributor.id] # set explicit roles, omit to use roles found in the definitions "policyRule"
 
   # NOTE: You may omit parameters at assignment to use the definitions 'defaultValue'
   assignment_parameters = {

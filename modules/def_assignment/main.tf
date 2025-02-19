@@ -187,12 +187,22 @@ resource "azurerm_resource_policy_assignment" "def" {
 }
 
 ## role assignments ##
-resource "azurerm_role_assignment" "rem_role" {
-  for_each                         = toset(local.role_definition_ids)
-  scope                            = local.role_assignment_scope
-  role_definition_id               = join("", [local.role_assignment_scope, each.value])
+resource "azurerm_role_assignment" "remediation" {
+  for_each                         = { for i in local.role_definition_ids : split("-", basename(i))[0] => i }
+  scope                            = coalesce(var.role_assignment_scope, var.assignment_scope)
+  role_definition_id               = each.value
   principal_id                     = local.assignment.identity[0].principal_id
   skip_service_principal_aad_check = true
+}
+
+## aad group memberships ##
+resource "azuread_group_member" "remediation" {
+  for_each = {
+    for i in var.aad_group_remediation_object_ids : split("-", basename(i))[0] => i
+    if length(local.identity_type) > 0
+  }
+  group_object_id  = each.value
+  member_object_id = local.assignment.identity[0].principal_id
 }
 
 ## remediation tasks ##
@@ -208,6 +218,10 @@ resource "azurerm_management_group_policy_remediation" "rem" {
 
   lifecycle {
     replace_triggered_by = [terraform_data.def_assign_replace_def]
+    ignore_changes = [
+      parallel_deployments,
+      resource_count
+    ]
   }
 }
 
@@ -224,6 +238,10 @@ resource "azurerm_subscription_policy_remediation" "rem" {
 
   lifecycle {
     replace_triggered_by = [terraform_data.def_assign_replace_def]
+    ignore_changes = [
+      parallel_deployments,
+      resource_count
+    ]
   }
 }
 
@@ -240,6 +258,10 @@ resource "azurerm_resource_group_policy_remediation" "rem" {
 
   lifecycle {
     replace_triggered_by = [terraform_data.def_assign_replace_def]
+    ignore_changes = [
+      parallel_deployments,
+      resource_count
+    ]
   }
 }
 
@@ -256,5 +278,9 @@ resource "azurerm_resource_policy_remediation" "rem" {
 
   lifecycle {
     replace_triggered_by = [terraform_data.def_assign_replace_def]
+    ignore_changes = [
+      parallel_deployments,
+      resource_count
+    ]
   }
 }

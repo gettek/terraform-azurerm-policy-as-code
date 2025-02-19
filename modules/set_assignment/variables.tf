@@ -9,7 +9,7 @@ variable "assignment_scope" {
 }
 
 variable "assignment_not_scopes" {
-  type        = list(any)
+  type        = list(string)
   description = "A list of the Policy Assignment's excluded scopes. Must be full resource IDs"
   default     = []
 }
@@ -81,7 +81,7 @@ variable "resource_selectors" {
 }
 
 variable "identity_ids" {
-  type        = list(any)
+  type        = list(string)
   description = "Optional list of User Managed Identity IDs which should be assigned to the Policy Initiative"
   default     = null
 }
@@ -99,7 +99,7 @@ variable "remediation_scope" {
 }
 
 variable "location_filters" {
-  type        = list(any)
+  type        = list(string)
   description = "Optional list of the resource locations that will be remediated"
   default     = []
 }
@@ -120,6 +120,12 @@ variable "resource_count" {
   type        = number
   description = "(Optional) Determines the max number of resources that can be remediated by the remediation job. If not provided, the default resource count is used."
   default     = null
+}
+
+variable "aad_group_remediation_object_ids" {
+  type        = list(string)
+  description = "List of Azure AD Group Object Ids for the System Assigned Identity to be a member of. Omit this to use role_assignment at policy assignment scope"
+  default     = []
 }
 
 variable "role_definition_ids" {
@@ -167,7 +173,7 @@ locals {
   identity_type = length(try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), [])) > 0 ? var.identity_ids != null ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
 
   # try to use policy definition roles if explicit roles are omitted
-  role_definition_ids = var.skip_role_assignment == false && try(values(local.identity_type)[0], "") == "SystemAssigned" ? try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), []) : []
+  role_definition_ids = var.skip_role_assignment == false && length(var.aad_group_remediation_object_ids) == 0 && try(values(local.identity_type)[0], "") == "SystemAssigned" ? try(coalescelist(var.role_definition_ids, try(var.initiative.role_definition_ids, [])), []) : []
 
   # assignment location is required when identity is specified
   assignment_location = length(local.identity_type) > 0 ? var.assignment_location : null

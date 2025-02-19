@@ -9,7 +9,7 @@ variable "assignment_scope" {
 }
 
 variable "assignment_not_scopes" {
-  type        = list(any)
+  type        = list(string)
   description = "A list of the Policy Assignment's excluded scopes. Must be full resource IDs"
   default     = []
 }
@@ -75,7 +75,7 @@ variable "resource_selectors" {
 }
 
 variable "identity_ids" {
-  type        = list(any)
+  type        = list(string)
   description = "Optional list of User Managed Identity IDs which should be assigned to the Policy Definition"
   default     = null
 }
@@ -93,7 +93,7 @@ variable "remediation_scope" {
 }
 
 variable "location_filters" {
-  type        = list(any)
+  type        = list(string)
   description = "Optional list of the resource locations that will be remediated"
   default     = []
 }
@@ -116,8 +116,14 @@ variable "resource_count" {
   default     = null
 }
 
+variable "aad_group_remediation_object_ids" {
+  type        = list(string)
+  description = "List of Azure AD Group Object Ids for the System Assigned Identity to be a member of. Omit this to use role_assignment at policy assignment scope"
+  default     = []
+}
+
 variable "role_definition_ids" {
-  type        = list(any)
+  type        = list(string)
   description = "List of Role definition ID's for the System Assigned Identity, defaults to roles included in the definition. Ignored when using Managed Identities. Changing this forces a new resource to be created"
   default     = []
 }
@@ -164,10 +170,7 @@ locals {
   identity_type = length(try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), [])) > 0 ? var.identity_ids != null ? { type = "UserAssigned" } : { type = "SystemAssigned" } : {}
 
   # try to use policy definition roles if explicit roles are omitted
-  role_definition_ids = var.skip_role_assignment == false && try(values(local.identity_type)[0], "") == "SystemAssigned" ? try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), []) : []
-
-  # policy assignment scope will be used if omitted
-  role_assignment_scope = try(coalesce(var.role_assignment_scope, var.assignment_scope), "")
+  role_definition_ids = var.skip_role_assignment == false && length(var.aad_group_remediation_object_ids) == 0 && try(values(local.identity_type)[0], "") == "SystemAssigned" ? try(coalescelist(var.role_definition_ids, lookup(jsondecode(var.definition.policy_rule).then.details, "roleDefinitionIds", [])), []) : []
 
   # if creating role assignments also create a remediation task for policies with DeployIfNotExists and Modify effects
   create_remediation = var.assignment_enforcement_mode == true && var.skip_remediation == false && length(local.identity_type) > 0 ? 1 : 0

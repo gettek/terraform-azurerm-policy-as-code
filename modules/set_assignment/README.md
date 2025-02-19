@@ -119,13 +119,14 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
 
 | Name | Type |
 |------|------|
+| [azuread_group_member.remediation](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/group_member) | resource |
 | [azurerm_management_group_policy_assignment.set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment) | resource |
 | [azurerm_management_group_policy_remediation.rem](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_remediation) | resource |
 | [azurerm_resource_group_policy_assignment.set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_policy_assignment) | resource |
 | [azurerm_resource_group_policy_remediation.rem](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_policy_remediation) | resource |
 | [azurerm_resource_policy_assignment.set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_policy_assignment) | resource |
 | [azurerm_resource_policy_remediation.rem](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_policy_remediation) | resource |
-| [azurerm_role_assignment.rem_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_subscription_policy_assignment.set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subscription_policy_assignment) | resource |
 | [azurerm_subscription_policy_remediation.rem](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subscription_policy_remediation) | resource |
 | [terraform_data.remediation](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
@@ -135,6 +136,7 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| aad_group_remediation_object_ids | List of Azure AD Group Object Ids for the System Assigned Identity to be a member of. Omit this to use role_assignment at policy assignment scope | `list(string)` | `[]` | no |
 | assignment_description | A description to use for the Policy Assignment, defaults to initiative description. Changing this forces a new resource to be created | `string` | `null` | no |
 | assignment_display_name | The policy assignment display name, defaults to initiative display_name. Changing this forces a new resource to be created | `string` | `null` | no |
 | assignment_effect | The effect of the policy. Changing this forces a new resource to be created | `string` | `null` | no |
@@ -142,13 +144,13 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
 | assignment_location | The Azure location where this policy assignment should exist, required when an Identity is assigned. Defaults to West Europe. Changing this forces a new resource to be created | `string` | `"westeurope"` | no |
 | assignment_metadata | The optional metadata for the policy assignment. | `any` | `null` | no |
 | assignment_name | The name which should be used for this Policy Assignment, defaults to initiative name. Changing this forces a new Policy Assignment to be created | `string` | `null` | no |
-| assignment_not_scopes | A list of the Policy Assignment's excluded scopes. Must be full resource IDs | `list(any)` | `[]` | no |
+| assignment_not_scopes | A list of the Policy Assignment's excluded scopes. Must be full resource IDs | `list(string)` | `[]` | no |
 | assignment_parameters | The policy assignment parameters. Changing this forces a new resource to be created | `any` | `null` | no |
 | assignment_scope | The scope at which the policy initiative will be assigned. Must be full resource IDs. Changing this forces a new resource to be created | `string` | n/a | yes |
 | failure_percentage | (Optional) A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold. | `number` | `null` | no |
-| identity_ids | Optional list of User Managed Identity IDs which should be assigned to the Policy Initiative | `list(any)` | `null` | no |
+| identity_ids | Optional list of User Managed Identity IDs which should be assigned to the Policy Initiative | `list(string)` | `null` | no |
 | initiative | Policy Initiative resource node | `any` | n/a | yes |
-| location_filters | Optional list of the resource locations that will be remediated | `list(any)` | `[]` | no |
+| location_filters | Optional list of the resource locations that will be remediated | `list(string)` | `[]` | no |
 | non_compliance_messages | The optional non-compliance message(s). Key/Value pairs map as policy_definition_reference_id = 'content', use null = 'content' to specify the Default non-compliance message for all member definitions. | `any` | `{}` | no |
 | overrides | Optional list of assignment Overrides (preview), max 10. Allows you to change the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition | `list(any)` | `[]` | no |
 | parallel_deployments | (Optional) Determines how many resources to remediate at any given time. Can be used to increase or reduce the pace of the remediation. If not provided, the default parallel deployments value is used. | `number` | `null` | no |
