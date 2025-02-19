@@ -154,13 +154,14 @@ module "org_mg_whitelist_regions" {
 
 | Name | Type |
 |------|------|
+| [azuread_group_member.remediation](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/group_member) | resource |
 | [azurerm_management_group_policy_assignment.def](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment) | resource |
 | [azurerm_management_group_policy_remediation.rem](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_remediation) | resource |
 | [azurerm_resource_group_policy_assignment.def](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_policy_assignment) | resource |
 | [azurerm_resource_group_policy_remediation.rem](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_policy_remediation) | resource |
 | [azurerm_resource_policy_assignment.def](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_policy_assignment) | resource |
 | [azurerm_resource_policy_remediation.rem](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_policy_remediation) | resource |
-| [azurerm_role_assignment.rem_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
+| [azurerm_role_assignment.remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
 | [azurerm_subscription_policy_assignment.def](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subscription_policy_assignment) | resource |
 | [azurerm_subscription_policy_remediation.rem](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subscription_policy_remediation) | resource |
 | [terraform_data.def_assign_replace_def](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
@@ -170,6 +171,7 @@ module "org_mg_whitelist_regions" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| aad_group_remediation_object_ids | List of Azure AD Group Object Ids for the System Assigned Identity to be a member of. Omit this to use role_assignment at policy assignment scope | `list(string)` | `[]` | no |
 | assignment_description | A description to use for the Policy Assignment, defaults to definition description. Changing this forces a new resource to be created | `string` | `null` | no |
 | assignment_display_name | The policy assignment display name, defaults to definition display_name. Changing this forces a new resource to be created | `string` | `null` | no |
 | assignment_effect | The effect of the policy. Changing this forces a new resource to be created | `string` | `null` | no |
@@ -177,13 +179,13 @@ module "org_mg_whitelist_regions" {
 | assignment_location | The Azure location where this policy assignment should exist, required when an Identity is assigned. Defaults to UK South. Changing this forces a new resource to be created | `string` | `"westeurope"` | no |
 | assignment_metadata | The optional metadata for the policy assignment. | `any` | `null` | no |
 | assignment_name | The name which should be used for this Policy Assignment, defaults to definition name. Changing this forces a new Policy Assignment to be created | `string` | `null` | no |
-| assignment_not_scopes | A list of the Policy Assignment's excluded scopes. Must be full resource IDs | `list(any)` | `[]` | no |
+| assignment_not_scopes | A list of the Policy Assignment's excluded scopes. Must be full resource IDs | `list(string)` | `[]` | no |
 | assignment_parameters | The policy assignment parameters. Changing this forces a new resource to be created | `any` | `{}` | no |
 | assignment_scope | The scope at which the policy will be assigned. Must be full resource IDs. Changing this forces a new resource to be created | `string` | n/a | yes |
 | definition | Policy Definition resource node | `any` | n/a | yes |
 | failure_percentage | (Optional) A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold. | `number` | `null` | no |
-| identity_ids | Optional list of User Managed Identity IDs which should be assigned to the Policy Definition | `list(any)` | `null` | no |
-| location_filters | Optional list of the resource locations that will be remediated | `list(any)` | `[]` | no |
+| identity_ids | Optional list of User Managed Identity IDs which should be assigned to the Policy Definition | `list(string)` | `null` | no |
+| location_filters | Optional list of the resource locations that will be remediated | `list(string)` | `[]` | no |
 | non_compliance_message | The optional non-compliance message text. | `string` | `null` | no |
 | parallel_deployments | (Optional) Determines how many resources to remediate at any given time. Can be used to increase or reduce the pace of the remediation. If not provided, the default parallel deployments value is used. | `number` | `null` | no |
 | re_evaluate_compliance | Sets the remediation task resource_discovery_mode for policies that DeployIfNotExists and Modify. false = 'ExistingNonCompliant' and true = 'ReEvaluateCompliance'. Defaults to false. Applies at subscription scope and below | `bool` | `false` | no |
@@ -191,7 +193,7 @@ module "org_mg_whitelist_regions" {
 | resource_count | (Optional) Determines the max number of resources that can be remediated by the remediation job. If not provided, the default resource count is used. | `number` | `null` | no |
 | resource_selectors | Optional list of Resource selectors (preview), max 10. These facilitate safe deployment practices (SDP) by enabling you to gradually roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location | `list(any)` | `[]` | no |
 | role_assignment_scope | The scope at which role definition(s) will be assigned, defaults to Policy Assignment Scope. Must be full resource IDs. Ignored when using Managed Identities. Changing this forces a new resource to be created | `string` | `null` | no |
-| role_definition_ids | List of Role definition ID's for the System Assigned Identity, defaults to roles included in the definition. Ignored when using Managed Identities. Changing this forces a new resource to be created | `list(any)` | `[]` | no |
+| role_definition_ids | List of Role definition ID's for the System Assigned Identity, defaults to roles included in the definition. Ignored when using Managed Identities. Changing this forces a new resource to be created | `list(string)` | `[]` | no |
 | skip_remediation | Should the module skip creation of a remediation task for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 | skip_role_assignment | Should the module skip creation of role assignment for policies that DeployIfNotExists and Modify | `bool` | `false` | no |
 

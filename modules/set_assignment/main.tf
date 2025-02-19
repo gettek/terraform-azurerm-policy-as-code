@@ -231,12 +231,22 @@ resource "azurerm_resource_policy_assignment" "set" {
 }
 
 ## role assignments ##
-resource "azurerm_role_assignment" "rem_role" {
-  for_each                         = toset(local.role_definition_ids)
+resource "azurerm_role_assignment" "remediation" {
+  for_each                         = { for i in local.role_definition_ids : split("-", basename(i))[0] => i }
   scope                            = coalesce(var.role_assignment_scope, var.assignment_scope)
-  role_definition_id               = join("", [coalesce(var.role_assignment_scope, var.assignment_scope), each.value])
+  role_definition_id               = each.value
   principal_id                     = local.assignment.identity[0].principal_id
   skip_service_principal_aad_check = true
+}
+
+## aad group memberships ##
+resource "azuread_group_member" "remediation" {
+  for_each = {
+    for i in var.aad_group_remediation_object_ids : split("-", basename(i))[0] => i
+    if length(local.identity_type) > 0
+  }
+  group_object_id  = each.value
+  member_object_id = local.assignment.identity[0].principal_id
 }
 
 ## remediation tasks ##
