@@ -6,7 +6,7 @@ Assignments can be scoped from overarching management groups right down to indiv
 
 A role assignment and remediation task will be automatically created if any member definitions contain a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment=true`, or to assign roles at a different scope to that of the policy assignment use: `role_assignment_scope`.
 
-For a cleaner solution, a list of `aad_group_remediation_object_ids` can be supplied for System Assigned Identity membership in favour of role assignments, assuming the appropriate RBAC controls already exist for that group. More info on role assignments can be found in the [main README](../README.md#role-assignments)
+For a cleaner solution, a list of `aad_group_remediation_object_ids` can be supplied for System Assigned Identity membership in favour of role assignments, assuming the appropriate RBAC controls already exist for that group. More info on role assignments can be found in the [main README](../../README.md#role-assignments)
 
 ## Examples
 
