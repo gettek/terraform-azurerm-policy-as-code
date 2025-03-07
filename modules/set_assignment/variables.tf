@@ -34,7 +34,7 @@ variable "assignment_description" {
 
 variable "assignment_effect" {
   type        = string
-  description = "The effect of the policy. Changing this forces a new resource to be created"
+  description = "The effect of the set assignment. Useful when the initiative has multiple effects of the same type and 'merge_effects=true'. Omit this to use each definitions default effect or populate individually at 'assignment_parameters'"
   default     = null
 }
 
@@ -124,7 +124,7 @@ variable "resource_count" {
 
 variable "aad_group_remediation_object_ids" {
   type        = list(string)
-  description = "List of Azure AD Group Object Ids for the System Assigned Identity to be a member of. Omit this to use role_assignment at policy assignment scope"
+  description = "List of Azure AD Group Object Ids for the System Assigned Identity to be a member of. Omit this to use role_assignments"
   default     = []
 }
 
@@ -162,8 +162,8 @@ locals {
 
   # convert assignment parameters to the required assignment structure
   parameter_values = var.assignment_parameters != null ? {
-    for key, value in var.assignment_parameters :
-    key => merge({ value = value })
+    for k, v in var.assignment_parameters :
+    k => merge({ value = v })
   } : null
 
   # merge effect and parameter_values if specified, will use definition default effects if omitted

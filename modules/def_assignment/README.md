@@ -1,9 +1,13 @@
 <!-- BEGIN_TF_DOCS -->
 # POLICY DEFINITION ASSIGNMENT MODULE
 
-Assignments can be scoped from overarching management groups right down to individual resources.
+Assignments can be scoped from overarching management groups right down to individual resources by settings the `assignment_scope`.
 
-> 💡 A role assignment and remediation task will be automatically created if the Policy Definition contains a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment = true`, or to assign roles at a different scope to that of the policy assignment use: `role_assignment_scope`. To successfully create Role-assignments (or group memberships) the deployment account may require the [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role at the `assignment_scope` or preferably the `definition_scope` to simplify workflows.
+## Role Definitions & Assignments
+
+A role assignment and remediation task will be automatically created if any member definitions contain a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment=true`, or to assign roles at a different scope to that of the policy assignment use: `role_assignment_scope`.
+
+For a cleaner solution, a list of `aad_group_remediation_object_ids` can be supplied for System Assigned Identity membership in favour of role assignments, assuming the appropriate RBAC controls already exist for that group. More info on role assignments can be found in the [main README](../README.md#role-assignments)
 
 ## Examples
 
@@ -171,7 +175,7 @@ module "org_mg_whitelist_regions" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| aad_group_remediation_object_ids | List of Azure AD Group Object Ids for the System Assigned Identity to be a member of. Omit this to use role_assignment at policy assignment scope | `list(string)` | `[]` | no |
+| aad_group_remediation_object_ids | List of Azure AD Group Object Ids for the System Assigned Identity to be a member of. Omit this to use role_assignments | `list(string)` | `[]` | no |
 | assignment_description | A description to use for the Policy Assignment, defaults to definition description. Changing this forces a new resource to be created | `string` | `null` | no |
 | assignment_display_name | The policy assignment display name, defaults to definition display_name. Changing this forces a new resource to be created | `string` | `null` | no |
 | assignment_effect | The effect of the policy. Changing this forces a new resource to be created | `string` | `null` | no |

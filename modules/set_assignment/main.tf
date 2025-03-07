@@ -243,7 +243,7 @@ resource "azurerm_role_assignment" "remediation" {
 resource "azuread_group_member" "remediation" {
   for_each = {
     for i in var.aad_group_remediation_object_ids : split("-", basename(i))[0] => i
-    if length(local.identity_type) > 0
+    if try(local.identity_type.type, "") == "SystemAssigned"
   }
   group_object_id  = each.value
   member_object_id = local.assignment.identity[0].principal_id

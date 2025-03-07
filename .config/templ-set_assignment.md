@@ -1,8 +1,19 @@
 # POLICY INITIATIVE ASSIGNMENT MODULE
 
-Assignments can be scoped from overarching management groups right down to individual resources
+Assignments can be scoped from overarching management groups right down to individual resources by settings the `assignment_scope`.
 
-> 💡 **Note:**  A role assignment and remediation task will be automatically created if any member definitions contain a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment = true`, or to assign roles at a different scope to that of the policy assignment use: `role_assignment_scope`. To successfully create Role-assignments (or group memberships) the deployment account may require the [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role at the `assignment_scope` or preferably the `definition_scope` to simplify workflows.
+## Role Definitions & Assignments
+
+A role assignment and remediation task will be automatically created if any member definitions contain a list of `roleDefinitionIds`. This can be omitted with `skip_role_assignment=true`, or to assign roles at a different scope to that of the policy assignment use: `role_assignment_scope`.
+
+For a cleaner solution, a list of `aad_group_remediation_object_ids` can be supplied for System Assigned Identity membership in favour of role assignments, assuming the appropriate RBAC controls already exist for that group. More info on role assignments can be found in the [main README](../README.md#role-assignments)
+
+## Assignment Effects
+
+The `assignment_effect` parameter is useful when an initiative contains multiple effects of the same type and `merge_effects=true`, ensuring that all `member_definitions` are assigned with the same effect.
+
+- Omit `assignment_effect` to use each definition's default effect stored in its policy parameters.
+- Specify effects individually by setting them in `assignment_parameters` for more granular control.
 
 ## Examples
 
