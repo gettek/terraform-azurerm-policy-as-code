@@ -109,7 +109,7 @@ module guest_config_prereqs_initiative {
 | Name | Version |
 |------|---------|
 | terraform | >= 1.4 |
-| azurerm | >=4.12.0 |
+| azurerm | >= 4.12 |
 
 
 

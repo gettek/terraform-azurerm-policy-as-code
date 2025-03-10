@@ -243,7 +243,7 @@ resource "azurerm_role_assignment" "remediation" {
 resource "azuread_group_member" "remediation" {
   for_each = {
     for i in var.aad_group_remediation_object_ids : split("-", basename(i))[0] => i
-    if length(local.identity_type) > 0
+    if try(local.identity_type.type, "") == "SystemAssigned"
   }
   group_object_id  = each.value
   member_object_id = local.assignment.identity[0].principal_id
@@ -280,7 +280,7 @@ resource "azurerm_subscription_policy_remediation" "rem" {
   name                           = lower(each.key)
   subscription_id                = local.remediation_scope
   policy_assignment_id           = local.assignment.id
-  policy_definition_reference_id = lower(each.key) # https://github.com/hashicorp/terraform-provider-azurerm/issues/18846
+  policy_definition_reference_id = lower(each.key)
   resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
@@ -301,7 +301,7 @@ resource "azurerm_resource_group_policy_remediation" "rem" {
   name                           = lower(each.key)
   resource_group_id              = local.remediation_scope
   policy_assignment_id           = local.assignment.id
-  policy_definition_reference_id = lower(each.key) # https://github.com/hashicorp/terraform-provider-azurerm/issues/18846
+  policy_definition_reference_id = lower(each.key)
   resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage
@@ -322,7 +322,7 @@ resource "azurerm_resource_policy_remediation" "rem" {
   name                           = lower(each.key)
   resource_id                    = local.remediation_scope
   policy_assignment_id           = local.assignment.id
-  policy_definition_reference_id = lower(each.key) # https://github.com/hashicorp/terraform-provider-azurerm/issues/18846
+  policy_definition_reference_id = lower(each.key)
   resource_discovery_mode        = local.resource_discovery_mode
   location_filters               = var.location_filters
   failure_percentage             = var.failure_percentage

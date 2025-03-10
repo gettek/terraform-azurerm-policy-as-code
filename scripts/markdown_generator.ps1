@@ -76,7 +76,7 @@ $append = @{
     "FilePath" = $file
 }
 
-Write-Output "Compile time: $(Get-Date) UTC`nExample custom definitions located in the local library" | Out-File @append
+Write-Output "`nExample custom definitions - Compile time: $(Get-Date)" | Out-File @append
 
 Write-Output "`n## Categories" | Out-File @append
 foreach ($definition in $definitionList.Keys) {

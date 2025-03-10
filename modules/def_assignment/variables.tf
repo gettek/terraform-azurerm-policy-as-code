@@ -118,7 +118,7 @@ variable "resource_count" {
 
 variable "aad_group_remediation_object_ids" {
   type        = list(string)
-  description = "List of Azure AD Group Object Ids for the System Assigned Identity to be a member of. Omit this to use role_assignment at policy assignment scope"
+  description = "List of Azure AD Group Object Ids for the System Assigned Identity to be a member of. Omit this to use role_assignments"
   default     = []
 }
 

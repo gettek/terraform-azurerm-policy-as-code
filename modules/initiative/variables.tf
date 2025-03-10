@@ -151,7 +151,7 @@ locals {
     }
   )
 
-  # manually generate the initiative Id to prevent "Invalid for_each argument" on potential consumer modules
+  # manually generate the initiative Id to prevent "Invalid for_each argument" on consumer modules
   initiative_id = (
     var.management_group_id != null ?
     "${var.management_group_id}/providers/Microsoft.Authorization/policySetDefinitions/${var.initiative_name}" :

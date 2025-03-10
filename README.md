@@ -11,7 +11,7 @@
     <a href="https://github.com/gettek/terraform-azurerm-policy-as-code/actions/workflows/ci.yml"><img src="https://github.com/gettek/terraform-azurerm-policy-as-code/actions/workflows/ci.yml/badge.svg" alt="CI Tests"></a></br>
     <a href="https://github.com/gettek/terraform-azurerm-policy-as-code/discussions"><img src="https://img.shields.io/badge/topic-discussions-yellowgreen.svg" alt="Go to topic discussions"></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-orange.svg" alt="MIT License"></a></br>
-    <a href="https://github.dev/gettek/terraform-azurerm-policy-as-code"><img src="https://img.shields.io/static/v1?logo=visualstudiocode&label=&message=Open%20in%20Visual%20Studio%20Code&labelColor=2c2c32&color=007acc&logoColor=007acc" alt="Open in Visual Studio Code"></a>
+    <a href="https://github.dev/gettek/terraform-azurerm-policy-as-code"><img src="https://img.shields.io/static/v1?logo=refinedgithub&label=&message=Open%20in%20Visual%20Studio%20Code&labelColor=2c2c32&color=007acc&logoColor=007acc" alt="Open in VSCode"></a>
     </br>
     <a href="https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/"><img src="https://img.shields.io/badge/dynamic/json?url=https://registry.terraform.io/v2/modules/gettek/policy-as-code/azurerm/downloads/summary&logo=terraform&label=Registry%20Downloads&query=$.data.attributes.total&color=844FBA&logoColor=844FBA" alt="Terraform Registry"></a>
   </p>
@@ -27,10 +27,17 @@
 - [Achieving Continuous Compliance](#achieving-continuous-compliance)
   - [⚙️Assignment Effects](#️assignment-effects)
   - [👥Role Assignments](#role-assignments)
+    - [Customizing](#customizing)
+    - [Conditions for Skipping](#conditions-for-skipping)
+    - [Required Permissions](#required-permissions)
   - [✅Remediation Tasks](#remediation-tasks)
   - [⏱️On-demand evaluation scan](#️on-demand-evaluation-scan)
   - [🎯Definition and Assignment Scopes](#definition-and-assignment-scopes)
 - [📗Useful Resources](#useful-resources)
+  - [GitHub](#github)
+  - [Microsoft](#microsoft)
+  - [Terraform](#terraform)
+  - [Tools](#tools)
 - [Limitations](#limitations)
 
 ## Repo Folder Structure
@@ -184,17 +191,45 @@ Azure Policy supports the following types of effect:
 
 ### 👥Role Assignments
 
-Role assignments and remediation tasks will be automatically created if the Policy Definition contains a list of [Role Definitions](policies/Tags/inherit_resource_group_tags_modify.json#L46). You can override these with explicit ones, [as seen here](examples/assignments_org.tf#L40), or specify `skip_role_assignment=true` to omit creation, this is also skipped when using User Managed Identities. By default role assignment scopes will match the policy assignment but can be changed by setting `role_assignment_scope`.
+Role assignments and remediation tasks are automatically created by the `*_assignment` modules if a Policy Definition's `policyRule` includes a list of `roleDefinitionIds`.
+
+#### Customizing
+
+You can override these default role assignments using the `role_definition_ids` parameter, as demonstrated in [this example](examples/assignments_org.tf#L90).
+
+By default, role assignment scopes match the policy assignment scope. However, this can be customized using the `role_assignment_scope` parameter.
+
+Alternatively, to disable role assignment creation entirely, set: `skip_role_assignment = true`
+
+#### Conditions for Skipping
+
+Role assignments are automatically skipped when either of the following is explicitly used:
+- AAD Group Memberships (`aad_group_remediation_object_ids`)
+- User Managed Identities (`identity_ids`)
+
+#### Required Permissions
+
+To successfully create role assignments, ensure the deployment account has the appropriate permissions:
+
+- **For Role Assignment**:
+  The deployment account requires the [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role at either:
+  - `assignment_scope` (less preferred)
+  - `definition_scope` (recommended)
+
+- **For AAD Group Membership**:
+  The deployment principal must have the following Microsoft Graph API (Application) permissions:
+  - `Group.Read.All`
+  - `GroupMember.ReadWrite.All`
 
 ### ✅Remediation Tasks
 
-Unless you specify `skip_remediation=true`, the `*_assignment` modules will automatically create [remediation tasks](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources) for policies containing effects of `DeployIfNotExists` and `Modify`. The task name is suffixed with a `timestamp()` to ensure a new one gets created on each `terraform apply`.
+Unless you specify `skip_remediation=true`, the `*_assignment` modules will automatically create [remediation tasks](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources) for policies containing effects of `DeployIfNotExists` and `Modify`.
 
 ### ⏱️On-demand evaluation scan
 
 To trigger an on-demand [compliance scan](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data) with terraform, set `re_evaluate_compliance = true` on `*_assignment` modules, defaults to `false (ExistingNonCompliant)`.
 
-> 💡 **Note:** `ReEvaluateCompliance` only applies to remediation at Subscription scope and below and will take longer depending on the size of your environment.
+> 💡 **Note:** `ReEvaluateCompliance` only applies to remediation at Subscription scope and below and will take longer depending on the size of your environment. Use the `remediation_scope` parameter to target a specific subscription, resource group or resource.
 
 ### 🎯Definition and Assignment Scopes
 
@@ -205,31 +240,42 @@ To trigger an on-demand [compliance scan](https://learn.microsoft.com/en-us/azur
 
 ![Policy Definition and Assignment Scopes](img/scopes.svg)
 
-> ⚠️ **Requirement:** Ensure the deployment account has at least [Resource Policy Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#resource-policy-contributor) role at the `definition_scope` and `assignment_scope`. To successfully create Role-assignments (or group memberships) the same account may also require the [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role at the `assignment_scope` or preferably the `definition_scope` to simplify workflows.
+> ⚠️ **Requirement:** Ensure the deployment account has at least the [Resource Policy Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#resource-policy-contributor) role at both `definition_scope` and `assignment_scope`.
 
 ## 📗Useful Resources
 
-- [GitHub Repo: Azure Built-In Policies and Samples](https://github.com/Azure/azure-policy)
-- [GitHub Repo: Contribute to Community Policies](https://github.com/Azure/Community-Policy)
-- [GitHub Repo: AWESOME-Azure-Policy - a collection of awesome references](https://github.com/globalbao/awesome-azure-policy)
-- [Microsoft Docs: Azure Policy Home](https://learn.microsoft.com/en-us/azure/governance/policy/)
-- [Microsoft Docs: List of Builtin Policies](https://learn.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
-- [Microsoft Docs: Index of Azure Policy Samples](https://learn.microsoft.com/en-us/azure/governance/policy/samples/)
-- [Microsoft Docs: Design Azure Policy as Code workflows](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code)
-- [Microsoft Docs: Evaluate the impact of a new Azure Policy definition](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/evaluate-impact)
-- [Microsoft Docs: Author policies for array properties on Azure resources](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/author-policies-for-arrays)
-- [Microsoft Docs: Azure Policy Regulatory Compliance (Benchmarks)](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
-- [Microsoft Docs: Azure Policy Exemption](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure)
-- [Microsoft Tutorial: Build policies to enforce compliance](https://learn.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
-- [Microsoft Tutorial: Security Center - Working with security policies](https://learn.microsoft.com/en-us/azure/security-center/tutorial-security-policy)
-- [VSCode Marketplace: Azure Policy Extension](https://marketplace.visualstudio.com/items?itemName=AzurePolicy.azurepolicyextension)
+### GitHub
+
+- [Azure Built-In Policies and Samples](https://github.com/Azure/azure-policy)
+- [Contribute to Community Policies](https://github.com/Azure/Community-Policy)
+- [Awesome Azure Policy - a collection of awesome references](https://github.com/globalbao/awesome-azure-policy)
+
+### Microsoft
+
+- [Azure Policy Home](https://learn.microsoft.com/en-us/azure/governance/policy/)
+- [List of Builtin Policies](https://learn.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies)
+- [Index of Azure Policy Samples](https://learn.microsoft.com/en-us/azure/governance/policy/samples/)
+- [Design Azure Policy as Code workflows](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code)
+- [Evaluate the impact of a new Azure Policy definition](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/evaluate-impact)
+- [Author policies for array properties on Azure resources](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/author-policies-for-arrays)
+- [Azure Policy Regulatory Compliance (Benchmarks)](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/security-controls-policy)
+- [Azure Policy Exemption](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure)
+- [Tutorial: Build policies to enforce compliance](https://learn.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
+- [Tutorial: Security Center - Working with security policies](https://learn.microsoft.com/en-us/azure/security-center/tutorial-security-policy)
+- [VSCode Azure Policy Extension](https://marketplace.visualstudio.com/items?itemName=AzurePolicy.azurepolicyextension)
+
+### Terraform
+
+- [azurerm_policy_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_definition)
+- [azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
+- [azurerm_*_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment)
+- [azurerm_*_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_remediation)
+- [azurerm_*_policy_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_exemption)
+
+### Tools
+
 - [AzAdvertizer: Release and change tracking on Azure Governance capabilities](https://www.azadvertizer.net/index.html)
 - [Azure Citadel: Creating Custom Policies](https://www.azurecitadel.com/policy/custom/)
-- [Terraform Provider: azurerm_policy_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_definition)
-- [Terraform Provider: azurerm_policy_set_definition](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition)
-- [Terraform Provider: multiple assignment resources: azurerm_*_policy_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_assignment)
-- [Terraform Provider: multiple remediation resources: azurerm_*_policy_remediation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_remediation)
-- [Terraform Provider: multiple exemption resources: azurerm_*_policy_exemption](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_exemption)
 
 ## Limitations
 
@@ -239,7 +285,7 @@ To trigger an on-demand [compliance scan](https://learn.microsoft.com/en-us/azur
 - There's a [maximum count](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-policy-limits) for each object type for Azure Policy. For definitions, an entry of Scope means the management group or subscription. For assignments and exemptions, an entry of Scope means the management group, subscription, resource group, or individual resource:
 
 | Where                                                     | What                             | Maximum count |
-|-----------------------------------------------------------|----------------------------------|---------------|
+| --------------------------------------------------------- | -------------------------------- | ------------- |
 | Scope                                                     | Policy definitions               | 500           |
 | Scope                                                     | Initiative definitions           | 200           |
 | Tenant                                                    | Initiative definitions           | 2,500         |
@@ -247,11 +293,10 @@ To trigger an on-demand [compliance scan](https://learn.microsoft.com/en-us/azur
 | Scope                                                     | Exemptions                       | 1,000         |
 | Policy definition                                         | Parameters                       | 20            |
 | Initiative definition                                     | Policies                         | 1,000         |
-| Initiative definition                                     | Parameters                       | 300           |
+| Initiative definition                                     | Parameters                       | 400           |
 | Policy or initiative assignments                          | Exclusions (notScopes)           | 400           |
 | Policy rule                                               | Nested conditionals              | 512           |
 | Remediation task                                          | Resources                        | 50,000        |
 | Policy definition, initiative, or assignment request body | Bytes                            | 1,048,576     |
 
-Policy rules have additional limits to the number of conditions and their complexity. See [Policy rule limits](https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/governance/policy/concepts/definition-structure.md#policy-rule-limits) for more details.
-
+Policy rules have additional limits to the number of conditions and their complexity. See [Policy rule limits](https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/governance/policy/concepts/definition-structure-policy-rule.md#policy-rule-limits) for more information.
