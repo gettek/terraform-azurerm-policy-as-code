@@ -109,7 +109,7 @@ module exemption_team_a_mg_key_vaults_require_purge_protection {
 | Name | Version |
 |------|---------|
 | terraform | >= 0.13 |
-| azurerm | >=3.23.0 |
+| azurerm | >= 3.23 |
 
 
 

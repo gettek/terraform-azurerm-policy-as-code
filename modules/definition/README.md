@@ -94,8 +94,8 @@ module "parameterised_test" {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.13 |
-| azurerm | >=4.12.0 |
+| terraform | >= 1.4 |
+| azurerm | >= 4.12 |
 
 
 

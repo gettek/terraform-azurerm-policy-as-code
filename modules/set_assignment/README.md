@@ -122,7 +122,7 @@ module org_mg_configure_az_monitor_linux_vm_initiative {
 | Name | Version |
 |------|---------|
 | terraform | >= 1.4 |
-| azurerm | >=4.12.0 |
+| azurerm | >= 4.12 |
 
 
 

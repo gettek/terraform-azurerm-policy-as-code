@@ -3,11 +3,11 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">=4.12.0"
+      version = ">= 4.12"
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = ">=2.45.0"
+      version = ">= 2.45"
     }
   }
   backend "azurerm" {}
@@ -15,4 +15,9 @@ terraform {
 
 provider "azurerm" {
   features {}
+  resource_provider_registrations = "core"
+  resource_providers_to_register = [
+    "Microsoft.PolicyInsights",
+    "Microsoft.SecurityInsights"
+  ]
 }
