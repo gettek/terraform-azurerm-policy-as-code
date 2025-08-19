@@ -78,14 +78,13 @@ variable "duplicate_members" {
 
 locals {
   # collate all definition properties into a single reusable object:
-  # - definition references take their policy name transformed to upper camel case
   # - index numbers (idx) will be prefixed to references when using duplicate member definitions
   member_properties = {
     for idx, d in var.member_definitions :
     var.duplicate_members == false ? d.name : "${idx}_${d.name}" => {
       id                     = d.id
       mode                   = try(d.mode, "")
-      reference              = var.duplicate_members == false ? replace(title(replace(d.name, "/-|_|\\s/", " ")), "/\\s/", "") : "${idx}_${replace(title(replace(d.name, "/-|_|\\s/", " ")), "/\\s/", "")}"
+      reference              = var.duplicate_members == false ? d.name : "${idx}_${d.name}"
       parameters             = try(jsondecode(d.parameters), {})
       category               = try(jsondecode(d.metadata).category, "")
       version                = try(jsondecode(d.metadata).version, "1.*.*")
@@ -101,6 +100,7 @@ locals {
     k => {
       policy_definition_id = v.id
       reference_id         = v.reference
+      version              = v.version
       parameter_values = length(v.parameters) > 0 ? jsonencode({
         for i in keys(v.parameters) :
         i => {

@@ -29,6 +29,7 @@ module "platform_diagnostics_initiative" {
   initiative_display_name = "[Platform]: Diagnostics Settings Policy Initiative"
   initiative_description  = "Collection of policies that deploy resource and activity log forwarders to logging core resources"
   initiative_category     = "Monitoring"
+  initiative_version      = "1.3.0"
   merge_effects           = false # will not merge "effect" parameters
   management_group_id     = data.azurerm_management_group.org.id
 

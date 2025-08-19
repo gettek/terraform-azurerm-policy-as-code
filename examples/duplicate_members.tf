@@ -59,15 +59,15 @@ module "team_a_mg_resource_group_tags" {
   skip_role_assignment   = var.skip_role_assignment
 
   assignment_parameters = {
-    tagName_0_InheritResourceGroupTagsModify = "DepartmentName"
-    tagName_1_InheritResourceGroupTagsModify = "CostCode"
-    tagName_2_InheritResourceGroupTagsModify = "ProductCode"
-    tagName_3_InheritResourceGroupTagsModify = "Environment"
-    tagName_4_RequireResourceGroupTags       = "DepartmentName"
-    tagName_5_RequireResourceGroupTags       = "CostCode"
-    tagName_6_RequireResourceGroupTags       = "ProductCode"
-    tagName_7_RequireResourceGroupTags       = "Environment"
-    effect_7_RequireResourceGroupTags        = "Disabled"
+    tagName_0_inherit_resource_group_tags_modify = "DepartmentName"
+    tagName_1_inherit_resource_group_tags_modify = "CostCode"
+    tagName_2_inherit_resource_group_tags_modify = "ProductCode"
+    tagName_3_inherit_resource_group_tags_modify = "Environment"
+    tagName_4_require_resource_group_tags        = "DepartmentName"
+    tagName_5_require_resource_group_tags        = "CostCode"
+    tagName_6_require_resource_group_tags        = "ProductCode"
+    tagName_7_require_resource_group_tags        = "Environment"
+    effect_7_require_resource_group_tags         = "Disabled"
   }
 
   non_compliance_messages = module.resource_group_tags.non_compliance_messages
