@@ -3,6 +3,7 @@
   "name": "deploy_windows_log_analytics_vm_agent",
   "properties": {
     "metadata": {
+      "displayName": "Deploy Windows Log Analytics Diagnostic Extension",
       "category": "Compute"
     },
     "parameters": {

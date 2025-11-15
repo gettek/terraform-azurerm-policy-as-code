@@ -3,6 +3,7 @@
   "name": "inherit_resource_group_tags_modify",
   "properties": {
     "metadata": {
+      "displayName": "Inherit Resource Group Tags - Modify",
       "category": "Tags"
     },
     "parameters": {

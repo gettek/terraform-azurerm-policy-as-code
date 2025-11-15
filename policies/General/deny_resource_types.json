@@ -3,6 +3,7 @@
   "name": "deny_resource_types",
   "properties": {
     "metadata": {
+      "displayName": "Deny deployment of specified resource types",
       "category": "General"
     },
     "parameters": {

@@ -3,6 +3,7 @@
   "name": "require_resource_group_tags",
   "properties": {
     "metadata": {
+      "displayName": "Require Resource Group Tags",
       "category": "Tags"
     },
     "parameters": {

@@ -3,6 +3,7 @@
   "name": "preview_deploy_linux_azure_monitor_vm_agent",
   "properties": {
     "metadata": {
+      "displayName": "Deploy Windows VMDiagnosticsSettings Agent Extension on Virtual Machines",
       "category": "Compute"
     },
     "parameters": {

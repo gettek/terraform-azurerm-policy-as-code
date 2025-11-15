@@ -3,6 +3,7 @@
   "name": "deploy_linux_lad_vm_agent",
   "properties": {
     "metadata": {
+      "displayName": "Deploy Linux VM Linux Diagnostic Agent",
       "category": "Compute"
     },
     "parameters": {

@@ -76,16 +76,27 @@ variable "duplicate_members" {
   default     = false
 }
 
+variable "camel_case_references" {
+  type        = bool
+  description = "Should definition references be converted to Camel Case for readability? Defaults to false"
+  default     = false
+}
+
+variable "use_display_name_for_references" {
+  type        = bool
+  description = "Should definition references take policy display_name in favour of policy_name? Defaults to false"
+  default     = false
+}
+
 locals {
   # collate all definition properties into a single reusable object:
-  # - definition references take their policy name transformed to upper camel case
   # - index numbers (idx) will be prefixed to references when using duplicate member definitions
   member_properties = {
     for idx, d in var.member_definitions :
     var.duplicate_members == false ? d.name : "${idx}_${d.name}" => {
       id                     = d.id
       mode                   = try(d.mode, "")
-      reference              = var.duplicate_members == false ? replace(title(replace(d.name, "/-|_|\\s/", " ")), "/\\s/", "") : "${idx}_${replace(title(replace(d.name, "/-|_|\\s/", " ")), "/\\s/", "")}"
+      reference              = var.duplicate_members == false ? (var.use_display_name_for_references == false ? d.name : d.display_name) : (var.use_display_name_for_references == false ? "${idx}_${d.name}" : "${idx}_${d.display_name}")
       parameters             = try(jsondecode(d.parameters), {})
       category               = try(jsondecode(d.metadata).category, "")
       version                = try(jsondecode(d.metadata).version, "1.*.*")
@@ -100,7 +111,8 @@ locals {
     for k, v in local.member_properties :
     k => {
       policy_definition_id = v.id
-      reference_id         = v.reference
+      reference_id         = var.camel_case_references == false ? v.reference : replace(title(replace(v.reference, "/-|_|\\s/", " ")), "/\\s/", "")
+      version              = v.version
       parameter_values = length(v.parameters) > 0 ? jsonencode({
         for i in keys(v.parameters) :
         i => {
@@ -146,7 +158,7 @@ locals {
   non_compliance_messages = merge(
     { null = "Flagged by Initiative: ${var.initiative_name}" }, # default non-compliance message
     { for k, v in local.member_properties :
-      v.reference => v.non_compliance_message
+      var.camel_case_references == false ? v.reference : replace(title(replace(v.reference, "/-|_|\\s/", " ")), "/\\s/", "") => v.non_compliance_message
       if contains(["All", "Indexed"], v.mode) && var.duplicate_members == false # messages fail on other modes
     }
   )

@@ -3,6 +3,7 @@
   "name": "storage_enforce_minimum_tls1_2",
   "properties": {
     "metadata": {
+      "displayName": "Enforce Minimum TLS Version 1.2 on Storage Accounts",
       "category": "Storage"
     },
     "parameters": {

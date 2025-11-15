@@ -73,7 +73,6 @@ module "org_mg_configure_asc_initiative" {
   ]
 }
 
-
 ##################
 # Monitoring
 ##################
@@ -91,24 +90,27 @@ module "org_mg_platform_diagnostics_initiative" {
 
   # NOTE: You may omit parameters at assignment to use the definitions 'defaultValue'
   assignment_parameters = {
-    workspaceId                                        = local.dummy_resource_ids.azurerm_log_analytics_workspace
-    storageAccountId                                   = local.dummy_resource_ids.azurerm_storage_account
-    eventHubName                                       = local.dummy_resource_ids.azurerm_eventhub_namespace
-    eventHubAuthorizationRuleId                        = local.dummy_resource_ids.azurerm_eventhub_namespace_authorization_rule
-    metricsEnabled                                     = "True"
-    logsEnabled                                        = "True"
-    effect_DeployApplicationGatewayDiagnosticSetting   = "DeployIfNotExists"
-    effect_DeployEventhubDiagnosticSetting             = "DeployIfNotExists"
-    effect_DeployFirewallDiagnosticSetting             = "DeployIfNotExists"
-    effect_DeployKeyvaultDiagnosticSetting             = "AuditIfNotExists"
-    effect_DeployLoadbalancerDiagnosticSetting         = "AuditIfNotExists"
-    effect_DeployNetworkInterfaceDiagnosticSetting     = "AuditIfNotExists"
-    effect_DeployNetworkSecurityGroupDiagnosticSetting = "AuditIfNotExists"
-    effect_DeployPublicIpDiagnosticSetting             = "AuditIfNotExists"
-    effect_DeployStorageAccountDiagnosticSetting       = "DeployIfNotExists"
-    effect_DeploySubscriptionDiagnosticSetting         = "DeployIfNotExists"
-    effect_DeployVnetDiagnosticSetting                 = "AuditIfNotExists"
-    effect_DeployVnetGatewayDiagnosticSetting          = "AuditIfNotExists"
+    workspaceId                                              = local.dummy_resource_ids.azurerm_log_analytics_workspace
+    storageAccountId                                         = local.dummy_resource_ids.azurerm_storage_account
+    eventHubName                                             = local.dummy_resource_ids.azurerm_eventhub_namespace
+    eventHubAuthorizationRuleId                              = local.dummy_resource_ids.azurerm_eventhub_namespace_authorization_rule
+    metricsEnabled                                           = "True"
+    logsEnabled                                              = "True"
+    effect_deploy_application_gateway_diagnostic_setting     = "DeployIfNotExists"
+    effect_deploy_eventhub_diagnostic_setting                = "DeployIfNotExists"
+    effect_deploy_expressroute_connection_diagnostic_setting = "DeployIfNotExists"
+    effect_deploy_expressroute_diagnostic_setting            = "AuditIfNotExists"
+    effect_deploy_firewall_diagnostic_setting                = "AuditIfNotExists"
+    effect_deploy_keyvault_diagnostic_setting                = "AuditIfNotExists"
+    effect_deploy_loadbalancer_diagnostic_setting            = "AuditIfNotExists"
+    effect_deploy_network_interface_diagnostic_setting       = "AuditIfNotExists"
+    effect_deploy_network_security_group_diagnostic_setting  = "DeployIfNotExists"
+    effect_deploy_public_ip_diagnostic_setting               = "DeployIfNotExists"
+    effect_deploy_storage_account_diagnostic_setting         = "AuditIfNotExists"
+    effect_deploy_subscription_diagnostic_setting            = "AuditIfNotExists"
+    effect_deploy_virtual_machine_diagnostic_setting         = "AuditIfNotExists"
+    effect_deploy_vnet_diagnostic_setting                    = "DeployIfNotExists"
+    effect_deploy_vnet_gateway_diagnostic_setting            = "AuditIfNotExists"
   }
 
   non_compliance_messages = module.platform_diagnostics_initiative.non_compliance_messages

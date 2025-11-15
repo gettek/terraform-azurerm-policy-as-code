@@ -3,6 +3,7 @@
   "name": "whitelist_regions",
   "properties": {
     "metadata": {
+      "displayName": "Whitelist allowed deployment regions",
       "category": "General"
     },
     "parameters": {
