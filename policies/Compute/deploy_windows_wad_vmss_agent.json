@@ -3,6 +3,7 @@
   "name": "deploy_windows_wad_vmss_agent",
   "properties": {
     "metadata": {
+      "displayName": "Deploy Windows VMDiagnosticsSettings Agent Extension on Virtual Machine Scale Sets",
       "category": "Compute"
     },
     "parameters": {

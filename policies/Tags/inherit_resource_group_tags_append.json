@@ -3,6 +3,7 @@
   "name": "inherit_resource_group_tags_append",
   "properties": {
     "metadata": {
+      "displayName": "Inherit Resource Group Tags - Append",
       "category": "Tags"
     },
     "parameters": {

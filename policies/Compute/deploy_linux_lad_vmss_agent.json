@@ -3,6 +3,7 @@
   "name": "deploy_linux_lad_vmss_agent",
   "properties": {
     "metadata": {
+      "displayName": "Deploy Linux Diagnostic Extension on Linux virtualMachineScaleSets",
       "category": "Compute"
     },
     "parameters": {

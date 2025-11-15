@@ -28,7 +28,7 @@ module "deploy_resource_diagnostic_setting" {
     for p in fileset(path.module, "../policies/Monitoring/*.json") :
     trimsuffix(basename(p), ".json")
   ])
-  policy_name         = each.key
+  policy_name         = each.value
   policy_category     = "Monitoring"
   management_group_id = data.azurerm_management_group.org.id
 }

@@ -44,10 +44,10 @@ variable "policy_definition_reference_ids" {
   default     = []
 }
 
-variable "member_definition_names" {
-  type        = list(string)
-  description = "Generate the definition reference Ids from the member definition names when 'policy_definition_reference_ids' are unknown. Omit to exempt all member definitions"
-  default     = []
+variable "camel_case_references" {
+  type        = bool
+  description = "Should definition references be converted to Camel Case for readability? Defaults to false"
+  default     = false
 }
 
 variable "exemption_category" {
@@ -86,7 +86,7 @@ locals {
   metadata = var.metadata != null ? jsonencode(var.metadata) : null
 
   # generate reference Ids when unknown, assumes the set was created with the initiative module
-  policy_definition_reference_ids = length(var.member_definition_names) > 0 ? [for name in var.member_definition_names :
+  policy_definition_reference_ids = var.camel_case_references == true ? [for name in var.policy_definition_reference_ids :
     replace(title(replace(name, "/-|_|\\s/", " ")), "/\\s/", "")
   ] : var.policy_definition_reference_ids
 

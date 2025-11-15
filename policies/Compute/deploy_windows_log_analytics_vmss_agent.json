@@ -3,6 +3,7 @@
   "name": "deploy_windows_log_analytics_vmss_agent",
   "properties": {
     "metadata": {
+      "displayName": "Deploy Windows Log Analytics Diagnostic Extension on Virtual Machine Scale Sets",
       "category": "Compute"
     },
     "parameters": {

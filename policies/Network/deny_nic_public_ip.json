@@ -3,6 +3,7 @@
   "name": "deny_nic_public_ip",
   "properties": {
     "metadata": {
+      "displayName": "Deny Network Interface with Public IP Address",
       "category": "Network"
     },
     "parameters": {
