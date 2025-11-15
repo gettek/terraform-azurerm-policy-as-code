@@ -5,7 +5,7 @@
 variable "skip_remediation" {
   type        = bool
   description = "Skip creation of all remediation tasks for policies that DeployIfNotExists and Modify"
-  default     = true
+  default     = false
 }
 
 variable "skip_role_assignment" {

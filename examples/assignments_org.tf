@@ -67,7 +67,7 @@ module "org_mg_configure_asc_initiative" {
     {
       effect = "AuditIfNotExists"
       selectors = {
-        in = ["export_asc_alerts_and_recommendations_to_eventhub", "export_asc_alerts_and_recommendations_to_log_analytics"]
+        in = ["ExportAscAlertsAndRecommendationsToEventhub", "ExportAscAlertsAndRecommendationsToLogAnalytics"]
       }
     }
   ]

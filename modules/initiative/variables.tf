@@ -76,6 +76,12 @@ variable "duplicate_members" {
   default     = false
 }
 
+variable "camel_case_references" {
+  type        = bool
+  description = "Should definition references be converted to Camel Case for readability? Defaults to false"
+  default     = false
+}
+
 locals {
   # collate all definition properties into a single reusable object:
   # - index numbers (idx) will be prefixed to references when using duplicate member definitions
@@ -99,7 +105,7 @@ locals {
     for k, v in local.member_properties :
     k => {
       policy_definition_id = v.id
-      reference_id         = v.reference
+      reference_id         = var.camel_case_references == false ? v.reference : replace(title(replace(v.reference, "/-|_|\\s/", " ")), "/\\s/", "")
       version              = v.version
       parameter_values = length(v.parameters) > 0 ? jsonencode({
         for i in keys(v.parameters) :
@@ -132,7 +138,7 @@ locals {
   })...)
 
   # generate replacement trigger by hashing parameters, included as an output to prevent regen at assignment
-  replace_trigger = md5(jsonencode(local.parameters))
+  replace_trigger = md5(jsonencode(merge(local.parameters)))
 
   # combine all role definition IDs present in the policyRule
   all_role_definition_ids = try(distinct([for v in flatten(values({
@@ -146,7 +152,7 @@ locals {
   non_compliance_messages = merge(
     { null = "Flagged by Initiative: ${var.initiative_name}" }, # default non-compliance message
     { for k, v in local.member_properties :
-      v.reference => v.non_compliance_message
+      var.camel_case_references == false ? v.reference : replace(title(replace(v.reference, "/-|_|\\s/", " ")), "/\\s/", "") => v.non_compliance_message
       if contains(["All", "Indexed"], v.mode) && var.duplicate_members == false # messages fail on other modes
     }
   )

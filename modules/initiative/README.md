@@ -109,7 +109,7 @@ module guest_config_prereqs_initiative {
 | Name | Version |
 |------|---------|
 | terraform | >= 1.4 |
-| azurerm | >= 4.12 |
+| azurerm | >= 4.35 |
 
 
 
@@ -117,7 +117,7 @@ module guest_config_prereqs_initiative {
 
 | Name | Type |
 |------|------|
-| [azurerm_policy_set_definition.set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/policy_set_definition) | resource |
+| [azurerm_management_group_policy_set_definition.set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_group_policy_set_definition) | resource |
 | [terraform_data.set_replace](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
@@ -125,6 +125,7 @@ module guest_config_prereqs_initiative {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| camel_case_references | Should definition references be converted to Camel Case for readability? Defaults to false | `bool` | `false` | no |
 | duplicate_members | Does the Initiative contain duplicate member definitions? Defaults to false | `bool` | `false` | no |
 | initiative_category | The category of the initiative | `string` | `"General"` | no |
 | initiative_description | Policy initiative description | `string` | `""` | no |
