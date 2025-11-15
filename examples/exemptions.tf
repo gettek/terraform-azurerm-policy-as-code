@@ -10,7 +10,7 @@ module "exemption_subscription_diagnostics_settings" {
   expires_on           = "2027-08-25"
 
   # use member_definition_names for simplicity when policy_definition_reference_ids are unknown
-  member_definition_names = [
+  policy_definition_reference_ids = [
     "deploy_subscription_diagnostic_setting"
   ]
 }

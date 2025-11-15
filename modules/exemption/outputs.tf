@@ -6,7 +6,7 @@ output "exemption" {
     category                 = var.exemption_category
     scope                    = var.scope
     metadata                 = var.metadata
-    definition_reference_ids = var.policy_definition_reference_ids
+    definition_reference_ids = local.policy_definition_reference_ids
     expires_on               = local.expires_on
   }
 }

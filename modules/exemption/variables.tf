@@ -44,10 +44,10 @@ variable "policy_definition_reference_ids" {
   default     = []
 }
 
-variable "member_definition_names" {
-  type        = list(string)
-  description = "Generate the definition reference Ids from the member definition names when 'policy_definition_reference_ids' are unknown. Omit to exempt all member definitions"
-  default     = []
+variable "camel_case_references" {
+  type        = bool
+  description = "Should definition references be converted to Camel Case for readability? Defaults to false"
+  default     = false
 }
 
 variable "exemption_category" {
@@ -84,6 +84,11 @@ locals {
   expires_on = var.expires_on != null ? "${var.expires_on}T23:00:00Z" : null
 
   metadata = var.metadata != null ? jsonencode(var.metadata) : null
+
+  # generate reference Ids when unknown, assumes the set was created with the initiative module
+  policy_definition_reference_ids = var.camel_case_references == true ? [for name in var.policy_definition_reference_ids :
+    replace(title(replace(name, "/-|_|\\s/", " ")), "/\\s/", "")
+  ] : var.policy_definition_reference_ids
 
   exemption_id = try(
     azurerm_management_group_policy_exemption.management_group_exemption[0].id,
