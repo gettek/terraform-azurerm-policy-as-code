@@ -82,6 +82,12 @@ variable "camel_case_references" {
   default     = false
 }
 
+variable "use_display_name_for_references" {
+  type        = bool
+  description = "Should definition references take policy display_name in favour of policy_name? Defaults to false"
+  default     = false
+}
+
 locals {
   # collate all definition properties into a single reusable object:
   # - index numbers (idx) will be prefixed to references when using duplicate member definitions
@@ -90,7 +96,7 @@ locals {
     var.duplicate_members == false ? d.name : "${idx}_${d.name}" => {
       id                     = d.id
       mode                   = try(d.mode, "")
-      reference              = var.duplicate_members == false ? d.name : "${idx}_${d.name}"
+      reference              = var.duplicate_members == false ? (var.use_display_name_for_references == false ? d.name : d.display_name) : (var.use_display_name_for_references == false ? "${idx}_${d.name}" : "${idx}_${d.display_name}")
       parameters             = try(jsondecode(d.parameters), {})
       category               = try(jsondecode(d.metadata).category, "")
       version                = try(jsondecode(d.metadata).version, "1.*.*")

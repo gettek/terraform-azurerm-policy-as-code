@@ -3,6 +3,7 @@
   "name": "deploy_linux_log_analytics_vm_agent",
   "properties": {
     "metadata": {
+      "displayName": "Deploy Log Analytics VM Agent on Linux VMs",
       "category": "Compute"
     },
     "parameters": {

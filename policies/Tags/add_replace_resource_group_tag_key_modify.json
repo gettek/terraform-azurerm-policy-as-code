@@ -3,6 +3,7 @@
   "name": "add_replace_resource_group_tag_key_modify",
   "properties": {
     "metadata": {
+      "displayName": "Add or Replace Resource Group Tag Keys: Owner, Team, CostCenter",
       "category": "Tags"
     },
     "parameters": {

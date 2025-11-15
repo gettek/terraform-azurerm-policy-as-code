@@ -3,6 +3,7 @@
   "name": "whitelist_resources",
   "properties": {
     "metadata": {
+      "displayName": "Whitelist allowed deployment resource types",
       "category": "General"
     },
     "parameters": {

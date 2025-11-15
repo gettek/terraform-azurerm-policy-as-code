@@ -137,6 +137,7 @@ module guest_config_prereqs_initiative {
 | member_definitions | Policy Definition resource nodes that will be members of this initiative | `any` | n/a | yes |
 | merge_effects | Should the module merge all member definition effects? Defaults to true | `bool` | `true` | no |
 | merge_parameters | Should the module merge all member definition parameters? Defaults to true | `bool` | `true` | no |
+| use_display_name_for_references | Should definition references take policy display_name in favour of policy_name? Defaults to false | `bool` | `false` | no |
 
 ## Outputs
 

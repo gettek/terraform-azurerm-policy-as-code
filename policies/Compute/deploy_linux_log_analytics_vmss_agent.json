@@ -3,6 +3,7 @@
   "name": "deploy_linux_log_analytics_vmss_agent",
   "properties": {
     "metadata": {
+      "displayName": "Deploy Log Analytics Agent for Linux Virtual Machine Scale Sets",
       "category": "Compute"
     },
     "parameters": {
