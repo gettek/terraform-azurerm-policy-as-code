@@ -99,7 +99,7 @@ locals {
       reference              = var.duplicate_members == false ? (var.use_display_name_for_references == false ? d.name : d.display_name) : (var.use_display_name_for_references == false ? "${idx}_${d.name}" : "${idx}_${d.display_name}")
       parameters             = try(jsondecode(d.parameters), {})
       category               = try(jsondecode(d.metadata).category, "")
-      version                = try(jsondecode(d.metadata).version, "1.*.*")
+      version                = replace(try(d.version, jsondecode(d.metadata).version, "1.*"), "/^([0-9]+\\.[0-9]+)\\.[0-9]+(-preview)?$/", "$1.*$2")
       non_compliance_message = try(jsondecode(d.metadata).non_compliance_message, d.description, d.display_name, "Flagged by Policy: ${d.name}")
       role_definition_ids    = try(jsondecode(d.policy_rule).then.details.roleDefinitionIds, [])
     }
